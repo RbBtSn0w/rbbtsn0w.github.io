@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: "记北疆自驾游路线"
 date: 2018-01-16
 ---
