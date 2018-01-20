@@ -16,7 +16,7 @@
 title: RbBtSn0w
 email: hamiltonsnow@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Makr all things.
+  Mark down all things.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://rbbtsn0w.me" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: rbbtsn0w
