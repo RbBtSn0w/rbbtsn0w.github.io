@@ -10,7 +10,7 @@ date: 2018-02-26
 
 入圈之前自己做点功课，简单用思维导图的方式写了关于Coins信息，使用工具MindNode.
 
-
+![My helpful screenshot]({{ "/assets/2018-02-26-BlockchainWithECoins.png" | absolute_url }})
 
 
 下面是导出的markdown格式：
