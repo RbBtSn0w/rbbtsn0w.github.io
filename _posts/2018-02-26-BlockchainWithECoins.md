@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Blockchain with E Coins"
-date: 2018-03-2
+date: 2018-02-26
 ---
 
 # Blockchain with E Coins
