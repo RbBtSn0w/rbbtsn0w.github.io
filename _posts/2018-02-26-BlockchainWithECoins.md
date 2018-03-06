@@ -12,6 +12,8 @@ date: 2018-02-26
 
 ![My helpful screenshot]({{ "/assets/2018-02-26-BlockchainWithECoins.png" | absolute_url }})
 
+![E Coins NodeMind](/assets/2018-02-26-BlockchainWithECoins.png){:class="img-responsive"}
+
 
 下面是导出的markdown格式：
 
