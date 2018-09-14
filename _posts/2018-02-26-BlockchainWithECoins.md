@@ -4,7 +4,6 @@ title: "Blockchain with E Coins"
 date: 2018-02-26
 ---
 
-
 年末的时候，朋友都开始交流货币了；而在今天各种新闻再次刷了我的知识点，所以最近和朋友讨论之后决定入圈了。
 
 入圈之前自己做点功课，简单用思维导图的方式写了关于Coins信息，使用工具MindNode.
@@ -13,11 +12,9 @@ date: 2018-02-26
 
 ![E Coins NodeMind](/assets/2018-02-26-BlockchainWithECoins.png){:class="img-responsive"}
 
-
 下面是导出的markdown格式：
 
 # Coins
-
 
 ## 持有
 
