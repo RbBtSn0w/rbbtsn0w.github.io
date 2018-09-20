@@ -116,7 +116,7 @@ RACSubject是非RAC到RAC的一个桥梁，使用可以参考Github教程。
 }
 
 -(void)rbs_executeWithUrl:(NSURL*)url placeholderImage:(UIImage *)placeholder subject:(RACSubject*)subject{
-    [self rbs_setImageWithURL:url placeholderImage:placeholder completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [self rbs_setImageWithURL:url placeholderImage:placeholder completed:^(UIImage * _Nullable image, NSError * _Nullable error, RBSImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if(image && !error){
             [subject sendNext:image];
         }else{
@@ -164,7 +164,7 @@ RAC在内部做了dealloc 的swizz，会有专门的dispo 对象被触发。
 
 -(void)rbs_executeWithUrl:(NSURL*)url placeholderImage:(UIImage *)placeholder subject:(RACSubject*)subject{
     __weak typeof(subject) weakSubject = subject;
-    [self rbs_setImageWithURL:url placeholderImage:placeholder completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+    [self rbs_setImageWithURL:url placeholderImage:placeholder completed:^(UIImage * _Nullable image, NSError * _Nullable error, RBSImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if(image && !error){
             [weakSubject sendNext:image];
         }else{
