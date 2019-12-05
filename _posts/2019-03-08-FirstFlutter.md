@@ -6,8 +6,6 @@ categories: Flutter
 tags: Flutter
 ---
 
-# 初探Flutter的外貌和特征
-
 ## 背景
 
 Flutter 是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。语言是用Dart编写。

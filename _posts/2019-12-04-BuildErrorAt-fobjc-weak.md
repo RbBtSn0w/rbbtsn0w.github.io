@@ -6,7 +6,7 @@ categories: XCode
 tags: Objtive-c,macOS,ARC
 ---
 
-# XCode build error at -fobjc-weak flag
+## Background
 
 When click XCode project and upgrade the project config for old Xcode version, like manage auto release.
 
@@ -16,4 +16,8 @@ clang: error: -fobjc-weak is not supported on the current deployment target
 
 The reason is XCode add new command line "CLANG_ENABLE_OBJC_WEAK = YES;".
 
+## Resolve
+
 Now remove it on XCode config, and build it again.
+
+"CLANG_ENABLE_OBJC_WEAK = YES;"

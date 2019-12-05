@@ -6,7 +6,6 @@ categories: macOS&iOS
 tags: Xcode
 ---
 
-# Xcode Debug Memory Grahp 如何使用
 
 这个功能大家都使用过了，可以大家在使用的时候，只能看到图的结构，但是并不能看到的代码符号上的堆栈。
 现在告诉大家一个开启的办法。
