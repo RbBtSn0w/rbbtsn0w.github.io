@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "XCode build error at -fobjc-weak flag"
-date: 2019-03-08
+date: 2019-12-04
 categories: XCode
 tags: Objtive-c,macOS,ARC
 ---

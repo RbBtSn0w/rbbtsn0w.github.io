@@ -17,4 +17,3 @@ tags: Cocoapods, Debug, Ruby
  首先是安装 debugger gem install pry
  接着在 Podfile 的开头导入 require 'pry'
  然后在我们想要插入断点的地方插入 binding.pry 语句就可以了
-
