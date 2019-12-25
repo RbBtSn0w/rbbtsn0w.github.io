@@ -58,3 +58,25 @@ Dyld Error Message: *****
 
 从提示的问题可以看到是动态库的签名问题了。需要的就是解决签名，按照macOS 的上的办法，将该app重新签名。
 
+1. 打开Keychain access 工具。
+
+2. 建立一个证书Create a certificate.
+![Create a certificate](/assets/2019-12-25-AppReplacingExistingSignature1.png)
+
+3. 设置证书的名称, Setting the certificate name.
+![Setting the certificate name](/assets/2019-12-25-AppReplacingExistingSignature2.png)
+
+4. Create.
+
+5. 打开bash 命令， 如下。
+
+```Bash
+
+sudo codesign -f -s certificateName /Applications/yourApp.app 
+
+```
+
+至此完成。
+
+
+可以常常打开app 了。
