@@ -72,11 +72,10 @@ Dyld Error Message: *****
 
 ```Bash
 
-sudo codesign -f -s certificateName /Applications/yourApp.app 
+sudo codesign -f -s certificateName /Applications/yourApp.app
 
 ```
 
 至此完成。
-
 
 可以常常打开app 了。
