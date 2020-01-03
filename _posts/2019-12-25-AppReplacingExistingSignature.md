@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "macOS App replacing existing signature"
-date: 2019-12-19
+date: 2019-12-25
 categories: App, Hack, macOS
 tags: Debug, macOS
 ---
