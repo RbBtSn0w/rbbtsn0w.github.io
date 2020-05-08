@@ -40,9 +40,9 @@ Swift sees every header you expose publicly in your umbrella header. The content
 
 Build for Swift Project
 
-1. Open your Xcode, select your build target, `Build Settings`, open `Build Libraries for Distribution`, switch to `YES` (Pure Swift Project need support LibraryEvolution [Library Evolution for Stable ABIs](https://github.com/apple/swift-evolution/blob/master/proposals/0260-library-evolution.md) ).
-2. Need at `@objc` if you want share to Objective-C.
-3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
+    1. Open your Xcode, select your build target, `Build Settings`, open `Build Libraries for Distribution`, switch to `YES` (Pure Swift Project need support LibraryEvolution [Library Evolution for Stable ABIs](https://github.com/apple/swift-evolution/blob/master/proposals/0260-library-evolution.md) ).
+    2. Need at `@objc` if you want share to Objective-C.
+    3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
 
 ### Modular Headers
 
