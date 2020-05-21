@@ -44,6 +44,10 @@ Build for Swift Project
     2. Need at `@objc` if you want share to Objective-C.
     3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
 
+#### Node: Enable Library Evolution
+
+> The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
+
 ### Modular Headers
 
 Xcode config
