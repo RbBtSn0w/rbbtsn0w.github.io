@@ -74,3 +74,19 @@ Custom config your CocoaPods file, like podfile, podspce.
 ``` Swift
 
 ```
+
+## Swift import
+
+下面这个方式为了解决一下SDK中内部引入, 和pod 的源码引入导致的文件找不到的情况.
+
+```Objective-C
+
+
+#if __has_include("TargetName-Swift.h")
+    #import "TargetName-Swift.h"
+#else
+    #import <TargetName/TargetName-Swift.h>
+#endif
+
+
+```
