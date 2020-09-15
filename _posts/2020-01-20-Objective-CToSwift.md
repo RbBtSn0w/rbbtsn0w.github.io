@@ -48,6 +48,14 @@ Build for Swift Project
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 
+``` XcodeLog
+
+<unknown>:0: error: module compiled with Swift 5.2.4 cannot be imported by the Swift 5.1.2 compiler
+
+```
+
+Setting BUILT_PRODUCTS_DIR is On
+
 ### Modular Headers
 
 Xcode config
@@ -90,3 +98,8 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 
 ```
+
+## @objc & NS_SWIFT_NAME
+
+@objc 帮助你给swift的文件声明提供对Objc 的对外定义
+NS_SWIFT_NAME 则相对 @objc 相反
