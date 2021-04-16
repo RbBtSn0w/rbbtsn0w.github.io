@@ -18,13 +18,33 @@ tags: iOS, Swift
 
 想到混合编程大家容易Bridge Header, 其实在Framework 的方式中,是不支持的, Bridge Header.
 
-To use the Objective-C declarations in files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header—the master header for your framework. Import your Objective-C files by configuring the umbrella header:
+为了简单直接, 这里直接指出官方书籍中特别指出的观点.
 
-1. Under Build Settings, in Packaging, make sure the Defines Module setting for the framework target is set to Yes.
+#### Importing Objective-C into Swift
 
-2. In the umbrella header, import every Objective-C header you want to expose to Swift.
+    “To import a set of Objective-C files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header for the framework.
 
-Swift sees every header you expose publicly in your umbrella header. The contents of the Objective-C files in that framework are automatically available from any Swift file within that framework target, with no import statements. Use classes and other declarations from your Objective-C code with the same Swift syntax you use for system classes.
+    To import Objective-C code into Swift from the same framework
+
+    Under Build Settings, in Packaging, make sure the Defines Module setting for that framework target is set to “Yes”.
+    In your umbrella header file, import every Objective-C header you want to expose to Swift. For example:”
+
+#### Importing Swift into Objective-C
+
+    “To import a set of Swift files in the same framework target as your Objective-C code, you don’t need to import anything into the umbrella header for the framework. Instead, import the Xcode-generated header file for your Swift code into any Objective-C .m file you want to use your Swift code from.
+
+    Because the generated header for a framework target is part of the framework’s public interface, only declarations marked with the public or open modifier appear in the generated header for a framework target.”
+
+这个地方需要特别留意下的地方就是 .m 这个关键字.
+
+在ObjC 项目中引入了Swift的代码, 引入相关的头文件一定要放在.m 这个原因也很简单,避免循环引用相同的头文件, 原因就是在于Module 中倒入的XXX-Swift.h 其实已经是一个Public 状态, 这过程中其实就是将一些ObjC 的文件有导出了一次.
+
+解决办法其实有两个.
+
+1. 采用书中提到的使用.m, 将倒入的XXX-Swift.h 放倒入ObjC 的.m文件中,降低暴露到.h, 避免Public化.
+2. 如果你是CocoaPods, 是通过 Podspec 配置你的项目, 做法就是, 将相关的Public 文件, 都手动过滤出来, 然后其他的文件默认就是Project 状态(反之Private也行). 如果是Xcode Project的管理方式, 就直接修改访问权限就可以了.
+
+> Source: Xcode Developer Library > Tools & Languages > IDEs > Project Editor Help > Setting the Visibility of a Header File
 
 ## Xcode 配置准备
 
@@ -48,7 +68,7 @@ Build for Swift Project
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 
-``` XcodeLog
+``` Xcode Log
 
 <unknown>:0: error: module compiled with Swift 5.2.4 cannot be imported by the Swift 5.1.2 compiler
 
@@ -71,7 +91,9 @@ Custom config your CocoaPods file, like podfile, podspce.
     2. podfile, open all pod config modular. use_modular_headers!
     3. special pod config on podfile. eg: :modular_headers => true
 
-## 反射
+## 项目中实践的一些Tips
+
+### 反射
 
 ```Objective-C
 
@@ -81,14 +103,15 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 ``` Swift
 
+// 依靠Mirro, 待补充
+
 ```
 
-## Swift import
+### Swift import
 
 下面这个方式为了解决一下SDK中内部引入, 和pod 的源码引入导致的文件找不到的情况.
 
 ```Objective-C
-
 
 #if __has_include("TargetName-Swift.h")
     #import "TargetName-Swift.h"
@@ -99,7 +122,9 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 ```
 
-## @objc & NS_SWIFT_NAME
+>一般在比较打的项目中,每次加入上述四行代码不麻烦, 但是后期如果涉及到相关的重构或者修改, 会带来额外的工作, 所以对我的工作而言, 引入一个新的header 文件, 专门提供给ObjC 引入 Swift 的头文件的类. 然后将上述代码包装进去, 方便了很多事情.
+
+### @objc & NS_SWIFT_NAME
 
 @objc 帮助你给swift的文件声明提供对Objc 的对外定义
-NS_SWIFT_NAME 则相对 @objc 相反
+NS_SWIFT_NAME 则相对 @objc 功能相反.
