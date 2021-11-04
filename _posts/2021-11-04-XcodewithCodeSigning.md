@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: "Xcode with Code Signing"
