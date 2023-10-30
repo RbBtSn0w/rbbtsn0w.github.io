@@ -1,6 +1,8 @@
 # rbbtsn0w.github.io
 
+## Theme
 
+It's from [Chirpy Starter](https://github.com/cotes2020/chirpy-starter)
 
 ## Deploy by Using GitHub Actions
 
