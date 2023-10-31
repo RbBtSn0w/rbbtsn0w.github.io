@@ -61,10 +61,10 @@ Dyld Error Message: *****
 1. 打开Keychain access 工具。
 
 2. 建立一个证书Create a certificate.
-![Create a certificate](/assets/2019-12-25-AppReplacingExistingSignature1.png)
+![Create a certificate](/assets/img/2019-12-25-AppReplacingExistingSignature1.png)
 
 3. 设置证书的名称, Setting the certificate name.
-![Setting the certificate name](/assets/2019-12-25-AppReplacingExistingSignature2.png)
+![Setting the certificate name](/assets/img/2019-12-25-AppReplacingExistingSignature2.png)
 
 4. Create.
 

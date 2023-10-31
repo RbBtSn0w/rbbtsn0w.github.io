@@ -8,7 +8,7 @@ date: 2018-02-26
 
 入圈之前自己做点功课，简单用思维导图的方式写了关于Coins信息，使用工具MindNode.
 
-![E Coins NodeMind](/assets/2018-02-26-BlockchainWithECoins.png)
+![E Coins NodeMind](/assets/img/2018-02-26-BlockchainWithECoins.png)
 
 下面是导出的markdown格式：
 
