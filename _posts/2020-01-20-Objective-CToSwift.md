@@ -22,22 +22,18 @@ tags: iOS, Swift
 
 #### Importing Objective-C into Swift
 
-```Text
-“To import a set of Objective-C files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header for the framework.
-
-To import Objective-C code into Swift from the same framework
-
-Under Build Settings, in Packaging, make sure the Defines Module setting for that framework target is set to “Yes”.
+>“To import a set of Objective-C files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header for the framework.
+>
+>To import Objective-C code into Swift from the same framework
+>
+>Under Build Settings, in Packaging, make sure the Defines Module setting for that framework target is set to “Yes”.
 In your umbrella header file, import every Objective-C header you want to expose to Swift. For example:”
-```
 
 #### Importing Swift into Objective-C
 
-```Text
-“To import a set of Swift files in the same framework target as your Objective-C code, you don’t need to import anything into the umbrella header for the framework. Instead, import the Xcode-generated header file for your Swift code into any Objective-C .m file you want to use your Swift code from.
-
-Because the generated header for a framework target is part of the framework’s public interface, only declarations marked with the public or open modifier appear in the generated header for a framework target.”
-```
+>To import a set of Swift files in the same framework target as your Objective-C code, you don’t need to import anything into the umbrella header for the framework. Instead, import the Xcode-generated header file for your Swift code into any Objective-C .m file you want to use your Swift code from.
+>
+>Because the generated header for a framework target is part of the framework’s public interface, only declarations marked with the public or open modifier appear in the generated header for a framework target.”
 
 这个地方需要特别留意下的地方就是 .m 这个关键字.
 
@@ -72,7 +68,7 @@ Build for Swift Project
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 
-```Xcode Log
+```log
 <unknown>:0: error: module compiled with Swift 5.2.4 cannot be imported by the Swift 5.1.2 compiler
 ```
 
@@ -90,8 +86,8 @@ CocoaPods Config
 Custom config your CocoaPods file, like podfile, podspce.
 
 1. podspce config, insert `DEFINES_MODULE' => 'YES` at `pod_target_xcconfig`. eg: s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
-2. podfile, open all pod config modular. use_modular_headers!
-3. special pod config on podfile. eg: :modular_headers => true
+2. podfile, open all pod config modular. `use_modular_headers!`
+3. special pod config on podfile. eg: :`modular_headers => true`
 
 ## 项目中实践的一些Tips
 
@@ -122,5 +118,5 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 ### @objc & NS_SWIFT_NAME
 
-@objc 帮助你给swift的文件声明提供对Objc 的对外定义
-NS_SWIFT_NAME 则相对 @objc 功能相反.
+`@objc` 帮助你给swift的文件声明提供对Objc 的对外定义
+`NS_SWIFT_NAME` 则相对 `@objc` 功能相反.

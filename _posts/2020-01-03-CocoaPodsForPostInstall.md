@@ -9,7 +9,7 @@ tags: iOS, CococaPods, Xcode
 整理一些日常使用的 post_install 工具。
 为了方便观察日志，可以通过使用下面的命令输出到指令文件
 
-```Base
+```bash
 
 # > 表示输出到文件 podInstall.log 中，如果文件不存在会自动创建文件
 pod install > podInstall.log
@@ -18,7 +18,7 @@ pod install > podInstall.log
 
 ## 常用Xcode 配置打印
 
-```podfile
+```ruby
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
@@ -35,7 +35,7 @@ end
 
 ## 关闭BitCode
 
-```podfile
+```ruby
 
 # 实现post_install Hooks
 post_install do |installer|
@@ -53,7 +53,7 @@ end
 
 ## GCC_ENABLE_OBJC_GC 修改
 
-```podfile
+```ruby
 
 #修改GCC对OBJC的支持
 post_install do |installer|
@@ -68,7 +68,7 @@ end
 
 ## 打印 Xcode config 信息
 
-```podfile
+```ruby
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     puts "#===Target==#{target}"
@@ -85,7 +85,7 @@ end
 
 ## 手动开启 module 支持
 
-```podfile
+```ruby
 
 def generate_modulemap(name, path)
    f = File.new(File.join("#{path}/module.modulemap"), "w+")
