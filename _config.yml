@@ -41,7 +41,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
-url: "http://rbbtsn0w.me"
+url: "https://rbbtsn0w.me"
 
 
 github:
