@@ -16,7 +16,7 @@ The first things is understand the core code `Pods-*-resources.sh`.
 
 All commit will add on the Code
 
-```Bash
+```bash
 #!/bin/sh
 set -e # 设置在脚本中遇到错误时立即退出。
 set -u # 设置当使用未定义的变量时脚本退出。
@@ -165,8 +165,6 @@ then
     printf "%s\0" "${XCASSET_FILES[@]}" | xargs -0 xcrun actool --output-format human-readable-text --notices --warnings --platform "${PLATFORM_NAME}" --minimum-deployment-target "${!DEPLOYMENT_TARGET_SETTING_NAME}" ${TARGET_DEVICE_ARGS} --compress-pngs --compile "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}" --app-icon "${ASSETCATALOG_COMPILER_APPICON_NAME}" --output-partial-info-plist "${TARGET_TEMP_DIR}/assetcatalog_generated_info_cocoapods.plist"
   fi
 fi
-
-
 ```
 
 ---
