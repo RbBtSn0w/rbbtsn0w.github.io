@@ -9,7 +9,7 @@ tags: iOS, CococaPods, Xcode
 整理一些日常使用的 post_install 工具。
 为了方便观察日志，可以通过使用下面的命令输出到指令文件
 
-```$Base
+```Base
 
 # > 表示输出到文件 podInstall.log 中，如果文件不存在会自动创建文件
 pod install > podInstall.log

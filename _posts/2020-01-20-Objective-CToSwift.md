@@ -22,18 +22,22 @@ tags: iOS, Swift
 
 #### Importing Objective-C into Swift
 
-    “To import a set of Objective-C files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header for the framework.
+```Text
+“To import a set of Objective-C files in the same framework target as your Swift code, you’ll need to import those files into the Objective-C umbrella header for the framework.
 
-    To import Objective-C code into Swift from the same framework
+To import Objective-C code into Swift from the same framework
 
-    Under Build Settings, in Packaging, make sure the Defines Module setting for that framework target is set to “Yes”.
-    In your umbrella header file, import every Objective-C header you want to expose to Swift. For example:”
+Under Build Settings, in Packaging, make sure the Defines Module setting for that framework target is set to “Yes”.
+In your umbrella header file, import every Objective-C header you want to expose to Swift. For example:”
+```
 
 #### Importing Swift into Objective-C
 
-    “To import a set of Swift files in the same framework target as your Objective-C code, you don’t need to import anything into the umbrella header for the framework. Instead, import the Xcode-generated header file for your Swift code into any Objective-C .m file you want to use your Swift code from.
+```Text
+“To import a set of Swift files in the same framework target as your Objective-C code, you don’t need to import anything into the umbrella header for the framework. Instead, import the Xcode-generated header file for your Swift code into any Objective-C .m file you want to use your Swift code from.
 
-    Because the generated header for a framework target is part of the framework’s public interface, only declarations marked with the public or open modifier appear in the generated header for a framework target.”
+Because the generated header for a framework target is part of the framework’s public interface, only declarations marked with the public or open modifier appear in the generated header for a framework target.”
+```
 
 这个地方需要特别留意下的地方就是 .m 这个关键字.
 
@@ -60,18 +64,16 @@ tags: iOS, Swift
 
 Build for Swift Project
 
-    1. Open your Xcode, select your build target, `Build Settings`, open `Build Libraries for Distribution`, switch to `YES` (Pure Swift Project need support LibraryEvolution [Library Evolution for Stable ABIs](https://github.com/apple/swift-evolution/blob/master/proposals/0260-library-evolution.md) ) [WWDC](https://developer.apple.com/videos/play/wwdc2019/416/).
-    2. Need at `@objc` if you want share to Objective-C.
-    3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
+1. Open your Xcode, select your build target, `Build Settings`, open `Build Libraries for Distribution`, switch to `YES` (Pure Swift Project need support LibraryEvolution [Library Evolution for Stable ABIs](https://github.com/apple/swift-evolution/blob/master/proposals/0260-library-evolution.md) ) [WWDC](https://developer.apple.com/videos/play/wwdc2019/416/).
+2. Need at `@objc` if you want share to Objective-C.
+3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
 
 #### Node: Enable Library Evolution
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 
-``` Xcode Log
-
+```Xcode Log
 <unknown>:0: error: module compiled with Swift 5.2.4 cannot be imported by the Swift 5.1.2 compiler
-
 ```
 
 Setting BUILT_PRODUCTS_DIR is On
@@ -80,29 +82,26 @@ Setting BUILT_PRODUCTS_DIR is On
 
 Xcode config
 
-    1. Defines Module(DEFINES_MODULE), Switch `YES`
-    2. Module Map File(MODULEMAP_FILE). If use by LLVM control this file, will automatic file, otherwise by hand setting.
+1. Defines Module(DEFINES_MODULE), Switch `YES`
+2. Module Map File(MODULEMAP_FILE). If use by LLVM control this file, will automatic file, otherwise by hand setting.
 
 CocoaPods Config
 
 Custom config your CocoaPods file, like podfile, podspce.
 
-    1. podspce config, insert `DEFINES_MODULE' => 'YES` at `pod_target_xcconfig`. eg: s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
-    2. podfile, open all pod config modular. use_modular_headers!
-    3. special pod config on podfile. eg: :modular_headers => true
+1. podspce config, insert `DEFINES_MODULE' => 'YES` at `pod_target_xcconfig`. eg: s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+2. podfile, open all pod config modular. use_modular_headers!
+3. special pod config on podfile. eg: :modular_headers => true
 
 ## 项目中实践的一些Tips
 
 ### 反射
 
 ```Objective-C
-
 [NSClassFromString(@"ViewController") alloc] initWithNib:nil withBundle:nil];
-
 ```
 
-``` Swift
-
+```Swift
 // 依靠Mirro, 待补充
 
 ```
@@ -112,14 +111,11 @@ Custom config your CocoaPods file, like podfile, podspce.
 下面这个方式为了解决一下SDK中内部引入, 和pod 的源码引入导致的文件找不到的情况.
 
 ```Objective-C
-
 #if __has_include("TargetName-Swift.h")
     #import "TargetName-Swift.h"
 #else
     #import <TargetName/TargetName-Swift.h>
 #endif
-
-
 ```
 
 >一般在比较打的项目中,每次加入上述四行代码不麻烦, 但是后期如果涉及到相关的重构或者修改, 会带来额外的工作, 所以对我的工作而言, 引入一个新的header 文件, 专门提供给ObjC 引入 Swift 的头文件的类. 然后将上述代码包装进去, 方便了很多事情.

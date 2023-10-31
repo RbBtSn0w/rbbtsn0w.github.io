@@ -54,8 +54,7 @@ What's going on here?
 
 It's code sign requirement by Identify for Instruments env.
 
-Let's change `Code Signing Identity` value to `iOS Developer` or `Apple Developer`. 
-
+Let's change `Code Signing Identity` value to `iOS Developer` or `Apple Developer`.
 
 ![Xcode](/assets/2023-10-20-SymbolsWithInstuments/5.jpg)
 

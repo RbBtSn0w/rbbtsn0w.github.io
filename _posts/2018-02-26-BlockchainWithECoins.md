@@ -8,55 +8,53 @@ date: 2018-02-26
 
 入圈之前自己做点功课，简单用思维导图的方式写了关于Coins信息，使用工具MindNode.
 
-![My helpful screenshot]({{ "/assets/2018-02-26-BlockchainWithECoins.png" | absolute_url }})
-
-![E Coins NodeMind](/assets/2018-02-26-BlockchainWithECoins.png){:class="img-responsive"}
+![E Coins NodeMind](/assets/2018-02-26-BlockchainWithECoins.png)
 
 下面是导出的markdown格式：
 
-# Coins
+## Coins
 
-## 持有
+### 持有
 
-### EOS
+#### EOS
 
-### BCH
+#### BCH
 
-### USDT
+#### USDT
 
-## 交易平台
+### 交易平台
 
-### Bitstamp
+#### Bitstamp
 
-### BTC-e
+#### BTC-e
 
-### BTCChina
+#### BTCChina
 
-### OKCoin
+#### OKCoin
 
-### HUOBIWANG
+#### HUOBIWANG
 
-### YUNBIWANG
+#### YUNBIWANG
 
-## 区块链架构
+### 区块链架构
 
-### 1.0
+#### 1.0
 
-#### 数字货币
+##### 数字货币
 
 - BTC
 
 - LTC
 
-### 2.0
+#### 2.0
 
-#### 可编程区块链
+##### 可编程区块链
 
 - ETC(Ether)
 
-### 3.0
+#### 3.0
 
-#### 超越货币，金融范围的区块链应用
+##### 超越货币，金融范围的区块链应用
 
 - ZEC
 
@@ -68,31 +66,31 @@ date: 2018-02-26
 
 - ICO
 
-## E-Coins
+### E-Coins
 
-### BTC
+#### BTC
 
-#### 10分钟
+##### 10分钟
 
-#### 2100W
+##### 2100W
 
-### LTC
+#### LTC
 
-#### 2.5分钟
+##### 2.5分钟
 
-#### 预产8400W个
+##### 预产8400W个
 
-#### SCrypt 加密算法 Colin Percival
+##### SCrypt 加密算法 Colin Percival
 
-### ETC
+#### ETC
 
-#### 组成部分
+##### 组成部分
 
 - Ether
 
 - EtherScript
 
-#### 场景
+##### 场景
 
 - 创建去中心化的程序
 
@@ -100,7 +98,7 @@ date: 2018-02-26
 
 - 智能合约
 
-#### 特点
+##### 特点
 
 - Smart Contract
 
