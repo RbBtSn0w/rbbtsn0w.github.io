@@ -11,7 +11,7 @@ tags: iOS, Crash, Mach-O, Symbols, Debug, dSYM
 
 关于"mach_msg2_trap", 经常会在iOS的Crash堆栈中看到相关信息, 为了更好理解所以找了`DTS` 去了解"mach_msg2_trap" 的情况.
 
-``` Crash
+```Crash
 Thread 0 name:
 Thread 0 Crashed:
 0   libsystem_kernel.dylib        	0x000000020fdb7030 mach_msg2_trap + 8
