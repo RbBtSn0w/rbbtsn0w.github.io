@@ -2,7 +2,7 @@
 layout: post
 title: "Xcode with Code Signing"
 date: 2021-11-04
-categories: macOS&iOS
+categories: Xcode
 tags: iOS,Signing,Code
 ---
 
