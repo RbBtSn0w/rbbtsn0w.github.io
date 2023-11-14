@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Mark `mach_msg2_trap` and 'Watchdog' "
-date: 2023-10-27
+date: 2023-11-23
 categories: Crash
 tags: iOS, Crash, Mach-O, Symbols, Debug, dSYM
 ---
