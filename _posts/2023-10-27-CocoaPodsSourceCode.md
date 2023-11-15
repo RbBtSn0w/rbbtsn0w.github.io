@@ -183,4 +183,4 @@ explanation `ASSETCATALOG_COMPILER_APPICON_NAME`
 
 ASSETCATALOG_COMPILER_APPICON_NAME 是一个环境变量，其含义可以根据上下文和使用的上游工具而有所不同。通常情况下，它用于指定应用程序在 Asset Catalog 中使用的应用程序图标的名称。
 
-![ASSETCATALOG_COMPILER_APPICON_NAME](/assets/img/post/2023-10-27-CocoaPodsSourceCode1.jpg
+![ASSETCATALOG_COMPILER_APPICON_NAME](/assets/img/post/2023-10-27-CocoaPodsSourceCode1.jpg)
