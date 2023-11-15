@@ -24,7 +24,7 @@ To resolute Gatekeeper issues on macOS Sierra you might have to partially or com
 
 解决办法
 
-```Text
+```plaintext
 Option I
 For a certain application run in Terminal:
 sudo xattr -rd com.apple.quarantine /Applications/[LockedApp].app
@@ -40,7 +40,7 @@ sudo spctl --master-disable
 如果正常启动后应该就没有这个问题了。
 具体是：
 
-```Texxt
+```console
 Exception Type:        EXC_CRASH (SIGABRT)
 Exception Codes:       0x0000000000000000, 0x0000000000000000
 Exception Note:        EXC_CORPSE_NOTIFY
@@ -70,7 +70,7 @@ Dyld Error Message: *****
 
 5. 打开bash 命令， 如下。
 
-```Bash
+```bash
 
 sudo codesign -f -s certificateName /Applications/yourApp.app
 

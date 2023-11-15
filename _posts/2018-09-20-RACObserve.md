@@ -25,7 +25,7 @@ RAC 的内部实现和代码架构, 等各种网上说的有点就不说了，�
 
 先来看看RACObserve 的实现
 
-```Macro
+```objc
 #define _RACObserve(TARGET, KEYPATH) \
 ({ \
     __weak id target_ = (TARGET); \
@@ -49,7 +49,7 @@ RAC 的内部实现和代码架构, 等各种网上说的有点就不说了，�
 
 在来看下面一段代码,来只官方提供的源码
 
-```Objective-C
+```objc
 // Observes self, and doesn't stop until self is deallocated.
 RACSignal *selfSignal = RACObserve(self, arrayController.items);
 
@@ -89,7 +89,7 @@ expression that uses `RACObserve`.
 RACSubject是非RAC到RAC的一个桥梁，使用可以参考Github教程。
 这里说说我碰到的一个场景，代码如下：
 
-```Objective-C
+```objc
 @implementation UIImageView (Demo)
 
 - (RACSignal*)rbs_setImageWithURL:(NSURL *)url{
@@ -134,7 +134,7 @@ RACSubject是非RAC到RAC的一个桥梁，使用可以参考Github教程。
 RAC在内部做了dealloc 的swizz，会有专门的dispo 对象被触发。
 改后的方式（这里改了顺带修改了weak的生命和使用, 原因是GCD切换的调用会在下一次main loop被执行，如果当前对象释放，这里就存在问题）
 
-```Objective-C
+```objc
 @implementation UIImageView (Demo)
 
 - (RACSignal*)rbs_setImageWithURL:(NSURL *)url{

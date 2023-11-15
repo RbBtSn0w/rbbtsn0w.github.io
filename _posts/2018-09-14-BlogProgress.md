@@ -15,3 +15,31 @@ tags: Jekyll tech
 这里加入Tag 的操作，增加Plug 模块，打开 _config.yml，找到plug并在下面加入 - jekyll-archives - jekyll-sitemap 两个模块。
 
 然后就是在_posts 目录下面的每个文件中，加入categories 和 tags 即可，多个使用空格分割。
+
+## Post 格式
+
+### 代码
+
+注意点:
+
+* 首字母小写
+* `Objective-c` need replace to `objc` for code syntax.
+
+* 常用一些 `Crash`, `堆栈信息`, 这类都统一使用`console` 即可.
+
+> [^write-a-new-post] By default, all languages except plaintext, console, and terminal will display line numbers. When you want to hide the line number of a code block, add the class nolineno to it:
+
+````markdown
+```shell
+echo 'No more line numbers!'
+```
+{: .nolineno }
+````
+
+更多[^code-table].
+
+## Reverse Footnote
+
+[^code-table]: [Supported syntax highlighting in Jekyll](https://www.fabriziomusacchio.com/blog/2021-08-11-Syntax_Highlighting_in_Jekyll/)
+
+[^write-a-new-post]: [write-a-new-post](https://chirpy.cotes.page/posts/write-a-new-post/)

@@ -68,7 +68,7 @@ Build for Swift Project
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 
-```log
+```console
 <unknown>:0: error: module compiled with Swift 5.2.4 cannot be imported by the Swift 5.1.2 compiler
 ```
 
@@ -93,11 +93,11 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 ### 反射
 
-```Objective-C
+```objc
 [NSClassFromString(@"ViewController") alloc] initWithNib:nil withBundle:nil];
 ```
 
-```Swift
+```swift
 // 依靠Mirro, 待补充
 
 ```
@@ -106,7 +106,7 @@ Custom config your CocoaPods file, like podfile, podspce.
 
 下面这个方式为了解决一下SDK中内部引入, 和pod 的源码引入导致的文件找不到的情况.
 
-```Objective-C
+```objc
 #if __has_include("TargetName-Swift.h")
     #import "TargetName-Swift.h"
 #else

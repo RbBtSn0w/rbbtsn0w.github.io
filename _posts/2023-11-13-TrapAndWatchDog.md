@@ -12,7 +12,7 @@ mermaid: true
 
 关于"mach_msg2_trap", 经常会在iOS的Crash堆栈中看到相关信息, 为了更好理解所以找了`DTS` 去了解"mach_msg2_trap" 的情况.
 
-```Crash
+```console
 Thread 0 name:
 Thread 0 Crashed:
 0   libsystem_kernel.dylib          0x000000020fdb7030 mach_msg2_trap + 8
@@ -50,7 +50,7 @@ Thread 0 Crashed:
 Apple [^Addressing-watchdog-terminations]
 :   Users expect apps to launch quickly, and are responsive to touches and gestures. The operating system employs a watchdog that monitors launch times and app responsiveness, and terminates unresponsive apps. Watchdog terminations use the code 0x8badf00d (pronounced “ate bad food”) in the Termination Reason of a crash report:
 
-```Crash
+```console
 Exception Type:  EXC_CRASH (SIGKILL)
 Exception Codes: 0x0000000000000000, 0x0000000000000000
 Exception Note:  EXC_CORPSE_NOTIFY
