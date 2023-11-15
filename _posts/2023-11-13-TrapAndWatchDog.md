@@ -44,11 +44,29 @@ Thread 0 Crashed:
 
 ### What's `WatchDog`?
 
-> Apple's iOS watchdog system enforces performance requirements by monitoring launch times and app responsiveness. If an app takes too long to launch or is unresponsive for too long, the watchdog will automatically terminate it on the user's behalf. [Link](https://www.bugsnag.com/blog/ios-performance-monitoring-best-practices/)
+3th-blog [^Watchdog-3th]
+:   Apple's iOS watchdog system enforces performance requirements by monitoring launch times and app responsiveness. If an app takes too long to launch or is unresponsive for too long, the watchdog will automatically terminate it on the user's behalf.
 
-来自官方的说明 [Addressing watchdog terminations](https://developer.apple.com/documentation/xcode/addressing-watchdog-terminations)
+Apple [^Addressing-watchdog-terminations]
+:   Users expect apps to launch quickly, and are responsive to touches and gestures. The operating system employs a watchdog that monitors launch times and app responsiveness, and terminates unresponsive apps. Watchdog terminations use the code 0x8badf00d (pronounced “ate bad food”) in the Termination Reason of a crash report:
+
+```Crash
+Exception Type:  EXC_CRASH (SIGKILL)
+Exception Codes: 0x0000000000000000, 0x0000000000000000
+Exception Note:  EXC_CORPSE_NOTIFY
+Termination Reason: Namespace SPRINGBOARD, Code 0x8badf00d
+```
+
+```bash
+if [ $? -ne 0 ]; then
+  echo "The command was not successful.";
+  #do the needful / exit
+fi;
+```
 
 ### Will trigger `WatchDog` when `mach_msg2_trap`?
+
+Discuss with `DTS`:
 
 >No, quite the oppposite actually.  mach_msg2_trap is the mechanism the
 system uses to deliver events into your app so, so you're not really
@@ -69,3 +87,9 @@ loop can't really be stuttering or hung.
 
 * "mach_msg2_trap"不会让应用程序卡住
 * Watchdog终止应用程序的技术原因是应用程序没有足够频繁地阻塞在"mach_msg2_trap"中。
+
+## Reverse Footnote
+
+[^Watchdog-3th]: [ios-performance-monitoring-best-practices](https://www.bugsnag.com/blog/ios-performance-monitoring-best-practices/)
+
+[^Addressing-watchdog-terminations]: [Addressing watchdog terminations](https://developer.apple.com/documentation/xcode/addressing-watchdog-terminations)
