@@ -57,13 +57,6 @@ Exception Note:  EXC_CORPSE_NOTIFY
 Termination Reason: Namespace SPRINGBOARD, Code 0x8badf00d
 ```
 
-```bash
-if [ $? -ne 0 ]; then
-  echo "The command was not successful.";
-  #do the needful / exit
-fi;
-```
-
 ### Will trigger `WatchDog` when `mach_msg2_trap`?
 
 Discuss with `DTS`:
