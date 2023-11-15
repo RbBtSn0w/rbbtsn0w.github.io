@@ -14,18 +14,18 @@ tags: iOS, Crash, Mach-O, Symbols, Debug, dSYM
 ```Crash
 Thread 0 name:
 Thread 0 Crashed:
-0   libsystem_kernel.dylib        	0x000000020fdb7030 mach_msg2_trap + 8
-1   libsystem_kernel.dylib        	0x000000020fdc8b18 mach_msg2_internal + 76 (mach_msg.c:201)
-2   libsystem_kernel.dylib        	0x000000020fdc8db8 mach_msg_overwrite + 484 (mach_msg.c:0)
-3   libsystem_kernel.dylib        	0x000000020fdb7524 mach_msg + 20 (mach_msg.c:323)
-4   CoreFoundation                	0x00000001d5b50148 __CFRunLoopServiceMachPort + 156 (CFRunLoop.c:2622)
-5   CoreFoundation                	0x00000001d5b512e0 __CFRunLoopRun + 1208 (CFRunLoop.c:3005)
-6   CoreFoundation                	0x00000001d5b55d20 CFRunLoopRunSpecific + 584 (CFRunLoop.c:3418)
-7   GraphicsServices              	0x000000020c6dc998 GSEventRunModal + 160 (GSEvent.c:2196)
-8   UIKitCore                     	0x00000001d7de780c -[UIApplication _run] + 868 (UIApplication.m:3782)
-9   UIKitCore                     	0x00000001d7de7484 UIApplicationMain + 312 (UIApplication.m:5372)
-10  Demo                        	0x000000010309b748 ApplicationMain + 160 (AppDelegate.m:40)
-11  dyld                          	0x00000001f32fc344 start + 1860 (dyldMain.cpp:1165)
+0   libsystem_kernel.dylib          0x000000020fdb7030 mach_msg2_trap + 8
+1   libsystem_kernel.dylib          0x000000020fdc8b18 mach_msg2_internal + 76 (mach_msg.c:201)
+2   libsystem_kernel.dylib          0x000000020fdc8db8 mach_msg_overwrite + 484 (mach_msg.c:0)
+3   libsystem_kernel.dylib          0x000000020fdb7524 mach_msg + 20 (mach_msg.c:323)
+4   CoreFoundation                  0x00000001d5b50148 __CFRunLoopServiceMachPort + 156 (CFRunLoop.c:2622)
+5   CoreFoundation                  0x00000001d5b512e0 __CFRunLoopRun + 1208 (CFRunLoop.c:3005)
+6   CoreFoundation                  0x00000001d5b55d20 CFRunLoopRunSpecific + 584 (CFRunLoop.c:3418)
+7   GraphicsServices                0x000000020c6dc998 GSEventRunModal + 160 (GSEvent.c:2196)
+8   UIKitCore                       0x00000001d7de780c -[UIApplication _run] + 868 (UIApplication.m:3782)
+9   UIKitCore                       0x00000001d7de7484 UIApplicationMain + 312 (UIApplication.m:5372)
+10  Demo                            0x000000010309b748 ApplicationMain + 160 (AppDelegate.m:40)
+11  dyld                            0x00000001f32fc344 start + 1860 (dyldMain.cpp:1165)
 
 ```
 
