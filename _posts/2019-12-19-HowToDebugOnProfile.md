@@ -2,7 +2,7 @@
 layout: post
 title: "Cocoapods 下 podfile 如何debug"
 date: 2019-12-19
-categories: XCode
+categories: Cocoapods
 tags: Cocoapods, Debug, Ruby
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Deep Memory of iOS"
 date: 2023-11-16
-categories: [Crash, Memory]
+categories: [Crash]
 tags: [iOS, Crash, Mach-O, Symbols, Debug, dSYM, memory]
 mermaid: true
 ---

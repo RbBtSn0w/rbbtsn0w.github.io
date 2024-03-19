@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "GitHub Pages site with Free Https/TLS"
+title: "GitHub Pages site with Free SSL/TLS"
 date: 2023-11-16
-categories: [Web, GitHub]
-tags: [Web, GitHub, HTTPS, TLS]
+categories: [Jekyll]
+tags: [Web, GitHub, HTTPS, TLS, SSL]
 mermaid: true
 ---
 

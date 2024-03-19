@@ -2,7 +2,7 @@
 layout: post
 title: "Objective-C And Swift"
 date: 2020-01-03
-categories: iOS, Objective-C, Swift
+categories: Objective-C, Swift
 tags: iOS, Swift
 ---
 

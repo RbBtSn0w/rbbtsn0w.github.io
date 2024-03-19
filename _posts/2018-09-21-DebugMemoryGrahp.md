@@ -2,8 +2,8 @@
 layout: post
 title: "Xcode Debug Memory Grahp"
 date: 2018-09-21
-categories: macOS&iOS
-tags: Xcode
+categories: Xcode, Project
+tags: Xcode, macOS&iOS
 ---
 
 
