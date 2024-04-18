@@ -3,7 +3,7 @@ layout: post
 title: "Project Management"
 date: 2020-05-22
 categories: Project
-tags: management
+tags: [management]
 ---
 
 ## Store Point

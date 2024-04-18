@@ -3,7 +3,7 @@ layout: post
 title: "Blog progress"
 date: 2018-09-14
 categories: Jekyll
-tags: Jekyll tech
+tags: [Jekyll, tech]
 ---
 
 ## 背景

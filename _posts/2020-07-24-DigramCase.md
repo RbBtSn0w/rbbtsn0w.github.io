@@ -3,7 +3,7 @@ layout: post
 title: "Diagrams Case"
 date: 2020-05-22
 categories: Project
-tags: management, diagrams
+tags: [management, diagrams]
 ---
 
 

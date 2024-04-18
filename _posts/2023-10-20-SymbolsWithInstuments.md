@@ -3,7 +3,7 @@ layout: post
 title: "dSYM(Symbols) issue with Instruments tool"
 date: 2023-10-24
 categories: Xcode
-tags: iOS, Instruments, Symbols, Debug, dSYM
+tags: [iOS, Instruments, Symbols, Debug, dSYM]
 ---
 
 ## Background

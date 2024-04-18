@@ -3,7 +3,7 @@ layout: post
 title: "macOS App replacing existing signature"
 date: 2019-12-25
 categories: Project
-tags: Debug, macOS, App, Hack
+tags: [Debug, macOS, App, Hack]
 ---
 
 ## 背景

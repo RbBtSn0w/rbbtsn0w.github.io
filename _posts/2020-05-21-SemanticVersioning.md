@@ -3,7 +3,7 @@ layout: post
 title: "Semantic Versioning"
 date: 2020-05-21
 categories: Project
-tags: Version, Control
+tags: [Version Control]
 ---
 
 

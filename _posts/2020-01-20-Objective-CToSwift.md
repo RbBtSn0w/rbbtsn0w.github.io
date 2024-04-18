@@ -2,8 +2,8 @@
 layout: post
 title: "Objective-C And Swift"
 date: 2020-01-03
-categories: Objective-C, Swift
-tags: iOS, Swift
+categories: [Objective-C, Swift]
+tags: [iOS, Swift]
 ---
 
 2020 开始将工作的中的一些项目迁移到Swift，整理一些迁移中遇见的问题和解答。

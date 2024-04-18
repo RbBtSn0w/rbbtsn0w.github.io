@@ -3,7 +3,7 @@ layout: post
 title: "CocoaPods 下 podfile 如何debug"
 date: 2019-12-19
 categories: CocoaPods
-tags: CocoaPods, Debug, Ruby
+tags: [CocoaPods, Debug, Ruby]
 ---
 
 ## Background

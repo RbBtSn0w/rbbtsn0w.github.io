@@ -3,7 +3,7 @@ layout: post
 title: "Read `Pods-*-resources.sh` code of CocoaPods by Static lib"
 date: 2023-10-27
 categories: CocoaPods
-tags: iOS, CocoaPods, StaticLib, Framework
+tags: [iOS, CocoaPods, StaticLib, Framework]
 ---
 
 ## Background
