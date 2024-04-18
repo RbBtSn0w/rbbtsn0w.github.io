@@ -1,14 +1,14 @@
 ---
 layout: post
-title: "Cocoapods 下 podfile 如何debug"
+title: "CocoaPods 下 podfile 如何debug"
 date: 2019-12-19
-categories: Cocoapods
-tags: Cocoapods, Debug, Ruby
+categories: CocoaPods
+tags: CocoaPods, Debug, Ruby
 ---
 
 ## Background
 
-查了 Xcodeproj 和 Cocoapods 的文档之后我都没有得到很好的解答，所以我就想用 xcodeproj 本身的接口去处理这件事情。
+查了 Xcodeproj 和 CocoaPods 的文档之后我都没有得到很好的解答，所以我就想用 xcodeproj 本身的接口去处理这件事情。
 
 ## Resolve
 
