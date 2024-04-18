@@ -2,8 +2,8 @@
 layout: post
 title: "CocoaPods之post_install常用工具"
 date: 2020-01-03
-categories: CococaPods
-tags: [iOS, CococaPods, Xcode]
+categories: CocoaPods
+tags: [iOS, CocoaPods, Xcode]
 ---
 
 整理一些日常使用的 post_install 工具。
