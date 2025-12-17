@@ -142,21 +142,32 @@ graph TD
 
 ### 自动部署
 
-推送到 `main` 分支时自动触发：
+推送到 `main` 或 `master` 分支时自动触发：
 
-1. **构建**: 使用 Ubuntu + Ruby 3 环境
-2. **测试**: HTMLProofer 验证内部链接
+1. **构建**: 使用 Ubuntu + Ruby 3.2 环境
+2. **测试**: HTMLProofer 验证链接和内容
 3. **部署**: 自动发布到 GitHub Pages
 
-### 手动部署
+### 触发条件
 
-```bash
-# 本地预览生产构建
-JEKYLL_ENV=production bundle exec jekyll build
+- **推送**: `main`/`master` 分支代码变更（排除文档文件）
+- **PR**: 自动运行测试，不执行部署
+- **手动**: 可从 Actions 标签页手动触发
 
-# 检查构建结果
-ls -la _site/
-```
+### CI/CD 特性
+
+- **并发控制**: 避免同时部署冲突
+- **缓存优化**: Bundle 和 Ruby 缓存加速构建
+- **多层测试**: HTML 验证、Jekyll 配置检查
+- **构建报告**: 显示构建时间和站点大小
+- **失败通知**: 自动创建问题跟踪失败
+- **定期维护**: 每周检查依赖更新
+
+### 工作流文件
+
+- [`.github/workflows/pages-deploy.yml`](.github/workflows/pages-deploy.yml) - 主部署流程
+- [`.github/workflows/maintenance.yml`](.github/workflows/maintenance.yml) - 定期维护
+- [`.github/workflows/failure-notification.yml`](.github/workflows/failure-notification.yml) - 失败通知
 
 ## 🔧 维护指南
 

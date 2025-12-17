@@ -1,0 +1,86 @@
+name: "CI Failure Notification"
+
+on:
+  workflow_run:
+    workflows: ["Build and Deploy"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download failure logs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Get the failed workflow run details
+            const run = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id
+            });
+
+            const conclusion = run.data.conclusion;
+            const htmlUrl = run.data.html_url;
+
+            if (conclusion === 'failure') {
+              console.log(`❌ Workflow failed: ${htmlUrl}`);
+
+              // Create a summary of the failure
+              const summary = `# 🚨 Build Failed
+
+**Workflow**: ${context.payload.workflow_run.name}
+**Run**: #${context.payload.workflow_run.run_number}
+**Branch**: ${context.payload.workflow_run.head_branch}
+**Triggered by**: ${context.payload.workflow_run.triggering_actor.login}
+
+[View Details](${htmlUrl})
+
+## Possible Causes
+- Dependency conflicts
+- Configuration errors
+- Test failures
+- External link issues
+
+## Next Steps
+1. Check the [Actions tab](${htmlUrl}) for detailed logs
+2. Fix any identified issues
+3. Re-run the workflow if needed
+
+---
+*This issue was automatically created by CI failure notification.*`;
+
+              // Check if a failure issue already exists for this run
+              const existingIssues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['ci-failure', 'bug'],
+                state: 'open',
+                sort: 'created',
+                direction: 'desc',
+                per_page: 5
+              });
+
+              const recentFailure = existingIssues.data.find(issue =>
+                issue.title.includes(`Build Failed`) &&
+                issue.body.includes(`Run #${context.payload.workflow_run.run_number}`)
+              );
+
+              if (!recentFailure) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: `🚨 Build Failed - Run #${context.payload.workflow_run.run_number}`,
+                  body: summary,
+                  labels: ['ci-failure', 'bug', 'automated', 'high-priority']
+                });
+              }
+            }
