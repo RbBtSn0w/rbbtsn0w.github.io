@@ -2,9 +2,10 @@
 layout: post
 title: "Deep Memory of iOS"
 date: 2023-11-16
-categories: [Crash]
-tags: [iOS, Crash, Mach-O, Symbols, Debug, dSYM, memory]
+categories: [iOS, Crash]
+tags: [memory, crash, ios, symbols, dsym, instrumentation]
 mermaid: true
+description: "iOS 内存占用、脏/净页、压缩与内存警告机制的剖析及优化策略。"
 ---
 
 

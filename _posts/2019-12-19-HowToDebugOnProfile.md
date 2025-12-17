@@ -1,9 +1,10 @@
 ---
 layout: post
-title: "CocoaPods 下 podfile 如何debug"
+title: "CocoaPods 下 podfile 如何 debug"
 date: 2019-12-19
-categories: CocoaPods
-tags: [CocoaPods, Debug, Ruby]
+categories: [iOS, CocoaPods]
+tags: [cocoapods, debug, ruby]
+description: "使用 Ruby 调试器在 Podfile 中插入断点，借助自省排查 CocoaPods 构建与配置问题。"
 ---
 
 ## Background

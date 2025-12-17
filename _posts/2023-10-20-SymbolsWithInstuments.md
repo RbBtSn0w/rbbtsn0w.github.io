@@ -1,9 +1,10 @@
 ---
 layout: post
 title: "dSYM(Symbols) issue with Instruments tool"
-date: 2023-10-24
-categories: Xcode
-tags: [iOS, Instruments, Symbols, Debug, dSYM]
+date: 2023-10-20
+categories: [iOS, Xcode]
+tags: [ios, instruments, symbols, debug, dsym]
+description: "在 Instruments 中无法符号化的原因分析：构建配置与代码签名设置的差异及修复步骤。"
 ---
 
 ## Background

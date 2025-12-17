@@ -2,9 +2,10 @@
 layout: post
 title: "Mark `mach_msg2_trap` and 'Watchdog'"
 date: 2023-11-13
-categories: [Crash]
-tags: [iOS, Crash, Mach-O, Symbols, Debug, dSYM]
+categories: [iOS, Crash]
+tags: [ios, crash, mach-o, symbols, debug, dsym]
 mermaid: true
+description: "深入理解 mach_msg2_trap 与 iOS Watchdog 的关系，澄清崩溃堆栈中的常见误解。"
 ---
 
 

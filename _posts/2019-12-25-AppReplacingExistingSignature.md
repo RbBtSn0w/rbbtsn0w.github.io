@@ -2,8 +2,9 @@
 layout: post
 title: "macOS App replacing existing signature"
 date: 2019-12-25
-categories: Project
-tags: [Debug, macOS, App, Hack]
+categories: [Project]
+tags: [debug, macos, app, codesign]
+description: "在 macOS 上替换应用签名以修复 Gatekeeper 与依赖库签名问题的实践步骤。"
 ---
 
 ## 背景

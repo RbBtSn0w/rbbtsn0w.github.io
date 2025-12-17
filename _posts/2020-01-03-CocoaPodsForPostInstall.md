@@ -2,8 +2,9 @@
 layout: post
 title: "CocoaPods之post_install常用工具"
 date: 2020-01-03
-categories: CocoaPods
-tags: [iOS, CocoaPods, Xcode]
+categories: [iOS, CocoaPods]
+tags: [ios, cocoapods, xcode]
+description: "整理常用 post_install 脚本，含 Bitcode、GCC 设置与 Xcode 配置打印等技巧。"
 ---
 
 整理一些日常使用的 post_install 工具。

@@ -1,9 +1,10 @@
 ---
 layout: post
-title: "Xcode Debug Memory Grahp"
+title: "Xcode Debug Memory Graph"
 date: 2018-09-21
-categories: [Xcode, Project]
-tags: [Xcode, macOS&iOS]
+categories: [iOS, Xcode]
+tags: [xcode, memory, graph, ios, macos]
+description: "开启 Xcode Memory Graph 的日志与配置，辅助定位内存对象与泄漏。"
 ---
 
 

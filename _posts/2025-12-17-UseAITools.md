@@ -3,7 +3,8 @@ layout: post
 title: "social-auto-upload 项目总结文档"
 date: 2025-12-17
 categories: [Project, AI]
-tags: [AI, Tools, Development, Python, Vue, Automation]
+tags: [ai, tools, development, python, vue, automation]
+description: "Trae 驱动的社媒自动上传项目复盘：架构设计、工程治理、测试与 CI/CD 实践。"
 ---
 
 # social-auto-upload 项目总结文档

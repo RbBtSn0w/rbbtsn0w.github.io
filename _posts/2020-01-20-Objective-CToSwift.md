@@ -1,9 +1,10 @@
 ---
 layout: post
 title: "Objective-C And Swift"
-date: 2020-01-03
-categories: [Objective-C, Swift]
-tags: [iOS, Swift]
+date: 2020-01-20
+categories: [iOS]
+tags: [swift, objective-c, bridging, migration, xcode]
+description: "ObjC 与 Swift 混编实践：桥接头、伞头文件、访问修饰与 Library Evolution 配置。"
 ---
 
 2020 开始将工作的中的一些项目迁移到Swift，整理一些迁移中遇见的问题和解答。

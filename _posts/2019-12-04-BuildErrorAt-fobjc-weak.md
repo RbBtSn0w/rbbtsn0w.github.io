@@ -2,8 +2,9 @@
 layout: post
 title: "Xcode build error at -fobjc-weak flag"
 date: 2019-12-04
-categories: Xcode
-tags: [Objtive-c, macOS, ARC]
+categories: [Xcode]
+tags: [objective-c, macos, arc]
+description: "修复 -fobjc-weak 在部署目标不支持时的构建错误，并说明 Xcode 配置项影响。"
 ---
 
 ## Background

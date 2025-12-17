@@ -2,8 +2,9 @@
 layout: post
 title: "初探Flutter的外貌和特征"
 date: 2019-03-08
-categories: Flutter
-tags: Flutter
+categories: [Flutter]
+tags: [flutter, dart, state-management, localization, skia]
+description: "Flutter 基础概览：UI 架构、状态管理与工具链实践，入门与常见坑位。"
 ---
 
 ## 背景

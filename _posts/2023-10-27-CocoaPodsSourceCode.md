@@ -2,8 +2,9 @@
 layout: post
 title: "Read `Pods-*-resources.sh` code of CocoaPods by Static lib"
 date: 2023-10-27
-categories: CocoaPods
-tags: [iOS, CocoaPods, StaticLib, Framework]
+categories: [iOS, CocoaPods]
+tags: [ios, cocoapods, staticlib, framework]
+description: "解析 CocoaPods 资源脚本在静态库模式下的行为与变量含义，定位构建问题。"
 ---
 
 ## Background

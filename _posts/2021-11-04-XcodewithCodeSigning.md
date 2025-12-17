@@ -2,8 +2,9 @@
 layout: post
 title: "Xcode with Code Signing"
 date: 2021-11-04
-categories: Xcode
-tags: [iOS, Signing, Code]
+categories: [iOS, Xcode]
+tags: [code-signing, provisioning, xcode, ios]
+description: "Xcode 代码签名的常见问题排查与自助修复指南，含证书、私钥、描述文件与配置建议。"
 ---
 
 ## INFORMATION ABOUT CODE SIGNING

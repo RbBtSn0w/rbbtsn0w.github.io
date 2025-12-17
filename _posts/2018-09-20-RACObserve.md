@@ -2,8 +2,9 @@
 layout: post
 title: "RACObserve 的思考"
 date: 2018-09-20
-categories: macOS&iOS
-tags: [iOS, ObjC, RAC]
+categories: [iOS, macOS]
+tags: [ios, objc, rac, kvo, performance]
+description: "ReactiveCocoa 的 RACObserve 在大型项目中的循环引用与多级 KVO 性能影响分析。"
 ---
 
 千呼万唤最终在新项目中接受了RAC的代码，很早之前做个一个项目，也是大量使用RAC，也没有太多考虑RAC的副作用有多大，如今总算是在大项目中去使用了，可是到了性能优化的层面，发现RAC带来的性能还是值得

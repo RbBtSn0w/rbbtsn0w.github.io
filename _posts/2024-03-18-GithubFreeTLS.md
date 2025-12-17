@@ -1,10 +1,11 @@
 ---
 layout: post
 title: "GitHub Pages site with Free SSL/TLS"
-date: 2023-11-16
+date: 2024-03-18
 categories: [Jekyll]
-tags: [Web, GitHub, HTTPS, TLS, SSL]
+tags: [github-pages, https, tls, ssl, cloudflare, cname]
 mermaid: true
+description: "使用 Cloudflare 为 GitHub Pages 配置自定义域与免费 SSL/TLS 的完整指引。"
 ---
 
 ## 背景
