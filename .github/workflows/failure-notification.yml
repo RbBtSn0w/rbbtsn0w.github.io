@@ -1,3 +1,4 @@
+---
 name: "CI Failure Notification"
 
 on:
@@ -35,28 +36,30 @@ jobs:
               console.log(`❌ Workflow failed: ${htmlUrl}`);
 
               // Create a summary of the failure
-              const summary = `# 🚨 Build Failed
-
-**Workflow**: ${context.payload.workflow_run.name}
-**Run**: #${context.payload.workflow_run.run_number}
-**Branch**: ${context.payload.workflow_run.head_branch}
-**Triggered by**: ${context.payload.workflow_run.triggering_actor.login}
-
-[View Details](${htmlUrl})
-
-## Possible Causes
-- Dependency conflicts
-- Configuration errors
-- Test failures
-- External link issues
-
-## Next Steps
-1. Check the [Actions tab](${htmlUrl}) for detailed logs
-2. Fix any identified issues
-3. Re-run the workflow if needed
-
----
-*This issue was automatically created by CI failure notification.*`;
+              const summary = [
+                '# 🚨 Build Failed',
+                '',
+                '**Workflow**: ' + context.payload.workflow_run.name,
+                '**Run**: #' + context.payload.workflow_run.run_number,
+                '**Branch**: ' + context.payload.workflow_run.head_branch,
+                '**Triggered by**: ' + context.payload.workflow_run.triggering_actor.login,
+                '',
+                '[View Details](' + htmlUrl + ')',
+                '',
+                '## Possible Causes',
+                '- Dependency conflicts',
+                '- Configuration errors',
+                '- Test failures',
+                '- External link issues',
+                '',
+                '## Next Steps',
+                '1. Check the [Actions tab](' + htmlUrl + ') for detailed logs',
+                '2. Fix any identified issues',
+                '3. Re-run the workflow if needed',
+                '',
+                '---',
+                '*This issue was automatically created by CI failure notification.*'
+              ].join('\n');
 
               // Check if a failure issue already exists for this run
               const existingIssues = await github.rest.issues.listForRepo({
