@@ -52,8 +52,14 @@ mermaid: true             # Optional: enable Mermaid diagrams
 ---
 ```
 
-**Common Categories**: `iOS`, `CocoaPods`, `Xcode`, `Project`, `Jekyll`, `Crash`, `Flutter`  
-**Tag Pattern**: lowercase, technical terms (e.g., `[iOS, CocoaPods, StaticLib, Framework]`)
+**Tag Pattern**: lowercase, hyphenated technical terms; keep 3–8 concise tags per post (e.g., `[ios, cocoapods, staticlib, framework]`)
+
+### SEO Taxonomy Guidelines
+
+- Categories: choose 1–2 from the common set above; avoid mixed strings like `macOS&iOS`.
+- Tags: all lowercase; use hyphens for multi-word terms (e.g., `code-signing`, `state-management`).
+- Date must match filename; example: file `2024-03-18-YourPost.md` uses `date: 2024-03-18`.
+- Add a `description:` for high-traffic posts to improve search snippets.
 
 ### Automatic Metadata
 The `_plugins/posts-lastmod-hook.rb` hook automatically adds `last_modified_at` timestamp to posts with 2+ git commits by querying git history. No manual intervention needed.
