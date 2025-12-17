@@ -222,9 +222,9 @@ async def verify_login_status(page, platform):
    - 进行回归测试，确保所有功能正常运行
    - 收集用户反馈，持续优化功能
 
-## 4. 单元测试实施
+## 5. 单元测试实施
 
-### 4.1 测试框架搭建
+### 5.1 测试框架搭建
 
 **问题**：项目缺乏完善的单元测试，代码质量难以保证
 
@@ -234,7 +234,7 @@ async def verify_login_status(page, platform):
 
 **实现**：
 
-#### 4.1.1 后端测试
+#### 5.1.1 后端测试
 
 1. **测试框架配置**
    - 使用pytest作为测试框架
@@ -276,7 +276,7 @@ async def verify_login_status(page, platform):
    ```
    - 生成测试报告和覆盖率报告，位于`apps/backend/test-results/`目录
 
-#### 4.1.2 前端测试
+#### 5.1.2 前端测试
 
 1. **测试框架配置**
    - 使用Vitest作为测试框架
@@ -303,7 +303,7 @@ async def verify_login_status(page, platform):
    ```
    - 生成测试报告和覆盖率报告，位于`apps/frontend/test-results/`目录
 
-### 4.2 测试覆盖率提升
+### 5.2 测试覆盖率提升
 
 通过Trae工具的帮助，我们逐步提高了项目的测试覆盖率：
 
@@ -318,9 +318,9 @@ async def verify_login_status(page, platform):
 - 增强了代码可维护性，便于后续功能扩展
 - 提供了可靠的回归测试保障，降低了版本更新风险
 
-## 5. 工程治理标准化
+## 6. 工程治理标准化
 
-### 5.1 代码规范制定
+### 6.1 代码规范制定
 
 **问题**：项目缺乏统一的代码规范，不同开发者的代码风格不一致
 
@@ -344,7 +344,7 @@ async def verify_login_status(page, platform):
    - 制定Git提交信息规范，使用语义化提交格式
    - 示例：`feat(login): enhance login functionality with debug tools`
 
-### 5.2 项目结构优化
+### 6.2 项目结构优化
 
 **问题**：项目结构不够清晰，代码组织较为松散
 
@@ -386,7 +386,7 @@ async def verify_login_status(page, platform):
 - 便于新开发者快速熟悉项目结构
 - 优化了模块间的依赖关系，降低了耦合度
 
-### 5.3 开发流程规范
+### 6.3 开发流程规范
 
 **问题**：缺乏标准化的开发流程，协作效率较低
 
@@ -417,9 +417,9 @@ async def verify_login_status(page, platform):
 - 增强了代码质量控制，减少了线上bug
 - 便于项目管理和进度跟踪
 
-## 6. CI流程配置
+## 7. CI流程配置
 
-### 6.1 CI流程设计
+### 7.1 CI流程设计
 
 **问题**：项目尚未建立CI/CD流程，无法实现自动化测试和部署
 
@@ -449,7 +449,7 @@ async def verify_login_status(page, platform):
    - 配置生产环境部署流程（手动触发）
    - 集成Docker构建和推送
 
-### 6.2 CI流程效益
+### 7.2 CI流程效益
 
 1. **提高开发效率**
    - 自动化执行测试和代码检查，减少手动操作
@@ -467,9 +467,9 @@ async def verify_login_status(page, platform):
    - 提供可视化的CI/CD流程状态
    - 便于追踪和管理项目进度
 
-## 7. Trae工具应用场景与效益
+## 8. Trae工具应用场景与效益
 
-### 7.1 代码生成
+### 8.1 代码生成
 
 **应用场景**：
 - 生成新组件和功能模块
@@ -486,7 +486,7 @@ async def verify_login_status(page, platform):
 - 生成的代码符合项目规范，保证了代码质量
 - 降低了新功能开发的门槛，加速了开发进程
 
-### 7.2 代码重构
+### 8.2 代码重构
 
 **应用场景**：
 - 优化现有代码结构和性能
@@ -503,7 +503,7 @@ async def verify_login_status(page, platform):
 - 优化了代码性能，提高了系统运行效率
 - 减少了代码中的潜在bug，提高了系统稳定性
 
-### 7.3 错误检测与修复
+### 8.3 错误检测与修复
 
 **应用场景**：
 - 检测代码中的语法错误和逻辑问题
@@ -520,7 +520,7 @@ async def verify_login_status(page, platform):
 - 提高了代码质量，减少了线上bug
 - 帮助开发者学习和掌握最佳实践
 
-### 7.4 智能提示与补全
+### 8.4 智能提示与补全
 
 **应用场景**：
 - 代码编写过程中的智能提示
@@ -537,7 +537,7 @@ async def verify_login_status(page, platform):
 - 帮助开发者快速掌握API和库的使用
 - 减少了查阅文档的时间，提高了开发专注度
 
-### 7.5 测试生成与运行
+### 8.5 测试生成与运行
 
 **应用场景**：
 - 生成单元测试和集成测试用例
@@ -554,7 +554,7 @@ async def verify_login_status(page, platform):
 - 减少了测试编写时间，提高了测试效率
 - 便于发现和修复潜在问题
 
-## 8. 项目成果与效益
+## 9. 项目成果与效益
 
 ### 8.1 功能成果
 
@@ -607,7 +607,7 @@ async def verify_login_status(page, platform):
    - 提供了API接口，便于与其他系统集成
    - 支持Docker部署，便于在不同环境中运行
 
-## 9. 经验总结与最佳实践
+## 10. 经验总结与最佳实践
 
 ### 9.1 Trae工具使用经验
 
@@ -675,7 +675,7 @@ async def verify_login_status(page, platform):
    - 优化前端架构，提高组件复用性
    - 考虑引入微服务架构，提高系统扩展性
 
-## 10. 总结
+## 11. 总结
 
 通过使用Trae工具，我们成功地完成了social-auto-upload项目的优化和升级工作。从项目接手、Trae工具激活与配置、功能开发与上线、单元测试实施、工程治理标准化到CI流程配置，Trae工具在各个阶段都发挥了重要作用，提高了开发效率，保证了代码质量，加速了项目进度。
 
