@@ -128,6 +128,8 @@ assets:
 pwa:
   enabled: true # the option for PWA feature
 
+server: puma
+
 paginate: 10
 
 # The base URL of your site

@@ -1,106 +1,136 @@
 # AI Coding Agent Instructions
 
 ## Project Overview
-This is a Jekyll-based technical blog (iOS/macOS development focus) using the [Chirpy theme](https://github.com/cotes2020/chirpy-starter). Deployed via GitHub Pages with custom domain (rbbtsn0w.me) and Cloudflare SSL/TLS.
+Jekyll-based technical blog focused on iOS/macOS development using the [Chirpy theme v6.2+](https://github.com/cotes2020/chirpy-starter). Deployed automatically via GitHub Pages to `rbbtsn0w.me` with Cloudflare-provided SSL/TLS. Content is bilingual (Chinese/English) with heavy use of Mermaid diagrams for technical explanations.
+
+**Stack**: Jekyll 4.x + Ruby 3.2.2 + Chirpy theme + GitHub Actions
 
 ## Critical Development Workflows
 
 ### Local Development
 ```bash
-# Install dependencies (run once or when Gemfile changes)
+# First-time setup or after Gemfile changes
 bundle install
+bundle lock --add-platform x86_64-linux  # Required for GitHub Actions compatibility
 
-# Add Linux platform for GitHub Actions compatibility (if on non-Linux)
-bundle lock --add-platform x86_64-linux
-
-# Start local server (auto-refresh on changes)
+# Development server (auto-reloads on file changes)
 bundle exec jekyll serve
+# → Browse http://localhost:4000 or http://127.0.0.1:4000
 
-# Build site for production
-bundle exec jekyll build
+# Production build (outputs to _site/)
+JEKYLL_ENV=production bundle exec jekyll build
 ```
 
-### Deployment
-- **Automated**: Pushes to `main` or `master` trigger `.github/workflows/pages-deploy.yml`
-- **Build**: Jekyll site built in Ubuntu runner with Ruby 3
-- **Testing**: `htmlproofer` validates internal links before deployment
-- **Deploy**: Artifacts uploaded and deployed to GitHub Pages
+**Important**: Changes to `_config.yml` require server restart. Other changes auto-refresh.
+
+### Deployment Pipeline
+1. **Trigger**: Push to `main` or `master` (ignores `.gitignore`, `README.md`, `LICENSE`)
+2. **Build** (`.github/workflows/pages-deploy.yml`):
+   - Runs on Ubuntu with Ruby 3
+   - Checks out with full git history (`fetch-depth: 0`) for plugin support
+   - Builds site: `bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"`
+3. **Test**: `htmlproofer` validates internal links (external links disabled)
+4. **Deploy**: Artifacts uploaded to GitHub Pages automatically
+
+**Debugging Failures**: Check Actions tab → Build logs → `htmlproofer` output for broken links
 
 ## Post Creation Conventions
 
-### Front Matter Structure (Strict)
+### File Naming & Location
+- **Format**: `_posts/YYYY-MM-DD-TitleWithoutSpaces.md` (hyphens only, no underscores)
+- **Example**: `_posts/2024-03-18-GithubFreeTLS.md`
+
+### Front Matter (Required Structure)
 ```yaml
 ---
-layout: post
-title: "Your Post Title"
-date: YYYY-MM-DD
-categories: [Category1, Category2]  # Can be single or array
-tags: [tag1, tag2, tag3]            # Use array format for multiple tags
-mermaid: true                        # Optional: enables Mermaid diagrams
+layout: post              # Always 'post'
+title: "Your Post Title"  # Quoted if contains special characters
+date: YYYY-MM-DD          # Must match filename date
+categories: [iOS, Xcode]  # Array format (single or multiple)
+tags: [swift, debugging, crash]  # Array format required
+mermaid: true             # Optional: enable Mermaid diagrams
 ---
 ```
 
-### File Naming
-- **Required format**: `YYYY-MM-DD-TitleWithoutSpaces.md`
-- **Location**: `_posts/` directory
-- **Example**: `2024-03-18-GithubFreeTLS.md`
+**Common Categories**: `iOS`, `CocoaPods`, `Xcode`, `Project`, `Jekyll`, `Crash`, `Flutter`  
+**Tag Pattern**: lowercase, technical terms (e.g., `[iOS, CocoaPods, StaticLib, Framework]`)
 
-### Post Metadata Automation
-- `_plugins/posts-lastmod-hook.rb` automatically sets `last_modified_at` for posts with 2+ git commits
-- Uses git history: `git log -1 --pretty="%ad" --date=iso "#{post.path}"`
+### Automatic Metadata
+The `_plugins/posts-lastmod-hook.rb` hook automatically adds `last_modified_at` timestamp to posts with 2+ git commits by querying git history. No manual intervention needed.
 
 ### Content Patterns
 
-**Images**: Use post-specific directories
+**Images** - Use post-specific directories:
 ```markdown
-![Alt Text](/assets/img/post/YYYY-MM-DD-TitleSlug/image.png)
+![Class Diagram](/assets/img/post/2020-07-24-DC/Class_Diagram.png)
 ```
-Example: `/assets/img/post/2020-07-24-DC/Class_Diagram.png`
+Create directory matching post slug: `/assets/img/post/YYYY-MM-DD-Slug/`
 
-**Mermaid Diagrams**: Enable in front matter, embed directly
-```markdown
----
-mermaid: true
----
-
+**Mermaid Diagrams** - Set `mermaid: true` in front matter, then embed:
+````markdown
 ```mermaid
 graph TD
-  A --> B
+  A[Start] --> B[Process]
+  B --> C[End]
 ```
-```
+````
+See [2023-11-16-DeepMemory.md](_posts/2023-11-16-DeepMemory.md) for complex multi-diagram examples.
 
-**Prompts** (Chirpy theme feature):
+**Chirpy Prompts** - Add tip/info/warning/danger callouts:
 ```markdown
+This is helpful context.
 {: .prompt-tip }
-{: .prompt-info }
-{: .prompt-warning }
+
+Critical warning here.
 {: .prompt-danger }
 ```
 
-## Configuration Files
+## Configuration & File Structure
 
-### `_config.yml` Key Settings
-- **Line 17**: `theme: jekyll-theme-chirpy` (must not change)
-- **Line 23**: `timezone: Asia/Shanghai`
-- **Line 26-28**: Site title and tagline
-- **Line 43**: `url: "https://rbbtsn0w.me"`
-- **Line 50-51**: GitHub/Twitter usernames
-- **Line 93**: `avatar: /assets/img/avatar.png`
-- **Line 130**: `paginate: 10`
+### `_config.yml` - Critical Settings
+**DO NOT MODIFY**:
+- Line 17: `theme: jekyll-theme-chirpy` (required by theme)
+- Line 130: `paginate: 10` (pagination count)
 
-### Special Files
-- `CNAME`: Custom domain configuration (contains `rbbtsn0w.me`)
-- `_data/contact.yml`: Social media links for site footer
+**Site Identity** (Lines 23-43):
+- `timezone: Asia/Shanghai`
+- `title: RbBtSn0w` / `tagline: Code/MTB`
+- `url: "https://rbbtsn0w.me"` (must match CNAME file)
+
+**Social Links** (Lines 50-51):
+- `github.username: rbbtsn0w`
+- `twitter.username: rbbtsn0w`
+
+**Assets**:
+- Line 93: `avatar: /assets/img/avatar.png`
+
+**Note**: Server restart required after editing `_config.yml`. Other file changes hot-reload.
+
+### Key Files
+- `CNAME`: Custom domain (`rbbtsn0w.me`) - matches Cloudflare DNS setup
+- `_data/contact.yml`: Footer social icons (GitHub, Twitter, Email, RSS)
 - `_data/share.yml`: Share button configuration
-- `_tabs/*.md`: Site navigation pages (About, Archives, Categories, Tags)
+- `_tabs/*.md`: Site navigation (About, Archives, Categories, Tags)
+- `.ruby-version`: Ruby 3.2.2 (matches GitHub Actions)
+
+### Directory Structure
+```
+_posts/              # Blog posts (YYYY-MM-DD-Title.md)
+assets/img/post/     # Post-specific images (YYYY-MM-DD-Slug/)
+_plugins/            # Ruby hooks (e.g., posts-lastmod-hook.rb)
+_tabs/               # Top navigation pages
+_data/               # YAML configuration files
+.github/workflows/   # CI/CD (pages-deploy.yml)
+```
 
 ## Technical Constraints
 
-1. **Ruby Version**: Ruby 3 (specified in `.ruby-version` and GitHub Actions)
-2. **Theme Version**: `jekyll-theme-chirpy ~> 6.2, >= 6.2.3`
-3. **Permalink Structure**: `/posts/:title/` (from _config.yml defaults)
-4. **Comments**: Disabled globally (no active comment system)
+1. **Ruby Version**: Ruby 3.2.2 (`.ruby-version`, GitHub Actions)
+2. **Theme Version**: `jekyll-theme-chirpy ~> 6.2, >= 6.2.3` (Gemfile)
+3. **Permalink Structure**: `/posts/:title/` (from `_config.yml` defaults)
+4. **Comments**: Disabled globally (`_config.yml` line 103)
 5. **Analytics**: Google Analytics not configured
+6. **PWA**: Enabled (`_config.yml` line 128)
 
 ## Common Task Patterns
 
@@ -117,9 +147,10 @@ graph TD
 - Navigation tabs: edit files in `_tabs/`
 
 ### Troubleshooting
-- **Build failures**: Check `.github/workflows/pages-deploy.yml` run logs
+- **Build failures**: Check Actions tab → Build logs → `htmlproofer` output
 - **Local serve issues**: Ensure `bundle lock --add-platform x86_64-linux` ran
 - **Link validation errors**: Review `htmlproofer` output in Actions logs
+- **404 errors**: Verify `url` in `_config.yml` matches CNAME domain
 
 ## Project-Specific Quirks
 - Posts written in **Chinese and English** (bilingual content)
