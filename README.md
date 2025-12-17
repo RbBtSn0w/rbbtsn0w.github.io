@@ -28,7 +28,6 @@
 ├── .github/workflows/  # CI/CD 配置
 ├── _config.yml         # 站点配置
 ├── Gemfile             # Ruby 依赖
-├── Rakefile            # 构建任务
 └── README.md           # 项目文档
 ```
 
@@ -50,10 +49,7 @@ cd rbbtsn0w.github.io
 # 2. 安装依赖
 bundle install
 
-# 3. 添加 Linux 平台支持 (GitHub Actions 兼容性)
-bundle lock --add-platform x86_64-linux
-
-# 4. 启动开发服务器
+# 3. 启动开发服务器
 bundle exec jekyll serve
 ```
 
@@ -108,9 +104,24 @@ title: "文章标题"
 date: YYYY-MM-DD
 categories: [iOS, Swift]
 tags: [swift, debugging, uikit]
+description: "文章摘要，用于 SEO 和分享卡片"
 mermaid: true  # 可选：启用 Mermaid 图表
 ---
 ```
+
+### 分类与标签规范
+
+**常用分类**：`iOS`, `macOS`, `Xcode`, `CocoaPods`, `Flutter`, `Project`, `Jekyll`, `Crash`, `AI`
+
+**标签规范**：
+- 全部小写，使用连字符分隔多词术语（如 `code-signing`, `state-management`）
+- 每篇文章保持 3–8 个精准标签
+- 避免与分类重复，专注技术细节
+
+**重要约定**：
+- `date` 必须与文件名日期一致（如 `2024-03-18-Title.md` 对应 `date: 2024-03-18`）
+- 高流量文章建议添加 `description` 字段，改善搜索引擎摘要
+- 避免混合格式如 `macOS&iOS`，使用数组 `[iOS, macOS]`
 
 ### 图片管理
 
@@ -152,10 +163,8 @@ graph TD
 
 - **并发控制**: 避免同时部署冲突
 - **缓存优化**: Bundle 和 Ruby 缓存加速构建
-- **多层测试**: HTML 验证、Jekyll 配置检查
-- **构建报告**: 显示构建时间和站点大小
-- **失败通知**: 自动创建问题跟踪失败
-- **定期维护**: 每周检查依赖更新
+- **链接验证**: HTMLProofer 检查内部链接有效性
+- **自动部署**: 推送后自动构建并发布到 GitHub Pages
 
 ### 工作流文件
 
@@ -174,6 +183,9 @@ bundle update jekyll-theme-chirpy
 
 # 检查过时依赖
 bundle outdated
+
+# 修改 Gemfile 后添加 Linux 平台支持（GitHub Actions 兼容性）
+bundle lock --add-platform x86_64-linux
 ```
 
 ### 主题定制
@@ -199,11 +211,10 @@ ruby -v
 
 # 重新安装依赖
 bundle install
-bundle lock --add-platform x86_64-linux
 ```
 
 **Q: Sass 警告**
-- 确保使用 Chirpy 7.4+
+- 确保使用 Chirpy 6.2+
 - 警告不影响功能，仅为弃用提醒
 
 **Q: 构建失败**
