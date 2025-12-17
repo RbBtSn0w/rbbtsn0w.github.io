@@ -2,18 +2,18 @@
 
 > 技术博客 - 记录 iOS/macOS 开发、编程学习和 MTB 骑行生活
 
-[![Jekyll](https://img.shields.io/badge/Jekyll-4.4+-blue.svg)](https://jekyllrb.com/)
-[![Chirpy](https://img.shields.io/badge/Chirpy-7.4+-green.svg)](https://github.com/cotes2020/jekyll-theme-chirpy)
-[![Ruby](https://img.shields.io/badge/Ruby-3.2+-red.svg)](https://www.ruby-lang.org/)
+[![Jekyll](https://img.shields.io/badge/Jekyll-4.x+-blue.svg)](https://jekyllrb.com/)
+[![Chirpy](https://img.shields.io/badge/Chirpy-6.2+-green.svg)](https://github.com/cotes2020/chirpy-starter)
+[![Ruby](https://img.shields.io/badge/Ruby-3.2.2-red.svg)](https://www.ruby-lang.org/)
 
 ## 🚀 技术栈
 
-- **静态站点生成器**: Jekyll 4.4+
-- **主题**: Chirpy 7.4+ (现代化响应式主题)
-- **服务器**: Puma (生产环境)
+- **静态站点生成器**: Jekyll 4.x
+- **主题**: Chirpy 6.2+ (现代化响应式主题)
 - **测试**: HTMLProofer (链接验证)
 - **部署**: GitHub Pages + GitHub Actions
 - **内容**: Markdown + Mermaid 图表
+- **托管**: Cloudflare 为自定义域提供免费 SSL/TLS
 
 ## 📁 项目结构
 
@@ -76,23 +76,17 @@ bundle config --global mirror.https://rubygems.org https://gems.ruby-china.com
 ### 可用命令
 
 ```bash
-# 构建和测试 (默认任务)
-bundle exec rake
-
-# 仅构建站点
-bundle exec rake build
-
-# 仅运行测试
-bundle exec rake test
-
-# 启动开发服务器
-bundle exec rake serve
-
-# 清理构建文件
-bundle exec rake clean
-
 # 生产环境构建
 JEKYLL_ENV=production bundle exec jekyll build
+
+# 开发预览
+bundle exec jekyll serve
+
+# 清理构建文件
+bundle exec jekyll clean
+
+# 增量构建（可选）
+bundle exec jekyll build --incremental
 ```
 
 ### 自动化测试
@@ -166,8 +160,6 @@ graph TD
 ### 工作流文件
 
 - [`.github/workflows/pages-deploy.yml`](.github/workflows/pages-deploy.yml) - 主部署流程
-- [`.github/workflows/maintenance.yml`](.github/workflows/maintenance.yml) - 定期维护
-- [`.github/workflows/failure-notification.yml`](.github/workflows/failure-notification.yml) - 失败通知
 
 ## 🔧 维护指南
 
@@ -251,8 +243,9 @@ bundle exec jekyll serve --verbose
 ## ☕ 支持项目
 
 <p align="left">
-  <a href="https://www.buymeacoffee.com/rbbtsn0w" target="_blank" rel="noopener">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height:60px;width:217px;">
+  <a href="https://www.buymeacoffee.com/rbbtsn0w" target="_blank" rel="noopener" aria-label="Buy me a coffee" style="display:inline-flex;align-items:center;gap:.5rem;padding:.45rem .7rem;background:#FFD400;color:#1a1a1a;text-decoration:none;border-radius:8px;font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08);">
+    <i class="fas fa-coffee" aria-hidden="true" style="font-size:1rem;"></i>
+    <span>Buy me a coffee</span>
   </a>
 </p>
 
