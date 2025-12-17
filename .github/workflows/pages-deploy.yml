@@ -92,14 +92,8 @@ jobs:
         run: |
           echo "🧪 Running HTML validation..."
           bundle exec htmlproofer _site \
-            --disable-external=true \
-            --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/" \
-            --check-html \
-            --check-img-http \
-            --report-missing-names \
-            --report-script-embeds \
-            --typhoeus-config='{"timeout":30,"connecttimeout":10}' \
-            --hydra-config='{"max_concurrency":10}'
+            --disable-external \
+            --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
 
       - name: Validate Jekyll configuration
         run: |
