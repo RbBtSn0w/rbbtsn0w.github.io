@@ -13,6 +13,11 @@
 - type: rss
   icon: "fas fa-rss"
   noblank: true
+# Buy Me a Coffee (footer link)
+- type: buymeacoffee
+  icon: "fas fa-coffee"
+  url: "https://www.buymeacoffee.com/rbbtsn0w"
+  
 # Uncomment and complete the url below to enable more contact options
 #
 # - type: mastodon
