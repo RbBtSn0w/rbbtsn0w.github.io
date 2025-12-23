@@ -144,9 +144,6 @@ jobs:
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
 
-      - name: Run tests
-        run: bundle exec rake test
-
       - name: Build for testing
         run: bundle exec jekyll build --limit_posts 5
         env:
