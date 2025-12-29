@@ -92,10 +92,11 @@ All tests passed with bigdecimal 4.0.1:
 - `Gemfile`: Added explicit `bigdecimal ~> 4.0` dependency
 
 ### Version Changes
-| Package | Before | After | Change Type |
-|---------|--------|-------|-------------|
-| bigdecimal | 3.3.1 | 4.0.1 | ⬆️ Upgrade |
-| ttfunk | 1.8.0 | 1.7.0 | ⬇️ Downgrade (trade-off) |
+
+| Package     | Before | After | Change Type |
+|-------------|--------|-------|-------------|
+| bigdecimal  | 3.3.1  | 4.0.1 | ⬆️ Upgrade |
+| ttfunk      | 1.8.0  | 1.7.0 | ⬇️ Downgrade (trade-off) |
 
 ## Conclusion
 
