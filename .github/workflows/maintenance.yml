@@ -2,8 +2,8 @@ name: "Scheduled Maintenance"
 
 on:
   schedule:
-    # Run weekly on Mondays at 09:00 UTC
-    - cron: '0 9 * * 1'
+    # Run monthly on the 20th at 09:00 UTC
+    - cron: '0 9 20 * *'
   workflow_dispatch:
 
 permissions:
