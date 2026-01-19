@@ -7,8 +7,6 @@ tags: [ai, tools, development, python, vue, automation]
 description: "Trae 驱动的社媒自动上传项目复盘：架构设计、工程治理、测试与 CI/CD 实践。"
 ---
 
-# social-auto-upload 项目总结文档
-
 ## 1. 项目概述
 
 `social-auto-upload` 是一个强大的自动化工具，旨在帮助内容创作者和运营者高效地将视频内容一键发布到多个国内外主流社交媒体平台。项目实现了对 `抖音`、`Bilibili`、`小红书`、`快手`、`视频号`、`百家号` 以及 `TikTok` 等平台的视频上传、定时发布等功能。

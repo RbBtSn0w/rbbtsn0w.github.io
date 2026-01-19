@@ -7,8 +7,6 @@ tags: [antigravity, chrome, macos, automation, permissions]
 description: "通过终端继承权限修复 Antigravity IDE 无法拉起 Chrome 的问题，附配置参考与排查脚本。"
 ---
 
-# Antigravity 中 Chrome 启动失败修复指引
-
 ## 1. 问题描述
 在 macOS 环境下使用 Antigravity IDE 进行浏览器自动化任务时，点击 Chrome 图标无响应，或无法启动浏览器窗口。
 
