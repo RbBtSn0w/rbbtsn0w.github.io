@@ -19,6 +19,7 @@ Conventions that matter
 - Front matter guidelines (see examples in `_posts/`):
   - `date` must match filename date; include `description` for SEO; optional `mermaid: true`.
   - Categories are title-cased domain buckets (e.g., `iOS`, `Jekyll`); tags are lowercase, hyphenated (e.g., `code-signing`).
+  - **Title structure**: `title` in front matter is the only page-level heading; rendered as `<h1>` by theme template. Markdown body **must start with `##` (level 2)**—do not repeat the title as `#` in the body. This avoids duplicate `<h1>` headings and follows Jekyll + Markdown best practices.
 - Images: prefer absolute paths under `assets/img/post/YYYY-MM-DD-title/`.
 - Domain and Pages: `CNAME` and `_config.yml:url` must agree (`https://rbbtsn0w.me`).
 
