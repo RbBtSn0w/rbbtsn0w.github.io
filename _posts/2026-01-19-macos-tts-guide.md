@@ -7,7 +7,6 @@ tags: [tts, say, ffmpeg, markdown, perl]
 description: "在 macOS 上完全离线把 Markdown 转成高质量中文 MP3：避坑 sed 兼容性、正确语音名、Premium 声音下载与完整脚本。"
 ---
 
-# macOS 本地文本转语音（TTS）实践：从 `say` 命令到音质优化
 
 在这篇博客中，我分享一次完整的实践经历：如何利用 macOS 自带工具，将一个本地的 Markdown 中文文档转换成一个 MP3 音频文件。过程不止“能跑”，还要“好听”：我们踩过 BSD `sed` 的兼容性坑、绕过 `say` 的语音名陷阱，最后用系统“优化版”语音把音质拉满。
 
