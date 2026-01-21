@@ -31,7 +31,7 @@ Antigravity Agent 代表了 AI 辅助研发的下一次进化。与被动的代�
 **能力扩展**。Skills 定义了 Agent *能做什么*。它们是封装了指令的可执行函数。
 
 *   **结构**: 必须是一个包含 `SKILL.md`（指令文件）和可选脚本的文件夹。
-*   **最佳实践**: 将团队的核心 CLI 知识移植到这里。不要只列出命令，要解释 *何时* 以及 *如何* 使用它们（例如“修改 Flask 代码后使用 `npm run test:backend` 进行验证”）。
+*   **最佳实践**: 将团队的核心 CLI 知识移植到这里。不要只列出命令，要解释 *何时* 以及 *如何* 使用它们（例如“修改 Flask 代码后使用 `npm run test:backend` 进行验证”）。对于涉及 UI 或浏览器自动化的项目，可以利用 **`browser_subagent`** 进行可视化调试和测试。
 
 ### 🔄 Workflows (工作流) (`.agent/workflows/*.md`)
 **标准流程**。Workflows 是由 Slash 命令触发的、结构化的多步骤过程。

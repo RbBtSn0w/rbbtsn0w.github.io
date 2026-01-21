@@ -30,7 +30,7 @@ Antigravity 引入了 **Agent (智能体)** 的概念，其核心在于**动态�
 *   **机制**: `Trigger (Trigger) -> Rule Activation -> Action Execution (Workflow/Skill)`。
 *   **隐喻**: 它像是一个**专家团队**。
     *   写 CSS 时，"UI 设计师" 上场（加载 Style Rule）；
-    *   修 Bug 时，"侦探" 上场（加载 Debug Workflow）；
+    *   修 Bug 时，"侦探" 上场（加载 Debug Workflow），必要时启用 **`browser_subagent`** 潜入浏览器现场进行可视化取证；
     *   平时，它们都在后台待命，不占用认知资源。
 *   **优势**:
     *   **条件计算**: 只有在特定条件满足（如 `glob` 匹配或 `model_decision` 意图识别）时，才加载相关上下文。

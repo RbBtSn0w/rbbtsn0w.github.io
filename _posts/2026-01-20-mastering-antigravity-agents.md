@@ -31,7 +31,7 @@ An effective Antigravity setup relies on three distinct components, all living i
 **The Capabilities**. Skills extend what the agent *can do*. They are executable functions wrapped in instructions.
 
 *   **Structure**: A folder containing a `SKILL.md` (instructions) and optional scripts.
-*   **Best Practice**: Port your essential CLI knowledge here. Don't just list commands; explain *when* and *how* to use them (e.g., "Use `npm run test:backend` to verify Flask changes").
+*   **Best Practice**: Port your essential CLI knowledge here. Don't just list commands; explain *when* and *how* to use them (e.g., "Use `npm run test:backend` to verify Flask changes"). For UI and browser-automation projects, mention and utilize the **`browser_subagent`** for visual debugging and testing.
 
 ### 🔄 Workflows (`.agent/workflows/*.md`)
 **The Process**. Workflows are structured, multi-step procedures triggered by slash commands.
