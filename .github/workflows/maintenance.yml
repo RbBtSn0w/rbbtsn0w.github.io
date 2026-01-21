@@ -31,26 +31,34 @@ jobs:
         id: check
         run: |
           echo "🔍 Checking for outdated gems..."
-          bundle outdated --parseable > outdated.txt || true
+          bundle outdated --parseable > outdated_raw.txt || true
 
-          if [ -s outdated.txt ]; then
+          if [ -s outdated_raw.txt ]; then
             echo "⚠️ Outdated dependencies found:"
-            cat outdated.txt
+            cat outdated_raw.txt
             echo "outdated=true" >> $GITHUB_OUTPUT
 
-            # Create issue content
+            # Create issue content with formatted table
             echo "## 📦 Outdated Dependencies" > issue_body.md
             echo "" >> issue_body.md
-            echo "The following dependencies have newer versions available:" >> issue_body.md
+            echo "The following dependencies have newer versions available. Please review and update accordingly." >> issue_body.md
             echo "" >> issue_body.md
-            echo "\`\`\`" >> issue_body.md
-            cat outdated.txt >> issue_body.md
-            echo "\`\`\`" >> issue_body.md
+            echo "| Gem | Current | Latest | status |" >> issue_body.md
+            echo "| :--- | :--- | :--- | :--- |" >> issue_body.md
+            
+            while read -r line; do
+              # line format: gem_name (newest 1.2.3, installed 1.1.0)
+              GEM=$(echo "$line" | cut -d' ' -f1)
+              NEWEST=$(echo "$line" | grep -o 'newest [^,]*' | cut -d' ' -f2 | tr -d ')')
+              INSTALLED=$(echo "$line" | grep -o 'installed [^)]*' | cut -d' ' -f2)
+              echo "| **$GEM** | $INSTALLED | $NEWEST | ⚠️ Update Available |" >> issue_body.md
+            done < outdated_raw.txt
+
             echo "" >> issue_body.md
-            echo "### Recommended Actions" >> issue_body.md
-            echo "- Review changelog for breaking changes" >> issue_body.md
-            echo "- Test locally before updating" >> issue_body.md
-            echo "- Update in small increments" >> issue_body.md
+            echo "### 🛠️ Recommended Actions" >> issue_body.md
+            echo "1. Run \`bundle update <gem_name>\` locally to test." >> issue_body.md
+            echo "2. Review the changelog for any breaking changes." >> issue_body.md
+            echo "3. If safe, create a PR with the updated \`Gemfile.lock\`." >> issue_body.md
           else
             echo "✅ All dependencies are up to date"
             echo "outdated=false" >> $GITHUB_OUTPUT
