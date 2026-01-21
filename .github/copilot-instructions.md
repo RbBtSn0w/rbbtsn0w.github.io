@@ -2,6 +2,16 @@
 
 Purpose: make AI coding agents productive in this Jekyll + Chirpy blog without guesswork. Keep edits source-only and reproducible.
 
+## Security & Privacy (Strict)
+- **NO SECRETS**: Never commit API keys, tokens, or passwords.
+- **NO PERSONAL INFO**: Do not commit PII (phone numbers, private emails) unless already public in `_config.yml`.
+- **Exclusions**: Respect `.gitignore`. Do not read or modify files in `.git/`.
+
+## Team Principles
+- **Quality**: broken builds or failing links are unacceptable.
+- **Consistency**: Follow existing patterns for frontmatter and directory structure.
+- **Autonomy**: Attempt to solve build errors with `dev-toolkit` skills before asking for help.
+
 Big picture
 - Static site built with Jekyll 4.x and theme jekyll-theme-chirpy (~> 7.4). Ruby 3.2, Bundler-managed. PWA enabled; server set to Puma.
 - Source of truth lives in:
