@@ -4,7 +4,7 @@ title: "GitHub Copilot 使用心得：优势、局限与实战建议"
 date: 2025-12-15
 categories: [AI]
 tags: [github, copilot, programming, ai-assistant]
-description: "一线使用体验：Copilot 的优势与短板、与国产 AI 助手对比，以及如何高效使用的实战建议。"
+description: "一线深度测评：GitHub Copilot 的核心优势、局限性分析，以及与国产 AI 助手的实战对比。附 7 个高效使用技巧。"
 ---
 
 ## 引言

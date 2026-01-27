@@ -5,7 +5,7 @@ date: 2023-11-16
 categories: [iOS, Crash]
 tags: [memory, crash, ios, symbols, dsym, instrumentation]
 mermaid: true
-description: "iOS 内存占用、脏/净页、压缩与内存警告机制的剖析及优化策略。"
+description: "iOS 内存深度解析：从 Memory Graph 到 OOM 定位。详解 Dirty/Clean Memory、Compressed Memory 机制及内存优化策略。"
 ---
 
 

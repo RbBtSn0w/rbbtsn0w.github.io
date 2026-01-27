@@ -2,7 +2,7 @@
 layout: post
 title: "Objective-C And Swift"
 date: 2020-01-20
-categories: [iOS]
+categories: [Development, iOS]
 tags: [swift, objective-c, bridging, migration, xcode]
 description: "ObjC 与 Swift 混编实践：桥接头、伞头文件、访问修饰与 Library Evolution 配置。"
 ---
@@ -65,7 +65,7 @@ Build for Swift Project
 2. Need at `@objc` if you want share to Objective-C.
 3. Support Objective-C access. `Open`, `public`, `internal`, `fileprivate`, `private`
 
-#### Node: Enable Library Evolution
+#### Note: Enable Library Evolution
 
 > The legacy build system does not support building projects with Swift when SWIFT_ENABLE_LIBRARY_EVOLUTION is enabled.
 

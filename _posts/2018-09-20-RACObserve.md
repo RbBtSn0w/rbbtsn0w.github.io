@@ -2,13 +2,16 @@
 layout: post
 title: "RACObserve 的思考"
 date: 2018-09-20
-categories: [iOS, macOS]
-tags: [ios, objc, rac, kvo, performance]
-description: "ReactiveCocoa 的 RACObserve 在大型项目中的循环引用与多级 KVO 性能影响分析。"
+categories: [Development, iOS]
+tags: [objective-c, reactive-cocoa, memory-management, kvo]
+mermaid: true
+description: "深度分析 ReactiveCocoa (RAC) 在大型项目中的性能陷阱：RACObserve 循环引用原理可视化剖析与多级 KVO 性能瓶颈。"
 ---
 
-千呼万唤最终在新项目中接受了RAC的代码，很早之前做个一个项目，也是大量使用RAC，也没有太多考虑RAC的副作用有多大，如今总算是在大项目中去使用了，可是到了性能优化的层面，发现RAC带来的性能还是值得
-大家去重新思考。
+> [!WARNING]
+> 本文讨论的是 Objective-C 时代的 ReactiveCocoa (RAC) 实践。虽然技术栈已转向 Swift/Combine，但其中的内存管理与设计模式思维依然具有参考价值。
+
+千呼万唤最终在新项目中接受了RAC的代码，很早之前做个一个项目，也是大量使用RAC，也没有太多考虑RAC的副作用有多大，如今总算是在大项目中去使用了，可是到了性能优化的层面，发现RAC带来的性能还是值得大家去重新思考。
 
 RAC 的内部实现和代码架构, 等各种网上说的有点就不说了，这里主要谈谈碰见的问题。
 
@@ -23,6 +26,21 @@ RAC 的内部实现和代码架构, 等各种网上说的有点就不说了，�
 通过两个Case 来看看循环引用的问题
 
 ### CASE ONE
+
+先来看看 `RACObserve` 的实现以及为何容易产生循环引用：
+
+```mermaid
+graph TD
+    Block["Block (implicitly retains self)"] -->|Captures| Self["self"]
+    Self -->|Holds| Signal["RACSignal"]
+    Signal -->|Subscribes| Block
+    
+    style Block fill:#f9f,stroke:#333,stroke-width:2px
+    style Self fill:#bbf,stroke:#333,stroke-width:2px
+    style Signal fill:#bfb,stroke:#333,stroke-width:2px
+    
+    linkStyle 0,1,2 stroke:red,stroke-width:2px;
+```
 
 先来看看RACObserve 的实现
 
