@@ -55,6 +55,9 @@ gemini --version
 3. 进入 `Intelligence`
 4. 在 `Model Context Protocol` 区域开启 `Xcode Tools`
 
+![Enable Xcode Tools](https://peterfriese.dev/_astro/enable-xcode-tools.BjIu-Z5y_2LRtl.webp)
+_图：在 Xcode Settings > Intelligence 中开启 MCP 支持（来源：peterfriese.dev）_
+
 这一步非常关键：不开启的话，后面的 CLI 就算配置正确，也看不到 Xcode 的工具能力。
 
 ## 把 Gemini CLI 连接到 Xcode MCP Bridge
@@ -83,6 +86,9 @@ gemini mcp add xcode-tools xcrun mcpbridge
 2. 再在项目根目录执行 `gemini`
 3. 接受 Xcode 的外部工具授权弹窗
 
+![Allow Gemini CLI access](https://peterfriese.dev/_astro/allow-gemini-cli-access.BFKbhU-T_1wjQe6.webp)
+_图：首次连接时 Xcode 会弹出权限确认（来源：peterfriese.dev）_
+
 在 CLI 内可以先看 MCP 是否正常：
 
 ```text
@@ -90,15 +96,24 @@ gemini mcp add xcode-tools xcrun mcpbridge
 /mcp desc
 ```
 
+![List available tools](https://peterfriese.dev/_astro/list-available-tools.B9ukbUdM_Z1OL9y8.webp)
+_图：成功连接后，CLI 应能列出 xcode-tools（来源：peterfriese.dev）_
+
 如果你能看到 `xcode-tools` 及其工具描述，说明链路已经打通。
 
 ## 你应该形成的心智模型
 
 这条链路本质是：
 
-$$
-\text{Gemini CLI} \xleftrightarrow[]{MCP\ via\ xcrun\ mcpbridge} \text{Xcode Tools}
-$$
+```mermaid
+graph LR
+    A[Gemini CLI] <--"MCP Protocol<br>(JSON-RPC)"--> B(xcrun mcpbridge)
+    B <--"Xcode Internal API"--> C[Xcode Tools]
+    
+    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style C fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style B fill:#fff,stroke:#666,stroke-dasharray: 5 5
+```
 
 其中：
 

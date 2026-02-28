@@ -46,6 +46,9 @@ gemini
 
 建议使用下面这种“目标 + 约束 + 验收”结构，而不是一句“帮我做个动画”。
 
+![Newton's Apple Demo Result](https://peterfriese.dev/_astro/newtons-apple.BNoUnKp9_Zm3pe1.webp)
+_图：我们要构建的最终交互效果（来源：peterfriese.dev）_
+
 可直接使用的提示词（中文改写版）：
 
 ```text
