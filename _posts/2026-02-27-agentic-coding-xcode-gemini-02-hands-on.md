@@ -5,6 +5,7 @@ date: 2026-02-27
 categories: [AI, iOS, Xcode]
 tags: [agentic-coding,swiftui,spritekit,gemini-cli,prompt-engineering]
 description: "从 0 到 1 实战 Newton's Apple：用 Gemini CLI + Xcode MCP 生成可交互的 SwiftUI/SpriteKit 物理小项目，并让 Agent 自己修编译错误。"
+math: true
 ---
 
 ## 这篇你会得到什么
