@@ -19,3 +19,11 @@ package-lock.json
 
 # Misc
 assets/js/dist
+
+# --- Spec-Kit Specific ---
+.specify/**/*.log
+.specify/**/research_tmp.md
+.specify/memory/local_state.json
+.gemini/cache/
+.agent/cache/
+specs/**/draft_*.md

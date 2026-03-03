@@ -6,7 +6,70 @@
 [![Chirpy](https://img.shields.io/badge/Chirpy-6.2+-green.svg)](https://github.com/cotes2020/chirpy-starter)
 [![Ruby](https://img.shields.io/badge/Ruby-3.2.2-red.svg)](https://www.ruby-lang.org/)
 
+## 🤖 AI Agent Workflow (Spec-Kit)
+
+本项目采用 [Spec-Kit](https://github.com/github/spec-kit) 规范管理所有功能开发与高质量内容创作。通过“需求-计划-任务-执行-验证”的闭环流程，确保每一处改动都符合项目宪法 (Constitution)。
+
+### 🔄 闭环工作流 (Standard Operating Procedure)
+
+```mermaid
+graph LR
+  A[构思/需求] --> B[Specify]
+  B --> C[Plan]
+  C --> D[Tasks]
+  D --> E[Implement]
+  E --> F[Validation]
+  F -->|通过| G[Commit & Deploy]
+  F -->|失败| E
+```
+
+#### 步骤详解：
+
+1.  **初始化需求 (`/speckit.specify`)**：
+    *   **动作**：定义你要做的事。是写一篇文章？还是改一个 CSS 样式？
+    *   **产物**：在 `specs/###-feature-name/spec.md` 生成需求文档。
+2.  **制定技术计划 (`/speckit.plan`)**：
+    *   **动作**：Agent 分析 Jekyll 结构、Ruby 依赖和 Chirpy 主题兼容性。
+    *   **产物**：生成 `plan.md`。它会告诉你：这篇文章该放哪个目录，图片路径怎么写，是否需要开启 Mermaid。
+3.  **拆解原子任务 (`/speckit.tasks`)**：
+    *   **动作**：将计划拆解为 15 分钟内可完成的任务（如：编写 Frontmatter、插入代码块、优化 SEO 摘要）。
+    *   **产物**：生成 `tasks.md`。
+4.  **自动化执行 (`/speckit.implement`)**：
+    *   **动作**：Agent 根据任务列表逐一修改文件。
+    *   **产物**：实际的代码或 `.md` 文章文件。
+5.  **验证与构建 (`bundle exec jekyll build`)**：
+    *   **动作**：本地运行 Jekyll 验证渲染效果。
+
+---
+
+### 🌟 最佳实践案例 (Best Practices)
+
+#### 案例一：撰写一篇专业的 iOS 技术文章
+**Prompt 示例**：
+> `/speckit.specify "新建文章：探讨 iOS 17 的 SwiftData 迁移。要求：包含实战代码、Mermaid 类图、SEO 摘要，并确保符合 iOS 分类规范。"`
+*   **最佳实践**：在 Specify 阶段明确要求包含 `Mermaid`，Plan 阶段会自动提醒你在 Frontmatter 开启 `mermaid: true`。
+
+#### 案例二：修改站点样式 (例如：调整侧边栏宽度)
+**Prompt 示例**：
+> `/speckit.specify "将侧边栏宽度从 260px 调整到 280px，并确保在移动端响应式布局下自动隐藏。"`
+*   **最佳实践**：使用 `/speckit.plan` 检查 `assets/css/style.scss`，避免直接修改主题内核文件（Chirpy 推荐使用覆盖模式）。
+
+#### 案例三：历史文章的大规模优化 (SEO & Tags)
+**Prompt 示例**：
+> `/speckit.specify "批量检查 _posts 目录下 2023 年的所有文章，补全缺失的 description 字段，并将过时的 Tags 统一为当前规范。"`
+*   **最佳实践**：利用 `/speckit.tasks` 生成一个检查清单，确保每一篇文章都被处理到，而不会漏掉。
+
+---
+
+### ⚠️ 核心准则 (Guiding Principles)
+- **宪法为先**：执行前确保 `.specify/memory/constitution.md` 是最新的。
+- **任务原子化**：如果 `tasks.md` 里的任务太模糊，请要求 Agent 重新拆解。
+- **本地验证**：在 Commit 前，必须执行 `bundle exec jekyll serve`。
+
+---
+
 ## 🚀 技术栈
+
 
 - **静态站点生成器**: Jekyll 4.x
 - **主题**: Chirpy 6.2+ (现代化响应式主题)
