@@ -1,79 +1,52 @@
-# Copilot instructions for this repository
+# Copilot Instructions for `rbbtsn0w.github.io`
 
-Purpose: make AI coding agents productive in this Jekyll + Chirpy blog without guesswork. Keep edits source-only and reproducible.
+## Project architecture (Jekyll + Chirpy)
+- This repo is a Jekyll blog (`Gemfile`, `_config.yml`) using `jekyll-theme-chirpy`.
+- Authoring sources live in `_posts/`, `_tabs/`, `_data/`, `assets/`, and `_plugins/`.
+- `_site/` is generated output. Do **not** manually edit files under `_site/`.
+- `index.html` is intentionally minimal and delegates to `layout: home`.
 
-## Security & Privacy (Strict)
-- **NO SECRETS**: Never commit API keys, tokens, or passwords.
-- **NO PERSONAL INFO**: Do not commit PII (phone numbers, private emails) unless already public in `_config.yml`.
-- **Exclusions**: Respect `.gitignore`. Do not read or modify files in `.git/`.
+## Content model and data flow
+- Posts are Markdown files in `_posts/` with filename format `YYYY-MM-DD-title.md`.
+- Keep post frontmatter aligned with existing examples, e.g. `_posts/2026-01-20-mastering-copilot-customization.md`:
+  - `layout: post`, `title`, `date`, `categories`, `tags`, optional `description`, optional `mermaid: true`.
+- `date` must match the filename date.
+- Site metadata and integrations are centralized in `_config.yml` (SEO, analytics, comments, PWA, permalink behavior).
+- Footer/social contact links come from `_data/contact.yml`.
 
-## Team Principles
-- **Quality**: broken builds or failing links are unacceptable.
-- **Consistency**: Follow existing patterns for frontmatter and directory structure.
-- **Autonomy**: Attempt to solve build errors with `dev-toolkit` skills before asking for help.
+## Custom logic and non-obvious behavior
+- `_plugins/posts-lastmod-hook.rb` sets `last_modified_at` from git history using `git log`.
+- Because of that plugin, preserve git history context when possible (CI already uses `fetch-depth: 0`).
+- Posts default to permalink pattern `/posts/:title/` via `_config.yml` `defaults`.
 
-Big picture
-- Static site built with Jekyll 4.x and theme jekyll-theme-chirpy (~> 7.4). Ruby 3.2, Bundler-managed. PWA enabled; server set to Puma.
-- Source of truth lives in:
-  - `_posts/` markdown posts named `YYYY-MM-DD-title.md` (front matter required).
-  - `_tabs/` site pages (About, Archives, Categories, Tags).
-  - `_data/` YAML for structured content (e.g., `contact.yml`, `share.yml`).
-  - `assets/` for images and overrides (e.g., `assets/img/**`).
-  - `_plugins/posts-lastmod-hook.rb` adds `last_modified_at` from git history.
-- Generated site output is `_site/` — do not edit or rely on it for diffs. All changes must be in source folders; CI rebuilds on deploy.
+## Build, test, and debug workflow
+- Use Bundler-managed commands (Ruby 3.2 in CI):
+  - `bundle install`
+  - `bundle exec jekyll serve` (local preview)
+  - `JEKYLL_ENV=production bundle exec jekyll build`
+  - `bundle exec jekyll doctor`
+  - `bundle exec htmlproofer _site --disable-external`
+- CI/CD is defined in `.github/workflows/pages-deploy.yml`:
+  - Build + HTMLProofer + `jekyll doctor` on push/PR.
+  - Deploy runs only on `main`/`master`.
+- Maintenance automation in `.github/workflows/maintenance.yml` checks outdated gems and link health.
 
-Conventions that matter
-- Posts use front matter defaults from `_config.yml`:
-  - `layout: post`, `comments: true`, `toc: true`, `permalink: /posts/:title/`.
-  - Categories and tags are archived by `jekyll-archives` at `/categories/:name/` and `/tags/:name/`.
-- Front matter guidelines (see examples in `_posts/`):
-  - `date` must match filename date; include `description` for SEO; optional `mermaid: true`.
-  - Categories are title-cased domain buckets (e.g., `iOS`, `Jekyll`); tags are lowercase, hyphenated (e.g., `code-signing`).
-  - **Title structure**: `title` in front matter is the only page-level heading; rendered as `<h1>` by theme template. Markdown body **must start with `##` (level 2)**—do not repeat the title as `#` in the body. This avoids duplicate `<h1>` headings and follows Jekyll + Markdown best practices.
-- Images: prefer absolute paths under `assets/img/post/YYYY-MM-DD-title/`.
-- Domain and Pages: `CNAME` and `_config.yml:url` must agree (`https://rbbtsn0w.me`).
+## Spec-Kit-first working mode (default)
+- This project uses Spec-Kit as the default execution path for most development/content tasks.
+- Follow the loop documented in `README.md`: `/speckit.specify` → `/speckit.plan` → `/speckit.tasks` → `/speckit.implement` → validation/build.
+- For non-trivial changes, prefer updating/creating spec artifacts under `specs/` before direct implementation.
+- Keep outputs aligned with constitution-style constraints and task granularity described in the repo workflow docs.
 
-Local dev and builds
-- First-time setup: `bundle install`.
-- Develop: `bundle exec jekyll serve` then browse http://localhost:4000.
-- Build (production): `JEKYLL_ENV=production bundle exec jekyll build`.
-- Maintenance: `bundle update`, optionally `bundle lock --add-platform x86_64-linux` when changing gems (keeps CI happy).
-- If `_config.yml` changes, restart the dev server (Jekyll doesn’t hot-reload that file).
+## Repo-specific editing conventions for agents
+- Prefer editing source files only; never patch generated artifacts in `_site/`.
+- For new/updated posts, follow existing category/tag style (`categories` as YAML array, concise lowercase tags).
+- Keep bilingual post patterns consistent when applicable (e.g., `-cn` companion files in `_posts/`).
+- When changing config-driven behavior, verify effects in `_config.yml` and at least one representative post.
 
-CI/CD and tests (what runs where)
-- Workflow `.github/workflows/pages-deploy.yml`:
-  - Ruby 3.2, Bundler cache. Builds with `bundle exec jekyll build`.
-  - Validates with `htmlproofer` (internal links) and `jekyll doctor`.
-  - Uploads artifact and deploys to GitHub Pages on `main`/`master`.
-- Scheduled maintenance (`maintenance.yml`) checks outdated gems weekly and validates links sample.
-- Failure notifications (`failure-notification.yml`) open an issue on failed deploys.
-
-Safe change patterns for agents
-- Create a new post: copy a similar file in `_posts/`, keep filename/date alignment, add categories/tags, and optional `description`/`mermaid`.
-- Don’t touch `_site/`; never commit build artifacts on purpose. Edit sources only.
-- For navigation pages, edit `_tabs/*.md`; for data-driven bits, edit `_data/*.yml`.
-- When modifying theme behavior, prefer configuration in `_config.yml` or light CSS/JS overrides in `assets/` over vendoring theme code.
-- The plugin `posts-lastmod-hook.rb` uses git history; avoid operations that erase history for posts you want accurate `last_modified_at` on.
-
-Key files to know
-- `_config.yml` — global config, archives, permalink scheme, PWA, kramdown/rouge settings.
-- `Gemfile` — Jekyll/Chirpy/html-proofer dependencies.
-- `_plugins/posts-lastmod-hook.rb` — auto-populates `last_modified_at`.
-- `.github/workflows/*.yml` — build, deploy, maintenance, failure notification.
-
-Example post header
-```yaml
----
-layout: post
-title: "Your Title"
-date: 2024-03-18
-categories: [Jekyll]
-tags: [github-pages, https]
-description: "Short SEO summary"
-mermaid: true
----
-```
-
-Questions for maintainers
-- Is `_site/` intentionally versioned or can it be ignored going forward? (Guidance affects cleanup tasks.)
-- Any additional content rules (e.g., preferred categories/tags list) beyond what’s visible now?
+## AI workflow artifacts present in this repo
+- Custom agent/prompt assets exist in `.github/agents/` and `.github/prompts/` (Spec-Kit-oriented workflow).
+- Align generated guidance with this repository’s existing Spec-Kit and documentation-first workflow described in `README.md`.
+- Long-form article writing should use the dedicated technical-writing capability:
+  - Agent: `.github/agents/se-technical-writer.agent.md`
+  - Skill package: `.agent/skills/se-technical-writer/`
+- For article tasks, prioritize the writing workflow conventions from that capability (structure, tone, templates) while still respecting post frontmatter and Jekyll constraints in this repo.
