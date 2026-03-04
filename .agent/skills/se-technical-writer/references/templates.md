@@ -4,6 +4,8 @@
 ```markdown
 # [Compelling Title That Promises Value]
 
+> **TL;DR**: [One-paragraph summary of the key insight and what the reader will gain. 2-3 sentences max.]
+
 [Hook - Problem or interesting observation]
 [Stakes - Why this matters now]
 [Promise - What reader will learn]
@@ -32,6 +34,79 @@
 [How readers can apply this]
 [Resources for going deeper]
 ```
+
+---
+
+## Series Articles
+
+Use this structure for articles that are part of a series (e.g., multi-part tutorials or deep dives).
+
+```markdown
+# [Series Name] — Part N: [This Part's Title]
+
+> **TL;DR**: [Summary of this installment.]
+
+**Series Navigation:**
+- [Part 1: Title](/posts/series-slug-01-part-title/)
+- [Part 2: Title](/posts/series-slug-02-part-title/)
+- **Part 3 (This Post): Title**
+- Part 4: Title *(coming soon)*
+
+## Recap and Context
+[1-2 sentences connecting to the previous part — what we built/learned.]
+[What this part will cover.]
+
+## [Main Content Sections]
+[Follow the same patterns as the standard blog post template.]
+
+## What's Next
+[Preview of the next installment.]
+[What the reader should prepare or think about.]
+
+---
+**Series Navigation:**
+- ← Previous: [Part N-1 Title](/posts/link/)
+- → Next: [Part N+1 Title](/posts/link/)
+```
+
+---
+
+## Troubleshooting Guide
+
+For problem-solution documentation (common in DevOps, SDK, and tooling posts).
+
+````markdown
+# Troubleshooting [Tool/Feature Name]
+
+[Brief context: when you might encounter these issues.]
+
+## Problem 1: [Descriptive Summary of the Symptom]
+
+### Symptom
+- [Observable behavior or exact error message]
+- [Environment conditions when this occurs]
+
+### Root Cause
+[Why this happens — the technical explanation.]
+
+### Resolution
+[Step-by-step fix with commands/code.]
+
+```bash
+# Example fix command
+command --flag value
+```
+
+### References
+- [Link to upstream issue or documentation]
+
+---
+
+## Problem 2: [Next Problem]
+[Same Symptom → Root Cause → Resolution structure.]
+````
+
+---
 
 ## Documentation
 ```markdown
@@ -66,6 +141,8 @@
 [Performance tips]
 ```
 
+---
+
 ## Tutorials
 ```markdown
 # Learn [Skill] by Building [Project]
@@ -92,6 +169,8 @@
 [Additional challenges]
 [Related topics to explore]
 ```
+
+---
 
 ## Architecture Decision Records (ADRs)
 Follow the [Michael Nygard ADR format](https://github.com/joelparkerhenderson/architecture-decision-record):
@@ -134,6 +213,8 @@ Follow the [Michael Nygard ADR format](https://github.com/joelparkerhenderson/ar
 - Immutable once accepted - new context = new ADR.
 - Include metrics/data that informed the decision.
 - Reference: [ADR GitHub organization](https://adr.github.io/)
+
+---
 
 ## User Guides
 ```markdown

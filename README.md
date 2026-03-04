@@ -198,13 +198,70 @@ mermaid: true  # 可选：启用 Mermaid 图表
 
 ### Mermaid 图表
 
-```markdown
+
 ```mermaid
 graph TD
   A[开始] --> B[处理]
   B --> C[结束]
 ```
+
+
+## ✍️ AI 辅助写作 Skills
+
+项目配置了两个协作式 AI Skills，形成 **"内容生产 → SEO 优化"** 的流水线工作流：
+
+| Skill | 定位 | 使用场景 |
+|-------|------|---------|
+| `se-technical-writer` | 技术写作专家 — 专注内容质量、准确性与读者体验 | 所有文档和博客的初稿撰写 |
+| `seo-content-optimizer` | SEO 优化专家 — 专注搜索引擎友好度与流量获取 | 公开发布的博客文章发布前优化 |
+
+### 📋 日常使用流程
+
+```mermaid
+graph LR
+  A[构思主题] --> B["Skill 1: se-technical-writer"]
+  B --> C{文章类型?}
+  C -->|内部文档/ADR| D[直接使用]
+  C -->|公开博客| E["Skill 2: seo-content-optimizer"]
+  E --> F[发布]
 ```
+
+#### 第一步：使用技术写作 Skill 撰写初稿
+
+适用于**所有**技术内容（博客、文档、ADR、教程）。
+
+**Prompt 示例**：
+> 使用 `se-technical-writer` skill，帮我写一篇关于 SwiftData 迁移实战的技术博客。目标读者是有 Core Data 经验的 iOS 开发者。要求包含代码示例和 Mermaid 架构图。
+
+此 Skill 会自动：
+- 按五阶段流程（Planning → Drafting → Review → Editing → Polish）创作
+- 维护术语一致性，遵循 [Style Guide](.agent/skills/se-technical-writer/references/style-guide.md) 中的写作规范
+- 选用合适的 [模板](.agent/skills/se-technical-writer/references/templates.md)（博客/系列文章/故障排查指南）
+- 若缺少封面图或插图，使用 AI 工具（如 Gemini）自动生成
+
+#### 第二步：使用 SEO Skill 优化后发布
+
+仅适用于**公开发布的博客文章**（内部 ADR 不需要）。
+
+**Prompt 示例**：
+> 使用 `seo-content-optimizer` skill，优化这篇文章的 SEO。主关键词是 "SwiftData migration"。请检查 Frontmatter、标题层级、内部链接和图片 alt 文本。
+
+此 Skill 会自动：
+- 审查并补全 Frontmatter (title ≤ 60 字符, description 120-160 字符)，参见 [Frontmatter 规范](.agent/skills/seo-content-optimizer/references/frontmatter-spec.md)
+- 优化标题层级、添加 Featured Snippet 段落
+- 基于 [链接策略](.agent/skills/seo-content-optimizer/references/linking-strategy.md) 添加内部链接
+- 按 [SEO 核查清单](.agent/skills/seo-content-optimizer/references/seo-checklist.md) 进行发布前检查
+
+#### 快速参考
+
+```bash
+# Skills 所在路径
+.agent/skills/
+├── se-technical-writer/       # 技术写作
+└── seo-content-optimizer/     # SEO 优化
+```
+
+---
 
 ## 🚀 部署
 
