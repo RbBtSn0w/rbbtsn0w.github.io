@@ -8,8 +8,8 @@ categories: [AI, Project]
 tags: [sdd, github-issues, github-cli, context-preservation]
 description: "没有时间部署繁重的企业级 SDD 框架？本文教你如何巧避 LLM 会话的内存腐烂，通过原生的 GitHub Issues 和 GitHub CLI 搭建轻量级规范驱动工作流的 5 个实战步骤。"
 image:
-  path: /assets/img/post/sdd-series/sdd-issues-cover.png
-  alt: "GitHub Issues 与神经网络交互渲染图，展现极简化轻量级架构的核心优势"
+  path: /assets/img/post/sdd-series/sdd-issues-minimalist.png
+  alt: "极简 2D 矢量风格的清单与云数据库，展现基于 GitHub Issues 的轻量级 SDD 工作流"
 ---
 
 # Spec-Driven Development 深度指南 — Part 4: 使用 GitHub Issues 构建简单的 SDD 工作流
@@ -24,7 +24,7 @@ image:
 - [Part 3: 意图层基础设施与 SDD 的未来](/posts/sdd-series-part-3-future/)
 - **Part 4 (This Post): 使用 GitHub Issues 构建简单的 SDD 工作流**
 
-![代表 GitHub Issues 与神经网络流交互的剪贴板](/assets/img/post/sdd-series/sdd-issues-cover.png)
+![极简风格的 GitHub Issues SDD 工作流示意图](/assets/img/post/sdd-series/sdd-issues-minimalist.png)
 *Illustration: 借力现有的天然工单生态——将 Issue 系统转变成 Agent 最稳定无暇的持久记忆缓存流区*
 
 ## 为什么选择 GitHub Issues 作为 LLM 的“外接大脑”？

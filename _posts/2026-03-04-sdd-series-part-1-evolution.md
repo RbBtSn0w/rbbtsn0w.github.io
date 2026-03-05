@@ -7,8 +7,8 @@ categories: [AI, Project]
 tags: [sdd, ai-agents, model-context-protocol, ai-coding]
 description: "Spec-Driven Development (SDD) 为什么在 AI 时代变得不可或缺？本文为您深度解析从代码补全到智能体（Agent）的演进，揭示跨会话知识持久化与意图表达的核心逻辑。"
 image:
-  path: /assets/img/post/sdd-series/sdd-evolution-cover.png
-  alt: "代表 SDD 演进的建筑蓝图与发光代码交汇图，展示从静态设计到智能体驱动的软件工程跃迁"
+  path: /assets/img/post/sdd-series/sdd-evolution-minimalist.png
+  alt: "极简 2D 矢量风格的建筑蓝图与代码交汇图，展示软件工程从静态设计到智能流的演进"
 ---
 
 # Spec-Driven Development 深度指南 — Part 1: 软件设计的演进与 SDD 的本质
@@ -23,7 +23,7 @@ image:
 - [Part 3: 意图层基础设施与 SDD 的未来](/posts/sdd-series-part-3-future/)
 - [Part 4: 使用 GitHub Issues 构建简单的 SDD 工作流](/posts/sdd-series-part-4-github-issues/)
 
-![代表 SDD 演进的建筑蓝图与发光代码交汇图](/assets/img/post/sdd-series/sdd-evolution-cover.png)
+![极简风格的软件设计演进图](/assets/img/post/sdd-series/sdd-evolution-minimalist.png)
 *Illustration: 从静态设计到智能驱动——软件架构工程视野的跃迁*
 
 ## 软件工程方法论的本质

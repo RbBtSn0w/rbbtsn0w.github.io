@@ -7,8 +7,8 @@ categories: [AI, Project]
 tags: [sdd, ai-agents, tech-trends, ai-coding]
 description: "大型语言模型（LLM）的记忆能力进化会终结 SDD 吗？本文探讨自主智能体在解决上下文腐烂问题后的发展，揭示 SDD 作为意图层基础设施的最终形态与不可替代性。"
 image:
-  path: /assets/img/post/sdd-series/sdd-future-cover.png
-  alt: "代表 SDD 未来的发光 AI 大脑与代码蓝图，象征完全脱离代码束缚的自治意图核心"
+  path: /assets/img/post/sdd-series/sdd-future-minimalist.png
+  alt: "极简 2D 矢量风格的大脑与网络节点，象征 SDD 作为意图层基础设施与记忆管理"
 ---
 
 # Spec-Driven Development 深度指南 — Part 3: 意图基础设施与 SDD 的未来
@@ -23,7 +23,7 @@ image:
 - **Part 3 (This Post): 意图层基础设施与 SDD 的未来**
 - [Part 4: 使用 GitHub Issues 构建简单的 SDD 工作流](/posts/sdd-series-part-4-github-issues/)
 
-![代表 SDD 未来的发光 AI 大脑与代码蓝图](/assets/img/post/sdd-series/sdd-future-cover.png)
+![极简风格的意图层基础设施示意图](/assets/img/post/sdd-series/sdd-future-minimalist.png)
 *Illustration: 从开发者手写文档，到完全脱离代码束缚的自治意图核心*
 
 ## 直面深痛：LLM 会让 SDD 变得毫无必要吗？

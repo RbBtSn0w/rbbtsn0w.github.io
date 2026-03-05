@@ -78,6 +78,7 @@ Before completing a task, verify:
 - [ ] **Accessibility**: Is it readable for non-native English speakers?
 - [ ] **Scannability**: Can readers quickly find what they need via headings and lists?
 - [ ] **Visual Appropriateness**: Are diagrams, screenshots, and code blocks used where they add value (not decoratively)?
+- [ ] **Visual Aesthetics**: Do AI-generated images follow the minimalist style defined in the [Style Guide](references/style-guide.md) (avoiding generic "sci-fi" looks)?
 
 ### References & Handoff
 - [ ] **References**: Are sources cited and links provided?

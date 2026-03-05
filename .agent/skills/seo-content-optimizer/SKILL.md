@@ -80,3 +80,4 @@ Before marking optimization as complete, verify all items in the [SEO Checklist]
 ### Multimedia
 - [ ] All images have descriptive, keyword-aware alt text
 - [ ] Images are stored in `/assets/img/post/<slug>/`
+- [ ] AI-generated images match the minimalist aesthetic defined in the [Style Guide](../se-technical-writer/references/style-guide.md)

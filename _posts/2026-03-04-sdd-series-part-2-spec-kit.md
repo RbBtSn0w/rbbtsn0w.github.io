@@ -8,8 +8,8 @@ categories: [AI, Project]
 tags: [sdd, github-spec-kit, spec-driven-development, ai-coding]
 description: "GitHub Spec Kit 是什么？本文为您提供一份从零开始的实战指南，详细拆解从 /speckit.specify 到 /speckit.tasks 的 6 步标准闭环引擎，帮助团队在 AI 时代实现真正的规范驱动开发。"
 image:
-  path: /assets/img/post/sdd-series/sdd-spec-kit-cover.png
-  alt: "GitHub Spec Kit 工作流展示：将意图规范封装为高度体系化的命令行基础设施"
+  path: /assets/img/post/sdd-series/sdd-spec-kit-minimalist.png
+  alt: "极简 2D 矢量风格的工具箱与蓝图，象征 GitHub Spec Kit 的结构化意图基础设施"
 ---
 
 # Spec-Driven Development 深度指南 — Part 2: GitHub Spec Kit 实战指南
@@ -24,7 +24,7 @@ image:
 - [Part 3: 意图层基础设施与 SDD 的未来](/posts/sdd-series-part-3-future/)
 - [Part 4: 使用 GitHub Issues 构建简单的 SDD 工作流](/posts/sdd-series-part-4-github-issues/)
 
-![代表 GitHub Spec-Kit 流程的机械开箱与蓝图构建](/assets/img/post/sdd-series/sdd-spec-kit-cover.png)
+![极简风格的 GitHub Spec Kit 示意图](/assets/img/post/sdd-series/sdd-spec-kit-minimalist.png)
 *Illustration: GitHub Spec Kit — 将意图规范封装为高度体系化的命令行基础设施*
 
 ## 1. 什么是 Spec Kit？

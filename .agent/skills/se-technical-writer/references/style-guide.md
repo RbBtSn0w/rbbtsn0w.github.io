@@ -105,10 +105,14 @@ When original images, illustrations, or cover art are **not available**, use AI 
 - Logos or brand assets — always use official versions
 
 **Generation rules**:
-- Write a detailed, descriptive prompt that matches the article's technical context
-- Save generated images to `/assets/img/post/<post-slug>/` with descriptive kebab-case filenames
-- Always add a descriptive alt text and caption to the generated image
-- If the image is AI-generated for illustration purposes, transparency is encouraged (e.g., caption can note "Illustration")
+- Write a detailed, descriptive prompt that matches the article's technical context.
+- **Aesthetic Guidelines**: Avoid the generic "AI sci-fi" look (excessive detail, glowing particles, 3D futurism).
+  - **Preferred Style**: "Minimalist flat 2D vector illustration", "Clean lines", "Professional muted color palette", "Isometric technical art".
+  - **Keywords to use**: `minimalist`, `flat 2D`, `vector`, `clean`, `geometric`, `soft colors`, `white background`.
+  - **Styles to avoid**: `hyperrealistic`, `cinematic lighting`, `neon`, `futuristic`, `complex 3D render`, `glowing`.
+- Save generated images to `/assets/img/post/<post-slug>/` with descriptive kebab-case filenames.
+- Always add a descriptive alt text and caption to the generated image.
+- If the image is AI-generated for illustration purposes, transparency is encouraged (e.g., caption can note "Illustration").
 
 ---
 
