@@ -5,7 +5,13 @@ date: 2026-01-30
 categories: [Project]
 tags: [mcp,github-actions,github-app,semantic-release,mcp-registry]
 description: "实战笔记：使用 GitHub App、semantic-release 与 mcp-publisher 实现 MCP Registry 端到端自动化发布。"
+image:
+  path: /assets/img/post/2026-01/mcp_registry_minimalist.png
+  alt: "极简 2D 矢量平面设计：一个受机器人保护的 MCP Server 包上传入核心数据库"
 ---
+
+> **TL;DR**: 将 MCP Server 拥抱开源？这篇保姆级、无踩坑实录教你如何把基于 MCP 的应用从零发布到官方 GitHub MCP Registry 中。借助 semantic-release 自动化串联配合 GitHub App Token 突破流控制授权问题，帮你构建一个写完代码即可全自动发布上线的零运维工作流。
+
 
 ## 目录
 

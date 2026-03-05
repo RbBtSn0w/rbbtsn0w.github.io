@@ -8,6 +8,9 @@ description: "基于 Xcode 26.3 与 Gemini CLI 的实战路线图：你将从 0 
 mermaid: true
 ---
 
+> **TL;DR**: Apple 正在将 [AI 辅助研发](/posts/ai-coding-evolution-copilot-vs-antigravity/) 推向 Agentic Coding 的新高度。本文是《Agentic Coding 在 Xcode 落地指南》三部曲的上篇，主打极速落地。手把手教你在本机跑通 Xcode 26.3 与 Gemini CLI (>0.27.3) 的底层 MCP (Model Context Protocol) 链路，建立起从“聊天AI”走向“可执行智能体”的第一步。
+
+
 ## 写在前面
 
 这是一套三篇连载的第 1 篇，灵感来自 Peter Friese 的文章（文末附链接），但内容会结合我自己的实践方式重写为中文落地版本，重点是：**你今天就能在本机跑起来**。

@@ -5,9 +5,15 @@ date: 2026-01-27
 categories: [AI]
 tags: [ai-agent, clawdbot, open-source, self-hosted]
 description: "深度解析 Clawdbot 如何在三个月内从兴趣项目爆火至 51k stars，以及它如何让 AI 真正为你干活"
+image:
+  path: /assets/img/post/2026-01/clawdbot_minimalist.png
+  alt: "极简适量风格：一只控制着电脑终端工作台的半机械红色龙虾，概念为个人机器助手 Clawdbot"
 ---
 
-最近 AI Agent 圈子里最火的项目之一就是 **Clawdbot**（小爪机器人，吉祥物是一只太空龙虾 🦞），由知名开发者 Peter Steinberger（@steipete，前 PSPDFKit 创始人）个人搞出来的开源项目。
+> **TL;DR**: 探索在 3 个月内斩获 51k+ GitHub stars 的顶级个人自托管 AI Agent：**Clawdbot**。本文独家深挖了这只机器龙虾为何爆火出圈、它的系统权限控制边界（Gateways/Nodes）以及如何在 Telegram、Discord 中一键全端唤醒并完成本地重执行任务带来的未来助理级体验。
+
+
+最近 AI Agent 圈子里最火的项目之一就是 **Clawdbot**（小爪机器人，吉祥物是一只太空龙虾 🦞），由知名开发者 Peter Steinberger（@steipete，前 PSPDFKit 创始人）个人搞出来的开源项目。这一趋势与 [Antigravity Agent 自治研发体系](/posts/mastering-antigravity-agents-cn/) 有异曲同工之妙，但 Clawdbot 面向的是个人日程与终端生产力。
 
 从 2025 年 11 月 24 日第一个 commit，到现在 2026 年 1 月 27 日，GitHub 已经冲到 **51k stars、6.1k forks**，开发非常活跃（最近一周几乎每天都有 commit）。它为什么这么火？简单一句话：它让大模型真正"干活"了，而不是只聊天。
 

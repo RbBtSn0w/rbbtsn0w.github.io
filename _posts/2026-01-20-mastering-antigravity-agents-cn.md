@@ -5,9 +5,15 @@ date: 2026-01-20
 categories: [AI, Antigravity, DevOps]
 tags: [antigravity, agent, rules, skills, workflows, 中文]
 description: "深度解析 Antigravity Agent 的配置架构（规则、技能、工作流），打造高度自治的 AI 研发助手。"
+image:
+  path: /assets/img/post/2026-01/antigravity_agents_minimalist.png
+  alt: "极简适量风格：展现规则、技能和工作流三个维度汇聚到人工智能核心，代表 Antigravity Agent 配置铁三角架构"
 ---
 
-Antigravity Agent 代表了 AI 辅助研发的下一次进化。与被动的代码补全工具不同，Antigravity Agent 是自主的、具备上下文感知的、并且会使用工具的。为了发挥其最大潜力，你必须为它配置一套由 **规则 (Rules)**、**技能 (Skills)** 和 **工作流 (Workflows)** 构成的严密架构。
+> **TL;DR**: Antigravity Agent 正在推动 AI 研发助手从“静态补全”走向“动态自治”。本指南深度拆解了 Antigravity `.agent` 配置框架背后的“铁三角”系统：**Rules (规则)**，**Skills (技能)** 和 **Workflows (工作流)**。文章提供了一套立等可用的架构生成器以及组织这些资源的最佳实践。
+
+
+Antigravity Agent 代表了 [AI 辅助研发的下一次进化](/posts/ai-coding-evolution-copilot-vs-antigravity/)。与被动的代码补全工具不同，Antigravity Agent 是自主的、具备上下文感知的、并且会使用工具的。为了发挥其最大潜力，你必须为它配置一套由 **规则 (Rules)**、**技能 (Skills)** 和 **工作流 (Workflows)** 构成的严密架构。
 
 本指南将深入讲解构建强大 Development Agent 的最佳实践。
 

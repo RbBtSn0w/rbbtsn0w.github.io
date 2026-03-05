@@ -5,9 +5,15 @@ date: 2026-01-20
 categories: [DevOps, AI]
 tags: [github, copilot, vscode, productivity, 中文]
 description: "深度解析 Copilot 定制化的四大支柱（指令、技能、提示词、代理），提供可落地的治理策略与架构模版。"
+image:
+  path: /assets/img/post/2026-01/copilot_customization_minimalist.png
+  alt: "极简 2D 矢量拼图，4 个相互连接的拼图模块代表指令、技能、提示词和代理四大定制化支柱"
 ---
 
-在复杂的软件组织中，“让 AI 自行猜测”不仅低效，更是风险。为了让 GitHub Copilot 输出一致、高质量的代码，团队必须学会像编排员工一样，编排 **指令 (Instructions)**、**技能 (Skills)**、**提示词 (Prompts)** 和 **代理 (Agents)**。
+> **TL;DR**: 在企业级研发中，简单的 AI 自动补全往往低效且增加风险。本指南深度解析了如何编排 GitHub Copilot 的四大支柱：**指令、技能、提示词和代理**。无论您想统一代码风格，还是编排复杂的 [AI 自动化测试工作流](/posts/UseAITools/)，这套治理策略与架构生成模板都能帮助您的团队化茧成蝶。
+
+
+在复杂的软件组织中，“让 AI 自行猜测”不仅低效，更是风险。相比 [Antigravity Agent 引申的动态自治构架](/posts/mastering-antigravity-agents-cn/)，为了让 GitHub Copilot 输出一致、高质量的代码，团队必须学会像编排员工一样，深度系统化管理代码行为边界，编排 **指令 (Instructions)**、**技能 (Skills)**、**提示词 (Prompts)** 和 **代理 (Agents)**。
 
 本指南提供了一套完整的框架，帮助您定义、组织和治理这些资源，构建健壮的 AI 辅助开发工作流。
 

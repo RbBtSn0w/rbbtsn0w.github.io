@@ -5,9 +5,15 @@ date: 2026-01-27 16:40:00 +0800
 categories: [AI, Project]
 tags: [mcp, mcp-apps, agentic-ui, javascript]
 description: "Model Context Protocol (MCP) 迎来首个官方扩展：MCP Apps。本文将带你了解如何通过简单的步骤，为你现有的 MCP 工具添加交互式 UI。"
+image:
+  path: /assets/img/post/2026-01/mcp_apps_minimalist.png
+  alt: "极简 2D 矢量图，从一段纯文本对话流展成带交互面板的用户界面组件，概念为 MCP Apps 升级"
 ---
 
-随着 Model Context Protocol (MCP) 的快速发展，我们已经习惯了让 AI 通过工具调用来读取文件、查询数据库或执行脚本。然而，这种交互通常局限于“文本输入 -> 文本输出”的循环。
+> **TL;DR**: 纯文本的对话边界终于被打破！本文速递了今年 1 月底 Model Context Protocol (MCP) 重磅发布的官方扩展协议：**MCP Apps**。它允许 AI 调用 MCP Server 时直接返回**前端交互式 UI 组件 (Agentic UI)**。文中通过 3 个核心实战步骤教你如何将现有的 CLI 型 MCP 服务升级为带看板交互的下一代大模型应用。
+
+
+随着 [Model Context Protocol (MCP)](/posts/mcp-registry-deployment-guide/) 的快速发展，我们已经习惯了让 AI 通过工具调用来读取文件、查询数据库或执行脚本。然而，这种交互通常局限于“文本输入 -> 文本输出”的循环。
 
 2026 年 1 月 26 日，MCP 官方宣布了首个扩展协议：**MCP Apps**。它彻底打破了文本的边界，让工具可以直接返回**交互式 UI 组件**。本文将带你快速上手，看看如何将你现有的 MCP Server 升级为具备 UI 能力的 MCP App。
 

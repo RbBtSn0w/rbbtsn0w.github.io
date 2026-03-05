@@ -5,10 +5,16 @@ date: 2026-01-19
 categories: [macOS]
 tags: [tts, say, ffmpeg, markdown, perl]
 description: "在 macOS 上完全离线把 Markdown 转成高质量中文 MP3：避坑 sed 兼容性、正确语音名、Premium 声音下载与完整脚本。"
+image:
+  path: /assets/img/post/2026-01/macos_tts_minimalist.png
+  alt: "极简 2D 矢量风格的 macOS 终端窗口将文本转为声波的示意图，代表离线 TTS 文字转语音操作"
 ---
 
+> **TL;DR**: 本文提供了一套纯本地、完全离线、高质量的 macOS Markdown 转 MP3 的自动化语音合成（TTS）工作流。不仅提供了完整的 Shell 脚本，还逐一扫清了 BSD `sed` 正则兼容性、系统语音调用等大坑，并指引你如何下载系统级 Premium 优化版中文语音，从此抛弃生硬的机器音。
 
-在这篇博客中，我分享一次完整的实践经历：如何利用 macOS 自带工具，将一个本地的 Markdown 中文文档转换成一个 MP3 音频文件。过程不止“能跑”，还要“好听”：我们踩过 BSD `sed` 的兼容性坑、绕过 `say` 的语音名陷阱，最后用系统“优化版”语音把音质拉满。
+
+
+在这篇博客中，我分享一次完整的实践经历：如何利用 macOS 自带工具，将一个本地的 Markdown 中文文档转换成一个 MP3 音频文件。过程不止“能跑”，还要“好听”：我们踩过 BSD `sed` 的兼容性坑（与 [Antigravity macOS Chrome 修复指南](/posts/AntigravityChromeFix/) 中讨论的环境坑异曲同工）、绕过 `say` 的语音名陷阱，最后用系统“优化版”语音把音质拉满。
 
 ## 你将获得什么
 

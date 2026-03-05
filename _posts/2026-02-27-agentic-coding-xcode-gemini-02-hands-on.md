@@ -8,6 +8,9 @@ description: "从 0 到 1 实战 Newton's Apple：用 Gemini CLI + Xcode MCP 生
 math: true
 ---
 
+> **TL;DR**: 掌握向 AI 下达精准研发指令的秘诀。作为落地的中篇，本文演示了如何用一段**目标+约束+验收标准**构成的结构化 Prompt，让 Gemini CLI 代理在 Xcode 内直接从零生成一个可互动的物理重力实验 App，并分享了如何引导 Agent 主动观察编译错误完成自我修复的“闭环”实操套路。
+
+
 ## 这篇你会得到什么
 
 如果你已经完成上一篇的配置，这篇会带你跑通一条完整链路：

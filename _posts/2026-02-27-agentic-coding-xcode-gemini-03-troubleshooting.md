@@ -7,6 +7,9 @@ tags: [agentic-coding,mcp,gemini-cli,debugging,team-workflow]
 description: "从个人尝鲜到团队可复用：整理 Xcode + Gemini CLI 在 MCP 接入中的高频问题、版本策略与协作规范。"
 ---
 
+> **TL;DR**: AI 研发助手的上限在约束，不在模型本身。这篇终局指南为你和团队理清了 Xcode Agentic Coding 的排障与治理方法论。涵盖了如何解决 MCP JSON 数据结构异常、规避重复授权弹窗，并提供了一套开箱即用的[系统化管理代码行为边界](/posts/mastering-copilot-customization-cn/)规范库模板，帮助企业平稳降落 AI 高效能时代。
+
+
 ## 为什么你需要一份“排障手册”
 
 Agentic Coding 最容易翻车的地方，不是 Prompt，而是“环境与边界条件”：

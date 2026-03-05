@@ -5,9 +5,15 @@ date: 2026-01-21
 categories: [AI, Engineering, Architecture]
 tags: [copilot, antigravity, agent, design-pattern, future-tech]
 description: "深度解析 AI 辅助编程的两种设计哲学：Github Copilot 的 Instruction 模式与 Antigravity Agent 的动态路由架构。探讨为何自治 Agent 是下一代软件工程的必然选择。"
+image:
+  path: /assets/img/post/2026-01/ai_coding_evolution_minimalist.png
+  alt: "极简矢量演进图，从静态齿轮演进到自主执行的智能机器人，暗喻 AI 代码助手从静态辅助向自治生命体攀升"
 ---
 
-在 AI 辅助编程领域，我们正处于一个关键的转折点。从 GitHub Copilot Customization (`.github`) 到 Google Deepmind Antigravity Agent (`.agent`)，文件配置的细微变化背后，实则是**设计哲学**的根本性跨越。
+> **TL;DR**: 我们正站在 AI 辅助编程演进的路口。这篇文章深刻剖析了 GitHub Copilot Customization 基于 RAG 静态重注的前置规则模式，以及 Deepmind Antigravity 基于触发器/工作流的动态状态机架构底座。论证了未来的软件工程范式必将从简单的自然语言交互向定义智能体边界 (Agentic Architecture) 重构倾斜。
+
+
+在 AI 辅助编程领域，我们正处于一个关键的转折点。从 [GitHub Copilot Customization (`.github`)](/posts/mastering-copilot-customization-cn/) 到 [Google Deepmind Antigravity Agent (`.agent`)](/posts/mastering-antigravity-agents-cn/)，文件配置的细微变化背后，实则是**设计哲学**的根本性跨越。
 
 本文将剥离表象，从系统架构、上下文经济学和工程自治性三个维度，深度对比这两种范式，并推演 AI 编码的未来形态。
 
