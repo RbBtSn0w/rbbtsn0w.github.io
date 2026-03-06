@@ -5,6 +5,9 @@ date: 2026-02-27
 categories: [AI, iOS, Xcode]
 tags: [agentic-coding,swiftui,spritekit,gemini-cli,prompt-engineering]
 description: "从 0 到 1 实战 Newton's Apple：用 Gemini CLI + Xcode MCP 生成可交互的 SwiftUI/SpriteKit 物理小项目，并让 Agent 自己修编译错误。"
+image:
+  path: /assets/img/post/2026-02/xcode_gemini_part2_handson_minimalist_cover.png
+  alt: "极简 2D 矢量风格的图解：双手正在键盘上敲击，旁边飘洒着进入 AI 处理核心的代码块"
 math: true
 ---
 

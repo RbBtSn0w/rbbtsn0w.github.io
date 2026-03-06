@@ -4,10 +4,9 @@ date: 2026-03-05 13:30:00 +0800
 categories: [NAS, 教程]
 tags: [alist, webdav, cloud-sync, synology, 网盘同步]
 description: "面对网盘空间告急的困境，本文详细带你通过免费工具 Alist 聚合多平台云盘并提供标准的 WebDAV 服务，随后无缝对接群晖原生的 Cloud Sync 插件。该方案不仅实现了无需 PC 中转的 24 小时自动化极速同步工作流，还彻底摆脱数据焦虑。"
-# TODO: Generate image once quota resets
-# image:
-#   path: /assets/img/post/blog-alist-nas-sync/alist_nas_sync_cover.png
-#   alt: "极简 2D 矢量风格的图解：群晖 NAS 服务器通过 Alist 桥接云端网络磁盘，实现数据自动化同步"
+image:
+  path: /assets/img/post/blog-alist-nas-sync/alist_nas_sync_cover.png
+  alt: "极简 2D 矢量风格的图解：群晖 NAS 服务器通过 Alist 桥接云端网络磁盘，实现数据自动化同步"
 ---
 
 > **TL;DR**: 面对网盘空间告急的困境，通过 Alist 聚合多平台云盘并提供标准的 WebDAV 服务，再对接群晖原生的 Cloud Sync 插件，即可实现无需 PC 中转的自动化同步工作流，极大提升了数据管理效率。
@@ -38,10 +37,8 @@ description: "面对网盘空间告急的困境，本文详细带你通过免费
 
 ## 实战指南：自动化同步配置分解
 
-<!-- TODO: Generate diagram image
 ![群晖 NAS 与 Alist WebDAV 的网盘同步数据流网络拓扑图](/assets/img/post/blog-alist-nas-sync/workflow-diagram.png)
 _图：Alist 桥接网盘与 NAS 的同步流程架构_
--->
 
 ### 步骤 1：在 Alist 中确认并开启 WebDAV 服务
 
@@ -62,10 +59,8 @@ Alist 安装完成后，默认已经开启了 WebDAV 服务。你需要收集并
    - **用户账号与密码**：填入你在步骤 1 获取的 Alist 账号密码。
 5. 点击**下一步**，系统会自动验证凭据并识别该 WebDAV 节点下的所有外挂网盘（如阿里云盘、百度网盘等）文件夹。
 
-<!-- TODO: Generate setup screenshot
 ![群晖 Cloud Sync WebDAV 服务器连接配置与 Alist 账号登录向导截图](/assets/img/post/blog-alist-nas-sync/cloud-sync-setup.png)
 _图：在 Cloud Sync 中正确填写 Alist 的 WebDAV 链接与账户信息_
--->
 
 ### 步骤 3：配置任务细节与同步方向
 

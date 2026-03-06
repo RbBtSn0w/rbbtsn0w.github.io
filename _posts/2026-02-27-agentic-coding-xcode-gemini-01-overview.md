@@ -5,6 +5,9 @@ date: 2026-02-27
 categories: [AI, Xcode]
 tags: [agentic-coding,xcode,mcp,gemini-cli,developer-workflow]
 description: "基于 Xcode 26.3 与 Gemini CLI 的实战路线图：你将从 0 到 1 完成环境准备、MCP 连接与首个可执行会话。"
+image:
+  path: /assets/img/post/2026-02/xcode_gemini_part1_overview_minimalist_cover.png
+  alt: "极简 2D 矢量风格的网络拓扑图，展示 Xcode 与人工智能数据链路的融合"
 mermaid: true
 ---
 
