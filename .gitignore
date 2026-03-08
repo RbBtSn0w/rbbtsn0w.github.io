@@ -27,3 +27,6 @@ assets/js/dist
 .gemini/cache/
 .agent/cache/
 specs/**/draft_*.md
+
+# Node.js / TypeScript build output
+.wechat.yml

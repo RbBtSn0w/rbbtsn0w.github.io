@@ -1,3 +1,4 @@
+---
 title: "Google 全家桶 CLI 开源启示录：当 Rust 极致内核遇上 npm 分发外壳"
 description: "深入剖析 googleworkspace/cli 的架构设计：为什么 Rust 极致性能核心需要 npm 分发外壳？结合十年 CLI 演进史与 AI Agent 时代背景，探讨下一代工具链在性能与分发间的平衡之道。"
 date: 2026-03-06 23:10:00 +0800
