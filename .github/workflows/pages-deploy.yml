@@ -50,10 +50,6 @@ jobs:
           # If using the 'assets' git submodule from Chirpy Starter, uncomment above
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -70,7 +66,7 @@ jobs:
         id: build
         run: |
           echo "🏗️ Building Jekyll site..."
-          bundle exec jekyll build -d "_site${{ steps.pages.outputs.base_path }}" --trace
+          bundle exec jekyll build -d "_site" --trace
         env:
           JEKYLL_ENV: "production"
 
@@ -82,7 +78,7 @@ jobs:
       - name: Check site size
         id: site-size
         run: |
-          SITE_SIZE=$(du -sh _site${{ steps.pages.outputs.base_path }} | cut -f1)
+          SITE_SIZE=$(du -sh _site | cut -f1)
           echo "size=$SITE_SIZE" >> $GITHUB_OUTPUT
           echo "📊 Site size: $SITE_SIZE"
 
@@ -101,7 +97,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site${{ steps.pages.outputs.base_path }}"
+          path: "_site"
           retention-days: 7
 
   deploy:
@@ -122,4 +118,19 @@ jobs:
           echo "📅 Build Time: ${{ needs.build.outputs.build-time }}"
           echo "📊 Site Size: ${{ needs.build.outputs.site-size }}"
           echo "🌐 Live URL: ${{ steps.deployment.outputs.page_url }}"
+
+  # Compatibility check for branch protection rules expecting `test`
+  # This avoids duplicate builds while keeping required check names stable.
+  test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && always()
+    needs: build
+    steps:
+      - name: Verify build job result
+        run: |
+          if [ "${{ needs.build.result }}" != "success" ]; then
+            echo "❌ 'build' job did not succeed (result: ${{ needs.build.result }})"
+            exit 1
+          fi
+          echo "✅ 'build' job succeeded; compatibility 'test' check passes."
 
