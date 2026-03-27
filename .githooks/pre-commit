@@ -1,0 +1,64 @@
+#!/bin/bash
+# Versioned pre-commit hook: Build and test Jekyll site before allowing commit
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$REPO_ROOT"
+
+echo "🔍 Running pre-commit checks..."
+
+# Ensure UTF-8 locale in GUI/IDE environments (prevents Nokogiri/htmlproofer encoding errors)
+export LANG="${LANG:-en_US.UTF-8}"
+export LC_ALL="${LC_ALL:-en_US.UTF-8}"
+export RUBYOPT="${RUBYOPT:--EUTF-8}"
+
+# Ensure GUI/IDE git environment can find user Ruby/Bundler
+if [ -x "$HOME/.rbenv/bin/rbenv" ]; then
+    export PATH="$HOME/.rbenv/bin:$HOME/.rbenv/shims:$PATH"
+    eval "$($HOME/.rbenv/bin/rbenv init - bash 2>/dev/null || $HOME/.rbenv/bin/rbenv init - 2>/dev/null)"
+elif command -v rbenv >/dev/null 2>&1; then
+    eval "$(rbenv init - bash 2>/dev/null || rbenv init - 2>/dev/null)"
+fi
+
+# Check if bundle is installed
+BUNDLE_BIN=""
+if [ -x "$HOME/.rbenv/shims/bundle" ]; then
+    BUNDLE_BIN="$HOME/.rbenv/shims/bundle"
+elif command -v bundle >/dev/null 2>&1; then
+    BUNDLE_BIN="$(command -v bundle)"
+fi
+
+if [ -z "$BUNDLE_BIN" ]; then
+    echo "❌ Bundler not found in PATH."
+    echo "   PATH=$PATH"
+    echo "   Try: gem install bundler:4.0.9"
+    exit 1
+fi
+
+# Enforce Bundler version required by Gemfile.lock
+REQUIRED_BUNDLER=$(awk '/^BUNDLED WITH/{getline; gsub(/^[[:space:]]+/, "", $0); print; exit}' Gemfile.lock)
+if [ -n "$REQUIRED_BUNDLER" ] && ! "$BUNDLE_BIN" _${REQUIRED_BUNDLER}_ -v >/dev/null 2>&1; then
+    echo "❌ Required Bundler version ${REQUIRED_BUNDLER} not available in current Ruby env."
+    echo "   Current bundle: $BUNDLE_BIN"
+    echo "   Current ruby: $(command -v ruby)"
+    echo "   Try: gem install bundler:${REQUIRED_BUNDLER}"
+    exit 1
+fi
+
+BUNDLE_CMD="$BUNDLE_BIN"
+if [ -n "$REQUIRED_BUNDLER" ]; then
+    BUNDLE_CMD="$BUNDLE_BIN _${REQUIRED_BUNDLER}_"
+fi
+
+# Build the site
+echo "🔨 Building Jekyll site..."
+$BUNDLE_CMD exec jekyll build
+
+# Run htmlproofer
+echo "✅ Build successful. Running htmlproofer..."
+$BUNDLE_CMD exec htmlproofer _site \
+    --disable-external \
+    --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+
+echo "✅ All checks passed! Commit allowed."

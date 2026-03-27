@@ -156,6 +156,18 @@ bundle exec jekyll build --incremental
 - **HTML 验证**: 使用 HTMLProofer 检查链接有效性
 - **GitHub Actions**: 部署时自动运行完整测试套件
 
+### 共享 Git Hook 安装（推荐）
+
+为避免不同 IDE/终端环境导致本地提交检查不一致，项目提供了可版本管理的 hook：`/.githooks/pre-commit`。
+
+首次克隆后执行一次：
+
+```bash
+bash scripts/install-git-hooks.sh
+```
+
+执行后会将仓库本地 `core.hooksPath` 指向 `.githooks`，后续提交将统一使用仓库内 hook 逻辑。
+
 ## 📝 内容创作
 
 ### 文章格式
