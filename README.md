@@ -152,21 +152,9 @@ bundle exec jekyll build --incremental
 
 项目配置了以下自动化检查：
 
-- **预提交钩子**: 提交前自动构建和测试
-- **HTML 验证**: 使用 HTMLProofer 检查链接有效性
-- **GitHub Actions**: 部署时自动运行完整测试套件
-
-### 共享 Git Hook 安装（推荐）
-
-为避免不同 IDE/终端环境导致本地提交检查不一致，项目提供了可版本管理的 hook：`/.githooks/pre-commit`。
-
-首次克隆后执行一次：
-
-```bash
-bash scripts/install-git-hooks.sh
-```
-
-执行后会将仓库本地 `core.hooksPath` 指向 `.githooks`，后续提交将统一使用仓库内 hook 逻辑。
+- **环境标准化**: 通过 Jekyll 插件自动同步仓库 Git Hooks，确保所有 IDE 和终端提交体验一致。
+- **预提交检查**: 本地提交前自动运行 `jekyll build` 和 `htmlproofer` 校验。
+- **GitHub Actions**: 部署前对全站链接进行最终生产环境审计。
 
 ## 📝 内容创作
 
