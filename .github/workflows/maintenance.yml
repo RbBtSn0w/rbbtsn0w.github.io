@@ -8,92 +8,8 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
-  check-dependencies:
-    runs-on: ubuntu-latest
-    outputs:
-      outdated: ${{ steps.check.outputs.outdated }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.2"
-          bundler-cache: true
-
-      - name: Check for outdated dependencies
-        id: check
-        run: |
-          echo "🔍 Checking for outdated gems..."
-          bundle outdated --parseable > outdated_raw.txt || true
-
-          # Keep only parseable gem lines:
-          # gem_name (newest x.y.z, installed a.b.c ...)
-          grep -E '^[A-Za-z0-9._-]+ \(newest [^,]+, installed [^)]+\)' outdated_raw.txt > outdated.txt || true
-
-          if [ -s outdated.txt ]; then
-            echo "⚠️ Outdated dependencies found:"
-            cat outdated.txt
-            echo "outdated=true" >> $GITHUB_OUTPUT
-
-            # Create issue content with formatted table
-            echo "## 📦 Outdated Dependencies" > issue_body.md
-            echo "" >> issue_body.md
-            echo "The following dependencies have newer versions available. Please review and update accordingly." >> issue_body.md
-            echo "" >> issue_body.md
-            echo "| Gem | Current | Latest | status |" >> issue_body.md
-            echo "| :--- | :--- | :--- | :--- |" >> issue_body.md
-            
-            while read -r line; do
-              # line format: gem_name (newest 1.2.3, installed 1.1.0)
-              GEM=$(echo "$line" | cut -d' ' -f1)
-              NEWEST=$(echo "$line" | grep -o 'newest [^,]*' | cut -d' ' -f2 | tr -d ')')
-              INSTALLED=$(echo "$line" | grep -o 'installed [^)]*' | cut -d' ' -f2)
-              echo "| **$GEM** | $INSTALLED | $NEWEST | ⚠️ Update Available |" >> issue_body.md
-            done < outdated.txt
-
-            echo "" >> issue_body.md
-            echo "### 🛠️ Recommended Actions" >> issue_body.md
-            echo "1. Run \`bundle update <gem_name>\` locally to test." >> issue_body.md
-            echo "2. Review the changelog for any breaking changes." >> issue_body.md
-            echo "3. If safe, create a PR with the updated \`Gemfile.lock\`." >> issue_body.md
-          else
-            echo "✅ All dependencies are up to date"
-            echo "outdated=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create maintenance issue
-        if: steps.check.outputs.outdated == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const issueBody = fs.readFileSync('issue_body.md', 'utf8');
-
-            // Check if issue already exists
-            const existingIssues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: ['maintenance', 'dependencies'],
-              state: 'open'
-            });
-
-            if (existingIssues.data.length === 0) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: '📦 Monthly Dependency Check - Updates Available',
-                body: issueBody,
-                labels: ['maintenance', 'dependencies', 'automated']
-              });
-            }
-
   validate-links:
     runs-on: ubuntu-latest
 
@@ -124,14 +40,3 @@ jobs:
             --typhoeus-config='{"timeout":10}' \
             --hydra-config='{"max_concurrency":3}' \
             || echo "⚠️ Some external links may be broken - check logs"
-
-  cleanup-cache:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.event.schedule == '0 9 20 * *'  # Monthly schedule only
-
-    steps:
-      - name: Cleanup old artifacts
-        run: |
-          echo "🧹 Cleaning up old workflow artifacts..."
-          # This would typically use GitHub API to clean up old artifacts
-          echo "✅ Cleanup completed"

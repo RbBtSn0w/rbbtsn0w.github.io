@@ -294,15 +294,26 @@ graph LR
 
 ### 依赖更新
 
+依赖更新由 GitHub Dependabot 自动执行：
+
+- 配置文件： [`.github/dependabot.yml`](.github/dependabot.yml)
+- 更新范围：Ruby gems（Bundler）和 GitHub Actions
+- 更新频率：每周定时创建依赖升级 PR
+
+自动修复与合并策略：
+
+- 工作流： [`.github/workflows/dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml)
+- 对象：Dependabot 创建的所有依赖升级 PR（含 major/minor/patch）
+- 流程：自动审批 → CI（Build and Deploy）通过后自动启用 auto-merge（仍受分支保护约束）
+
+如需手动处理依赖，可继续使用：
+
 ```bash
 # 更新所有依赖
 bundle update
 
 # 更新特定 gem
 bundle update jekyll-theme-chirpy
-
-# 检查过时依赖
-bundle outdated
 
 # 修改 Gemfile 后添加 Linux 平台支持（GitHub Actions 兼容性）
 bundle lock --add-platform x86_64-linux

@@ -9,7 +9,6 @@ on:
       - .gitignore
       - README.md
       - LICENSE
-      - "*.md"
   pull_request:
     branches:
       - main
@@ -18,7 +17,6 @@ on:
       - .gitignore
       - README.md
       - LICENSE
-      - "*.md"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -125,26 +123,3 @@ jobs:
           echo "📊 Site Size: ${{ needs.build.outputs.site-size }}"
           echo "🌐 Live URL: ${{ steps.deployment.outputs.page_url }}"
 
-  # Optional: Run tests on PRs without deploying
-  test:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VERSION }}
-          bundler-cache: true
-
-      - name: Install dependencies
-        run: bundle install --jobs 4 --retry 3
-
-      - name: Build for testing
-        run: bundle exec jekyll build --limit_posts 5
-        env:
-          JEKYLL_ENV: "production"
