@@ -303,8 +303,8 @@ graph LR
 自动修复与合并策略：
 
 - 工作流： [`.github/workflows/dependabot-auto-merge.yml`](.github/workflows/dependabot-auto-merge.yml)
-- 对象：Dependabot 创建的所有依赖升级 PR（含 major/minor/patch）
-- 流程：自动审批 → CI（Build and Deploy）通过后自动启用 auto-merge（仍受分支保护约束）
+- 对象：所有与 CI 成功提交关联的 open PR（含 Dependabot 依赖 PR）
+- 流程：Dependabot PR 自动审批 → CI（Build and Deploy）通过后启用 auto-merge → 分支保护通过后自动合并
 
 如需手动处理依赖，可继续使用：
 

@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Enable auto-merge only after CI success
+      - name: Enable auto-merge after CI success
         uses: actions/github-script@v7
         with:
           script: |
@@ -41,26 +41,28 @@ jobs:
               commit_sha: headSha,
             });
 
-            const pr = prs.data.find(p => p.state === 'open' && p.user?.login === 'dependabot[bot]');
-            if (!pr) {
-              core.info('No open Dependabot PR associated with this successful CI run.');
+            const targetPrs = prs.data.filter(p => p.state === 'open' && !p.draft);
+            if (targetPrs.length === 0) {
+              core.info('No open non-draft PR associated with this successful CI run.');
               return;
             }
 
-            try {
-              await github.graphql(
-                `mutation($pullRequestId: ID!) {
-                  enablePullRequestAutoMerge(input: {
-                    pullRequestId: $pullRequestId,
-                    mergeMethod: SQUASH
-                  }) {
-                    clientMutationId
-                  }
-                }`,
-                { pullRequestId: pr.node_id }
-              );
-              core.info(`✅ CI passed; auto-merge enabled for Dependabot PR #${pr.number}`);
-            } catch (error) {
-              core.warning(`⚠️ Could not enable auto-merge for PR #${pr.number}: ${error.message}`);
-              core.warning('Ensure repository Auto-merge is enabled in GitHub settings and branch protection allows this bot.');
+            for (const pr of targetPrs) {
+              try {
+                await github.graphql(
+                  `mutation($pullRequestId: ID!) {
+                    enablePullRequestAutoMerge(input: {
+                      pullRequestId: $pullRequestId,
+                      mergeMethod: SQUASH
+                    }) {
+                      clientMutationId
+                    }
+                  }`,
+                  { pullRequestId: pr.node_id }
+                );
+                core.info(`✅ CI passed; auto-merge enabled for PR #${pr.number}`);
+              } catch (error) {
+                core.warning(`⚠️ Could not enable auto-merge for PR #${pr.number}: ${error.message}`);
+                core.warning('Ensure repository Auto-merge is enabled in GitHub settings and branch protection allows this token.');
+              }
             }
