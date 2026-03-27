@@ -20,12 +20,10 @@ description: "Task list template for feature implementation"
 
 ## Path Conventions
 
-- **Posts**: `_posts/YYYY-MM-DD-title.md`
-- **Images**: `assets/img/post/YYYY-MM-DD-title/`
-- **Includes**: `_includes/`
-- **Data**: `_data/`
-- **Layouts**: `_layouts/`
-- **Assets**: `assets/css/`, `assets/js/`
+- **Single project**: `src/`, `tests/` at repository root
+- **Web app**: `backend/src/`, `frontend/src/`
+- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
+- Paths shown below assume single project - adjust based on plan.md structure
 
 <!-- 
   ============================================================================

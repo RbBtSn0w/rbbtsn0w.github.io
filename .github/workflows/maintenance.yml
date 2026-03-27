@@ -33,9 +33,13 @@ jobs:
           echo "🔍 Checking for outdated gems..."
           bundle outdated --parseable > outdated_raw.txt || true
 
-          if [ -s outdated_raw.txt ]; then
+          # Keep only parseable gem lines:
+          # gem_name (newest x.y.z, installed a.b.c ...)
+          grep -E '^[A-Za-z0-9._-]+ \(newest [^,]+, installed [^)]+\)' outdated_raw.txt > outdated.txt || true
+
+          if [ -s outdated.txt ]; then
             echo "⚠️ Outdated dependencies found:"
-            cat outdated_raw.txt
+            cat outdated.txt
             echo "outdated=true" >> $GITHUB_OUTPUT
 
             # Create issue content with formatted table
@@ -52,7 +56,7 @@ jobs:
               NEWEST=$(echo "$line" | grep -o 'newest [^,]*' | cut -d' ' -f2 | tr -d ')')
               INSTALLED=$(echo "$line" | grep -o 'installed [^)]*' | cut -d' ' -f2)
               echo "| **$GEM** | $INSTALLED | $NEWEST | ⚠️ Update Available |" >> issue_body.md
-            done < outdated_raw.txt
+            done < outdated.txt
 
             echo "" >> issue_body.md
             echo "### 🛠️ Recommended Actions" >> issue_body.md
@@ -84,7 +88,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: '📦 Weekly Dependency Check - Updates Available',
+                title: '📦 Monthly Dependency Check - Updates Available',
                 body: issueBody,
                 labels: ['maintenance', 'dependencies', 'automated']
               });
@@ -116,7 +120,6 @@ jobs:
           echo "🔗 Checking external links (sample)..."
           bundle exec htmlproofer _site \
             --external_only \
-            --disable_external \
             --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/" \
             --typhoeus-config='{"timeout":10}' \
             --hydra-config='{"max_concurrency":3}' \
@@ -124,7 +127,7 @@ jobs:
 
   cleanup-cache:
     runs-on: ubuntu-latest
-    if: github.event.schedule == '0 9 * * 1'  # Only on scheduled runs
+    if: github.event_name == 'schedule' && github.event.schedule == '0 9 20 * *'  # Monthly schedule only
 
     steps:
       - name: Cleanup old artifacts
