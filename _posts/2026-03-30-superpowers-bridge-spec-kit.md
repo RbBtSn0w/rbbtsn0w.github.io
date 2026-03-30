@@ -3,11 +3,12 @@ layout: post
 title: "AI 辅助编程的终极组合：Superpowers Bridge 与 Spec Kit 实战"
 date: 2026-03-30 23:11:00 +0800
 categories: [AI, Tools]
-tags: [superpowers-bridge, spec-kit, agentic-coding, sdd]
+tags: [superpowers-bridge, spec-kit, agentic-coding, sdd, tdd]
 description: "在 AI 辅助编程时代，代码质量往往难以控制。通过 Superpowers Bridge 将强大的 AI 技能集无缝嵌入 Spec Kit 的严格工作流，强力实施 TDD 测试驱动开发与深度排障保护机制。这套框架能有效杜绝由于缺乏约束导致的糟糕结构，协助研发团队建立规范、可见且高质量的 AI 编码护栏。"
 image:
   path: /assets/img/post/superpowers-bridge-spec-kit/cover.png
   alt: "Minimalist pipeline illustration of AI coding workflow process intersected by security checkpoints representing Superpowers Bridge guardrails"
+mermaid: true
 ---
 
 > **TL;DR**: 在 AI 辅助编程时代，代码质量可能由于生成过快而失控。将核心能力强大的 Superpowers AI 技能集无缝嵌入 Spec Kit 的 SDD 工作流，能够带来一套基于生命周期钩子的强制护栏。它将代码审查、TDD 测试驱动开发和系统性排障变为不可逾越的规则，彻底告别“面条代码”（Spaghetti code）。
