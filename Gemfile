@@ -3,11 +3,11 @@
 source "https://rubygems.org"
 
 gem "jekyll", "~> 4.4"
-gem "jekyll-theme-chirpy", "~> 7.4"
+gem "jekyll-theme-chirpy", "~> 7.5"
 gem "puma"
 
 group :test do
-  gem "html-proofer", "~> 5.1"
+  gem "html-proofer", "~> 5.2"
 end
 
 # Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -25,4 +25,4 @@ gem "wdm", "~> 0.1.1", :platforms => [:mingw, :x64_mingw, :mswin]
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
 
 # Override transitive dependencies where compatible (testing required)
-gem "bigdecimal", "~> 4.0"
+gem "bigdecimal", "~> 4.1"
