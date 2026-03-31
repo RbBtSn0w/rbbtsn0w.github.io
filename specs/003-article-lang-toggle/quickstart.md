@@ -17,8 +17,15 @@ This feature uses a private **Google Apps Script (GAS)** proxy to pre-translate 
 
 ### GAS Code
 ```javascript
+var ALLOWED_TOKEN = "YOUR_SECRET_TOKEN_HERE"; // Replace with your chosen token
+
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
+  if (data.token !== ALLOWED_TOKEN) {
+    return ContentService.createTextOutput(JSON.stringify({ error: "Unauthorized" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
   var target = data.target || 'en';
   var translated = data.q.map(function(t) {
     try { return LanguageApp.translate(t, '', target); } catch (err) { return t; }
@@ -32,8 +39,8 @@ function doPost(e) {
 ## GitHub Configuration
 1.  Go to your GitHub repository: **Settings > Secrets and variables > Actions**.
 2.  Click **New repository secret**.
-3.  Name: `GOOGLE_APPS_SCRIPT_URL`
-4.  Value: Paste your **Web App URL** here.
+3.  **Name**: `GOOGLE_APPS_SCRIPT_URL` | **Value**: Paste your **Web App URL**.
+4.  **Name**: `GOOGLE_APPS_SCRIPT_TOKEN` | **Value**: Paste your **SECRET_TOKEN**.
 
 ## Deployment
 1.  Push your changes to the `main` branch.
