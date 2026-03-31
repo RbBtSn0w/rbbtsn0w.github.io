@@ -214,6 +214,6 @@ jekyll-archives:
     category: /categories/:name/
 # Google Translate Configuration
 google_translate:
-  api_key: "YOUR_GOOGLE_TRANSLATE_API_KEY" # Replace with your restricted API key
+  # Configure any required API keys via environment variables or GitHub Actions secrets, not in _config.yml
   target_lang: "en"
   source_lang: "zh-CN"

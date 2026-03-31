@@ -3,38 +3,40 @@
 ## Decision: Implementation Strategy
 
 ### What was chosen
-- **Technology**: Google Cloud Translation API (Professional) via Client-side JavaScript.
-- **UI Component**: A custom floating action button or a sidebar link (to be decided in design).
+- **Technology**: Google Cloud Translation API via a **Google Apps Script (GAS) Proxy**.
+- **UI Component**: A custom floating action button in the post meta header.
 - **Persistence**: `localStorage` to remember language preference.
-- **Security**: The API key will be embedded in JS but restricted to `rbbtsn0w.github.io` domain in the Google Cloud Console.
+- **Security**: The API key is stored in the GAS project / CI secrets and never shipped to the browser. Access is protected via a shared token.
 
 ### Rationale
 - The user specifically requested "Google Translate API capabilities".
-- GitHub Pages is a static host, so we cannot use a backend proxy without external services (like Vercel/Netlify).
-- Domain-restricting the API key is the standard "static site" security measure for Google Cloud APIs.
-- Custom implementation allows for a premium, integrated feel compared to the legacy Google Translate widget.
+- GitHub Pages is a static host, so we use an external GAS-based proxy/workflow to handle secrets and stay keyless.
+- Build-time translation (Markdown -> JSON) avoids real-time latency and costs.
+- Custom implementation provides a premium, integrated feel compared to the legacy Google Translate widget.
 
 ### Alternatives Considered
-- **Google Translate Element (Dropdown)**: Rejected because it's deprecated, looks "cheap," and doesn't provide the "premium" feel requested in the system prompt.
-- **Jekyll-Polyglot (Manual translation)**: The user explicitly asked for "Google Translate API" to handle the translation dynamically.
+- **Client-Side API calls**: Rejected because embedding API keys in a public repo is insecure (even with domain restriction).
+- **Google Translate Element (Dropdown)**: Rejected because it's deprecated and looks "cheap".
+- **Jekyll-Polyglot (Manual translation)**: Rejected as the user explicitly asked for automated Google Translation.
 
 ## Decision: Chirpy Theme Integration
 
 ### What was chosen
-- **Hook Point**: `_includes/metadata-hook.html` for loading the translation JS and CSS.
-- **Article Selection**: Target the main article body (typically `.post-content` or `article` in Chirpy).
-- **Button Placement**: Top of the post header (next to date/categories) or a fixed button in the sidebar.
+- **Hook Point**: `_includes/metadata-hook.html` for loading the translation JS/CSS and configuration.
+- **Article Selection**: Target `.post-content` for replacement.
+- **Button Placement**: Injected after the `.post-meta` header.
 
 ### Rationale
-- `metadata-hook.html` is the supported way for users to add custom code to Chirpy without overriding core files.
-- Placing the toggle near the article title ensures high discoverability.
+- `metadata-hook.html` is the standard Chirpy extension point.
+- Placing the toggle near the title ensures high discoverability.
 
 ## Decision: Translation Logic
 
 ### What was chosen
-- **Recursive DOM Walker**: A script that walks the DOM tree of the article, translating text nodes while ignoring `<code>`, `<pre>`, and Mermaid diagram blocks.
-- **Loading State**: A subtle overlay or spinner on the article while the API is processing.
+- **Build-time Extraction**: A Node.js script extracts translatable bits from Markdown using a robust regex.
+- **GAS Atomic Call**: Entire articles are sent in one request to ensure consistency and quality.
+- **Client-side Rendering**: `marked.js` renders the translated Markdown into the browser DOM to preserve styles.
 
 ### Rationale
-- Preserving technical content (code/diagrams) is critical (Constitution Principle I).
-- Preventing layout shifts is a Success Criterion (SC-002).
+- Preserving styles while ensuring high-quality translation is critical.
+- Client-side rendering avoids having to parse Markdown in a complex way during the build phase without a standard library.
