@@ -46,6 +46,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.BLOG_DEPLOY_TOKEN }}
           # submodules: true
           # If using the 'assets' git submodule from Chirpy Starter, uncomment above
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
@@ -77,7 +78,7 @@ jobs:
           if [ -d "assets/translations" ] && [ -n "$(git status --porcelain assets/translations)" ]; then
             git add assets/translations
             git commit -m "chore(translate): update translation deltas [skip ci]"
-            git push
+            git push origin HEAD:master
           else
             echo "No translation changes to commit."
           fi
