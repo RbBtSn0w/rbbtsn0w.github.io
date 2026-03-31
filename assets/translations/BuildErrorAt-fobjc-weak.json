@@ -1,0 +1,7 @@
+{
+  "title": "Xcode build error at -fobjc-weak flag",
+  "description": "Fixed a build bug with -fobjc-weak when the deployment target was not supported, and explained the impact of Xcode configuration options.",
+  "content": "## Background\n\nWhen click Xcode project and upgrade the project config for old Xcode version, like manage auto release.\n\nyou will see this error on your message list.\n\nclang: error: -fobjc-weak is not supported on the current deployment target\n\nThe reason is Xcode add new command line \"CLANG_ENABLE_OBJC_WEAK = YES;\".\n\n## Resolve\n\nNow remove it on Xcode config, and build it again.\n\n\"CLANG_ENABLE_OBJC_WEAK = YES;\"",
+  "hash": "9281d00081b7693980e1deef7cb2549d33c5adb0f8546985e5ead8f26787d018",
+  "timestamp": "2026-03-31T15:35:56.272Z"
+}
