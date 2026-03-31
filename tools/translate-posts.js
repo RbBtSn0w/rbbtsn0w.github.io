@@ -1,7 +1,6 @@
 /**
- * Build-time Translation Tool (GAS Proxy Version)
- * Purpose: Translate Markdown posts into JSON deltas using Google Apps Script.
- * Features: SHA-256 Fingerprint checking, Skip identical content, GAS fallback.
+ * Build-time Translation Tool (Robust Version)
+ * Purpose: Translate Markdown posts into JSON deltas using Google Apps Script with Batching & Rate Limiting.
  */
 
 const fs = require('fs');
@@ -11,11 +10,15 @@ const crypto = require('crypto');
 // Configuration
 const postsDir = path.join(__dirname, '..', '_posts');
 const outputDir = path.join(__dirname, '..', 'assets', 'translations');
-const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL; // Hiden endpoint
-const TARGET_LANG = 'en';
+const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
+
+const CHUNK_SIZE = 10; // Max segments per GAS request
+const SLEEP_BETWEEN_CHUNKS = 1500; // 1.5s
+const SLEEP_BETWEEN_POSTS = 2000; // 2s
+const MAX_POSTS_PER_RUN = 15; // To prevent hitting daily quotas in one go
 
 if (!GAS_URL) {
-  console.warn('Warning: GOOGLE_APPS_SCRIPT_URL not found. Skipping translation phase.');
+  console.warn('Warning: GOOGLE_APPS_SCRIPT_URL not found. Skipping translation.');
   process.exit(0);
 }
 
@@ -23,68 +26,73 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-/**
- * SHA-256 Content Fingerprint
- */
 function getHash(content) {
   return crypto.createHash('sha256').update(content).digest('hex');
 }
 
-/**
- * GAS API Wrapper with Retry logic (T024 update)
- */
-async function fetchTranslation(textArray, target, retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(GAS_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          q: textArray,
-          target: target
-        })
-      });
-      
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
-      return data.data.translations.map(t => t.translatedText);
-    } catch (err) {
-      console.warn(`Retry ${i+1}/${retries} failed for translation: ${err.message}`);
-      if (i === retries - 1) throw err;
-      await new Promise(r => setTimeout(r, 2000)); // Wait 2s
-    }
-  }
-}
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 /**
- * Identified translatable blocks in Markdown (Skip code / Mermaid)
+ * Robust Translation Request (with Internal Chunking)
  */
+async function translateInChunks(textArray, target) {
+  const allResults = [];
+  
+  for (let i = 0; i < textArray.length; i += CHUNK_SIZE) {
+    const chunk = textArray.slice(i, i + CHUNK_SIZE);
+    console.log(`  - Sub-batch ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(textArray.length/CHUNK_SIZE)}...`);
+    
+    let retries = 2;
+    let success = false;
+    
+    while (retries >= 0 && !success) {
+      try {
+        const response = await fetch(GAS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q: chunk, target: target })
+        });
+        
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        
+        allResults.push(...data.data.translations.map(t => t.translatedText));
+        success = true;
+      } catch (err) {
+        console.warn(`    ! Attempt failed: ${err.message}. Retries left: ${retries}`);
+        retries--;
+        if (retries >= 0) await sleep(3000); // Wait longer on error
+      }
+    }
+    
+    if (!success) {
+      throw new Error(`Critical failure translating chunk starting at index ${i}`);
+    }
+    
+    if (i + CHUNK_SIZE < textArray.length) {
+      await sleep(SLEEP_BETWEEN_CHUNKS);
+    }
+  }
+  
+  return allResults;
+}
+
 function getTranslatableBlocks(markdown) {
   const blocks = [];
-  // Split by code blocks and mermaid tags
   const parts = markdown.split(/(```[\s\S]*?```|\{% mermaid %\}[\s\S]*?\{% endmermaid %\})/g);
-  
   parts.forEach(part => {
-    if (part.startsWith('```') || part.startsWith('{% mermaid %}')) {
-      blocks.push({ type: 'code', content: part });
-    } else {
-      blocks.push({ type: 'text', content: part });
-    }
+    if (part.startsWith('```') || part.startsWith('{% mermaid %}')) blocks.push({ type: 'code', content: part });
+    else blocks.push({ type: 'text', content: part });
   });
   return blocks;
 }
 
-/**
- * Standard Markdown Parser
- */
 function parsePost(content) {
   const fmMatch = content.match(/^---([\s\S]*?)---/);
   const frontMatter = fmMatch ? fmMatch[1] : '';
   const body = fmMatch ? content.slice(fmMatch[0].length) : content;
-  
   const title = (frontMatter.match(/title:\s*(.*)/) || [])[1]?.replace(/['"]/g, '').trim() || '';
   const desc = (frontMatter.match(/description:\s*(.*)/) || [])[1]?.replace(/['"]/g, '').trim() || '';
-  
   return { title, desc, body: body.trim() };
 }
 
@@ -92,20 +100,15 @@ async function processFile(filename) {
   const filePath = path.join(postsDir, filename);
   const slug = filename.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
   const outPath = path.join(outputDir, `${slug}.json`);
-  
   const rawContent = fs.readFileSync(filePath, 'utf8');
   const currentHash = getHash(rawContent);
 
-  // Check if translation exists and matches hash
   if (fs.existsSync(outPath)) {
     const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
-    if (existing.hash === currentHash) {
-      console.log(`✓ [Skip] ${filename} (Hash matches)`);
-      return;
-    }
+    if (existing.hash === currentHash) return false; // Already done
   }
 
-  console.log(`🌐 [Translating] ${filename}...`);
+  console.log(`🌐 [Processing] ${filename}`);
   const parsed = parsePost(rawContent);
   const blocks = getTranslatableBlocks(parsed.body);
   const textBlocks = blocks.filter(b => b.type === 'text' && b.content.trim().length > 0);
@@ -113,13 +116,10 @@ async function processFile(filename) {
   const toTranslate = [parsed.title, parsed.desc, ...textBlocks.map(b => b.content)];
   
   try {
-    const translated = await fetchTranslation(toTranslate, TARGET_LANG);
-    
-    let transIndex = 2; // Offset for title and desc
+    const translated = await translateInChunks(toTranslate, 'en');
+    let transIndex = 2;
     const resultBody = blocks.map(b => {
-      if (b.type === 'text' && b.content.trim().length > 0) {
-        return translated[transIndex++];
-      }
+      if (b.type === 'text' && b.content.trim().length > 0) return translated[transIndex++];
       return b.content;
     }).join('');
 
@@ -127,23 +127,39 @@ async function processFile(filename) {
       title: translated[0],
       description: translated[1],
       content: resultBody,
-      hash: currentHash, // Store hash for future comparisons
+      hash: currentHash,
       timestamp: new Date().toISOString()
     };
 
     fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-    console.log(`✓ [Success] Generated: ${outPath}`);
+    console.log(`✓ [Done] ${filename}`);
+    return true;
   } catch (err) {
-    console.error(`✗ [Error] ${filename}: ${err.message}`);
+    console.error(`✗ [Fail] ${filename}: ${err.message}`);
+    return false;
   }
 }
 
 async function main() {
   const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
-  console.log(`Checking ${files.length} posts for translation update...`);
+  let processedCount = 0;
+  
+  console.log(`Starting translation pipeline. Active files: ${files.length}, Max this run: ${MAX_POSTS_PER_RUN}`);
+
   for (const file of files) {
-    await processFile(file);
+    if (processedCount >= MAX_POSTS_PER_RUN) {
+      console.log(`Reached limit of ${MAX_POSTS_PER_RUN} posts. Stopping for this run.`);
+      break;
+    }
+    
+    const wasProcessed = await processFile(file);
+    if (wasProcessed) {
+      processedCount++;
+      await sleep(SLEEP_BETWEEN_POSTS);
+    }
   }
+  
+  console.log(`Pipeline finished. Processed: ${processedCount} posts.`);
 }
 
 main().catch(console.error);
