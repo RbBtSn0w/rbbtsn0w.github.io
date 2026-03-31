@@ -8,7 +8,7 @@
   if (!CONFIG || !CONFIG.slug) return;
 
   const selectors = {
-    article: '.content, .post-content, article',
+    article: '.content, .post-content', // Removed generic 'article' tag to prevent overwriting header
     meta: '.post-meta',
     title: 'h1',
     desc: '.post-desc',
@@ -147,6 +147,8 @@
   }
 
   function injectToggle() {
+    if (document.querySelector(selectors.btn)) return; // Skip if already exists (PR-20 Fix)
+
     // Try multiple possible locations for injection (PR-20 Resiliency)
     const meta = document.querySelector(selectors.meta) 
                 || document.querySelector(selectors.desc) 
