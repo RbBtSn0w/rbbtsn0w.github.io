@@ -35,12 +35,12 @@ mermaid: true
 通过将经过实战检验的 Superpowers 无缝嵌入到 Spec Kit 严格的工作流之中，Superpowers Bridge 相当于给它打了基因强化剂。原本需要主动唤起的超级能力，统统变成了工作流中不可逾越的**强制护栏（Guardrails）**。
 
 ```mermaid
-graph TD
-    classDef workflow fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef hook fill:#ffe4e1,stroke:#cd5c5c,stroke-width:2px;
-    classDef skill fill:#d4f1f4,stroke:#189ab4,stroke-width:2px;
+flowchart TD
+    classDef workflow fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef hook fill:#ffe4e1,stroke:#cd5c5c,stroke-width:2px
+    classDef skill fill:#d4f1f4,stroke:#189ab4,stroke-width:2px
 
-    subgraph spec_workflow ["Spec Kit (Standard SDD Workflow)"]
+    subgraph spec_workflow [Spec Kit: Standard SDD Workflow]
         S(["specify (澄清需求)"]):::workflow
         T(["tasks (拆解任务)"]):::workflow
         I(["implement (编写代码)"]):::workflow
@@ -49,21 +49,21 @@ graph TD
         T --> I
     end
 
-    subgraph superpowers_bridge ["Superpowers Bridge (Guardrails)"]
+    subgraph superpowers_bridge [Superpowers Bridge: Guardrails]
         B_S(["before_specify"]):::hook
         A_T(["after_tasks"]):::hook
-        B_I(["before_implement (强制)"]):::hook
-        A_I(["after_implement (强制)"]):::hook
+        B_I(["before_implement(强制)"]):::hook
+        A_I(["after_implement(强制)"]):::hook
 
         C["clarify (首脑风暴与澄清)"]:::skill
         R["review (任务覆盖检查)"]:::skill
         TDD["tdd (测试驱动开发)"]:::skill
         V["verify (测试结果核查)"]:::skill
         
-        B_S -. 挂载技能 .-> C
-        A_T -. 挂载技能 .-> R
-        B_I -. 挂载技能 .-> TDD
-        A_I -. 挂载技能 .-> V
+        B_S -.->|挂载技能| C
+        A_T -.->|挂载技能| R
+        B_I -.->|挂载技能| TDD
+        A_I -.->|挂载技能| V
     end
 
     B_S --> S
