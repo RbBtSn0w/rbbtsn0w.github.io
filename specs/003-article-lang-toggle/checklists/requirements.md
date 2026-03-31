@@ -1,12 +1,12 @@
 # Specification Quality Checklist: Article Language Toggle
 
-**Purpose**: Validate specification completeness and quality before proceeding to planning
+**Purpose**: Validate specification completeness and quality before proceeding to planning.
 **Created**: 2026-03-31
-**Feature**: [Link to spec.md](file:///Users/snow/Documents/GitHub/rbbtsn0w.github.io/specs/003-article-lang-toggle/spec.md)
+**Feature**: [Link to spec.md](../spec.md)
 
 ## Content Quality
 
-- [x] No implementation details (languages, frameworks, APIs)
+- [ ] No implementation details (languages, frameworks, APIs) -- *Note: Spec intentionally includes Jekyll and Google Translate as per user request.*
 - [x] Focused on user value and business needs
 - [x] Written for non-technical stakeholders
 - [x] All mandatory sections completed
@@ -16,7 +16,7 @@
 - [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
-- [x] Success criteria are technology-agnostic (no implementation details)
+- [ ] Success criteria are technology-agnostic (no implementation details) -- *Note: Spec includes service-specific requirements.*
 - [x] All acceptance scenarios are defined
 - [x] Edge cases are identified
 - [x] Scope is clearly bounded
@@ -27,10 +27,10 @@
 - [x] All functional requirements have clear acceptance criteria
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
-- [x] No implementation details leak into specification
+- [ ] No implementation details leak into specification -- *Note: Platform and service are explicitly stated.*
 
 ## Notes
 
-- Feature ready for planning.
+- Feature ready for planning with explicit service constraints.
 - Platform: Jekyll
-- Service: Google Translate API
+- Service: Google Translate API (via GAS Proxy)

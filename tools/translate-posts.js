@@ -11,7 +11,7 @@ const crypto = require('crypto');
 // Configuration
 const postsDir = path.join(__dirname, '..', '_posts');
 const outputDir = path.join(__dirname, '..', 'assets', 'translations');
-const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
+const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL; // Hidden endpoint
 const GAS_TOKEN = process.env.GOOGLE_APPS_SCRIPT_TOKEN;
 
 const SLEEP_BETWEEN_POSTS = 3000;
@@ -47,12 +47,31 @@ async function translateAtomic(textArray, target) {
   }
 }
 
+/**
+ * Identified translatable blocks in Markdown (Skip code / Mermaid / inline code / Liquid)
+ */
 function getTranslatableBlocks(markdown) {
   const blocks = [];
-  const parts = markdown.split(/(```[\s\S]*?```|\{% mermaid %\}[\s\S]*?\{% endmermaid %\})/g);
+  // Split by fenced code blocks, mermaid tags, inline code spans, and Liquid tags
+  const parts = markdown.split(
+    /(```[\s\S]*?```|\{\% mermaid \%\}[\s\S]*?\{\% endmermaid \%\}|`[^`\n]+`|\{\%[\s\S]*?\%\}|\{\{[\s\S]*?\}\})/g
+  );
+
   parts.forEach(part => {
-    if (part.startsWith('```') || part.startsWith('{% mermaid %}')) blocks.push({ type: 'code', content: part });
-    else blocks.push({ type: 'text', content: part });
+    if (!part) {
+      return; // skip empty segments
+    }
+
+    const isFencedCode = /^```[\s\S]*?```$/.test(part);
+    const isMermaidBlock = /^\{\% mermaid \%\}[\s\S]*?\{\% endmermaid \%\}$/.test(part);
+    const isInlineCode = /^`[^`\n]+`$/.test(part);
+    const isLiquidTag = /^\{\%[\s\S]*?\%\}$/.test(part) || /^\{\{[\s\S]*?\}\}$/.test(part);
+
+    if (isFencedCode || isMermaidBlock || isInlineCode || isLiquidTag) {
+      blocks.push({ type: 'code', content: part });
+    } else {
+      blocks.push({ type: 'text', content: part });
+    }
   });
   return blocks;
 }

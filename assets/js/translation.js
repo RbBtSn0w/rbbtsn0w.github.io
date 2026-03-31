@@ -31,13 +31,13 @@
   async function loadTranslation() {
     if (translatedData) return translatedData;
     
-    // Construct the path: /assets/translations/slug.json
-    // Use relative_url logic (handled here via /assets/...)
-    const url = `/assets/translations/${CONFIG.slug}.json`;
+    // Construct the path, considering baseurl (PR-20 Fix)
+    const base = CONFIG.baseurl || '';
+    const url = `${base}/assets/translations/${CONFIG.slug}.json`;
     
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error('Translation data not found. It will be available after the next site build.');
+      throw new Error('Translation data not found.');
     }
     translatedData = await response.json();
     return translatedData;
@@ -69,7 +69,17 @@
 
       if (titleEl) titleEl.innerHTML = data.title;
       if (descEl) descEl.innerHTML = data.description;
-      if (contentEl) contentEl.innerHTML = data.content;
+      
+      // Render Markdown to HTML if marked is available (PR-20 Fix)
+      if (contentEl) {
+        if (window.marked) {
+          // Use marked for high-quality rendering
+          contentEl.innerHTML = window.marked.parse(data.content);
+        } else {
+          // Fallback to raw injection
+          contentEl.innerHTML = data.content;
+        }
+      }
 
       currentLang = CONFIG.targetLang || 'en';
       updateUI();
@@ -108,9 +118,15 @@
    */
   function toggleLoadingUI(show) {
     const btn = document.querySelector(selectors.btn);
+    const article = document.querySelector(selectors.article);
+    
     if (btn) {
       btn.disabled = show;
       btn.innerHTML = show ? '<i class="fas fa-spinner fa-spin"></i><span>...</span>' : getBtnContent();
+    }
+    
+    if (article) {
+      article.classList.toggle('translation-loading', show); // PR-20 Fix
     }
   }
 
@@ -156,11 +172,11 @@
   }
 
   function savePreference(lang) {
-    localStorage.setItem('user-language-pref', lang);
+    localStorage.setItem('user-language', lang); // PR-20 Fix (Key Name)
   }
 
   function loadPreference() {
-    return localStorage.getItem('user-language-pref');
+    return localStorage.getItem('user-language'); // PR-20 Fix (Key Name)
   }
 
   // Init

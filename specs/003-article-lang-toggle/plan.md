@@ -1,31 +1,19 @@
 # Implementation Plan: Article Language Toggle
 
-**Branch**: `003-article-lang-toggle` | **Date**: 2026-03-31 | **Spec**: [specs/003-article-lang-toggle/spec.md](file:///Users/snow/Documents/GitHub/rbbtsn0w.github.io/specs/003-article-lang-toggle/spec.md)
-**Input**: Feature specification from `/specs/003-article-lang-toggle/spec.md`
+**Branch**: `003-article-lang-toggle` | **Date**: 2026-03-31 | **Spec**: [specs/003-article-lang-toggle/spec.md](spec.md)
 
 ## Summary
 
-This feature adds a language translation toggle (CN/EN) to article pages on the Jekyll blog. It leverages the Google Cloud Translation API to perform dynamic, on-the-fly translation of the article body while preserving technical formatting (code blocks, Mermaid diagrams).
+This feature adds an automated build-time translation pipeline to the Jekyll blog. It pre-translates Chinese articles into English JSON deltas using a private **Google Apps Script (GAS) Proxy**, ensuring high performance, zero API key exposure, and a cost-free experience for the user.
 
 ## Technical Context
 
-**Language/Version**: JavaScript (ES6+), Ruby (Jekyll 4.4), Liquid.  
-**Primary Dependencies**: Google Cloud Translation API v2/v3, Chirpy Theme.  
-**Storage**: `localStorage` for user preference persistence.  
-**Testing**: Manual cross-browser testing, Jekyll build verification.  
-**Target Platform**: Web browsers (Chrome, Safari, Firefox).  
-**Project Type**: Jekyll Static Blog Extension.  
-**Performance Goals**: Translation initiation under 500ms; No visible layout shift on toggle.  
-**Constraints**: API character limits/costs; Static site security (API key exposure).  
-**Scale/Scope**: Universal across all blog posts (`_posts`).
-
-## Constitution Check
-
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
-
-- **Principle I: Content-First**: ✅ Research ensures code blocks and Mermaid diagrams are preserved.
-- **Principle IV: Visual Consistency**: ✅ Button design will follow Chirpy's UI patterns (using theme variables).
-- **Principle V: Performance & SEO**: ✅ Translation is dynamic (client-side), not impacting SEO indexed content (which remains original Chinese). Loading states will prevent CLS.
+- **Language/Version**: JavaScript (ES6+), Node.js (v20+), Ruby (Jekyll 4.4), Liquid.
+- **Primary Dependencies**: Google Apps Script (Internal LanguageApp), GitHub Actions.
+- **Architecture**: Build-time "Delta Cache" (Markdown -> GAS -> JSON).
+- **Storage**: `localStorage` for user preference persistence.
+- **Security**: Token-based authorization for the GAS proxy; Secrets managed via GitHub repository settings.
+- **Performance**: Instant client-side switching via JSON fetching; Content hashing ensures efficient builds.
 
 ## Project Structure
 
@@ -34,29 +22,33 @@ This feature adds a language translation toggle (CN/EN) to article pages on the 
 ```text
 specs/003-article-lang-toggle/
 ├── plan.md              # This file
-├── research.md          # Implementation strategy & API selection
+├── research.md          # Implementation strategy & GAS Pivot
 ├── data-model.md        # State management (localStorage)
-├── quickstart.md        # How to enable the feature
-└── tasks.md             # Implementation steps
+├── quickstart.md        # How to enable the feature (GAS setup)
+└── tasks.md             # Implementation steps (T001-T025)
 ```
 
 ### Source Code (repository root)
 
 ```text
 _includes/
-└── metadata-hook.html   # Entry point for custom JS/CSS
+└── metadata-hook.html   # Entry point & Config injection
 
 assets/
 ├── js/
-│   └── translation.js  # Translation logic & API wrapper
-└── css/
-    └── translation.css # Button & loading state styles
+│   └── translation.js  # Toggle logic & JSON fetching
+├── css/
+│   └── translation.css # Button & Loading overlay styles
+└── translations/
+    └── [slug].json     # Pre-built translation deltas
+    
+tools/
+└── translate-posts.js  # Node.js build-time translation engine
 ```
-
-**Structure Decision**: Chirpy theme extension via root-level file overrides and static assets.
 
 ## Complexity Tracking
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| Client-side API usage | Static hosting (GitHub Pages) | No backend available for proxy; domain-restricting the key is the only viable alternative for "Professional API" request. |
+| Build-time Proxy | Security & Performance | Client-side keys are easily stolen; Real-time API calls are slow and expensive. |
+| Custom Node script | Jekyll limitations | Jekyll/Liquid cannot perform external API calls during the local build phase directly. |
