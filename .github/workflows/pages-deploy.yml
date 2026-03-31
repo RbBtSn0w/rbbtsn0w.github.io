@@ -40,13 +40,19 @@ jobs:
     outputs:
       build-time: ${{ steps.build-time.outputs.time }}
       site-size: ${{ steps.site-size.outputs.size }}
-
     steps:
+      - name: Generate Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.BLOG_DEPLOY_TOKEN }}
+          token: ${{ steps.generate-token.outputs.token }}
           # submodules: true
           # If using the 'assets' git submodule from Chirpy Starter, uncomment above
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
