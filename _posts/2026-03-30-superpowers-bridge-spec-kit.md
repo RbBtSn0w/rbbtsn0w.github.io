@@ -40,7 +40,7 @@ graph TD
     classDef hook fill:#ffe4e1,stroke:#cd5c5c,stroke-width:2px;
     classDef skill fill:#d4f1f4,stroke:#189ab4,stroke-width:2px;
 
-    subgraph "Spec Kit (Standard SDD Workflow)"
+    subgraph spec_workflow ["Spec Kit (Standard SDD Workflow)"]
         S(["specify (澄清需求)"]):::workflow
         T(["tasks (拆解任务)"]):::workflow
         I(["implement (编写代码)"]):::workflow
@@ -49,7 +49,7 @@ graph TD
         T --> I
     end
 
-    subgraph "Superpowers Bridge (Guardrails)"
+    subgraph superpowers_bridge ["Superpowers Bridge (Guardrails)"]
         B_S{{"before_specify"}}:::hook
         A_T{{"after_tasks"}}:::hook
         B_I{{"before_implement (强制)"}}:::hook
@@ -60,10 +60,10 @@ graph TD
         TDD["tdd (测试驱动开发)"]:::skill
         V["verify (测试结果核查)"]:::skill
         
-        B_S -.-> |"挂载技能"| C
-        A_T -.-> |"挂载技能"| R
-        B_I -.-> |"挂载技能"| TDD
-        A_I -.-> |"挂载技能"| V
+        B_S -. "挂载技能" .-> C
+        A_T -. "挂载技能" .-> R
+        B_I -. "挂载技能" .-> TDD
+        A_I -. "挂载技能" .-> V
     end
 
     B_S --> S
