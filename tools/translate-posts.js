@@ -15,7 +15,7 @@ const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL; // Hidden endpoint
 const GAS_TOKEN = process.env.GOOGLE_APPS_SCRIPT_TOKEN;
 
 const SLEEP_BETWEEN_POSTS = 3000;
-const HISTORY_DRIP_LIMIT = 5;    // Number of OLD posts to backfill per run
+const HISTORY_DRIP_LIMIT = 8;    // Number of OLD posts to backfill per run
 const NEW_PRIORITY_LIMIT = 15;   // Max NEW/MODIFIED posts per run (guardrail)
 
 if (!GAS_URL) {
@@ -97,7 +97,7 @@ async function processFile(filename) {
   const blocks = getTranslatableBlocks(parsed.body);
   const textBlocks = blocks.filter(b => b.type === 'text' && b.content.trim().length > 0);
   const toTranslate = [parsed.title, parsed.desc, ...textBlocks.map(b => b.content)];
-  
+
   try {
     const translated = await translateAtomic(toTranslate, 'en');
     let transIndex = 2;
@@ -123,7 +123,7 @@ async function processFile(filename) {
 
 async function main() {
   const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
-  
+
   const modifiedQueue = [];
   const untranslatedQueue = [];
 
