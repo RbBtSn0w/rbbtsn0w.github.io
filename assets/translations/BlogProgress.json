@@ -1,0 +1,7 @@
+{
+  "title": "Blog progress",
+  "description": "",
+  "content": "## Background\n\nThis blog is built using [Jekyll blog](https://jekyllrb.com) and hosted on Github.io. After running for about six months, we want to add tag functionality, mainly for differentiation and easier indexing.\n\n## Adding Tags\n\nTo add tags, add the `Plug` module. Open `_config.yml`, find `plug`, and add the following two modules: `-jekyll-archives` and `-jekyll-sitemap`.\n\nThen, in each file under the `_posts` directory, add `categories` and `tags`, separating multiple tags with spaces.\n\n## Post Format\n\n### Code\n\nNotes:\n\n* First letter lowercase\n\n*`Objective-c` need replace to `objc`For code syntax.\n\n* Some commonly used ones`Crash`, `堆栈信息`These types all use the same standard.`console` 即可.\n\n> [^write-a-new-post] By default, all languages except plaintext, console, and terminal will display line numbers. When you want to hide the line number of a code block, add the class nolineno to it:\n\n````markdown\n```shell\necho 'No more line numbers!'\n```\n{: .nolineno }\n````\n\n更多[^code-table].\n\n## Reverse Footnote\n\n[^code-table]: [Supported syntax highlighting in Jekyll](https://www.fabriziomusacchio.com/blog/2021-08-11-Syntax_Highlighting_in_Jekyll/)\n\n[^write-a-new-post]: [write-a-new-post](https://chirpy.cotes.page/posts/write-a-new-post/)",
+  "hash": "e3035cf41646a6c9bb64172f83c423edcb144912dc581059322f2b6a327b993c",
+  "timestamp": "2026-03-31T14:26:37.229Z"
+}

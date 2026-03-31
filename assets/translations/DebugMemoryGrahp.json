@@ -1,0 +1,7 @@
+{
+  "title": "Xcode Debug Memory Graph",
+  "description": "Enable logging and configuration for Xcode Memory Graph to help locate memory objects and leaks.",
+  "content": "This feature is familiar to everyone. However, when using it, you can only see the graph structure, not the stack trace on the code symbols.\n\nHere's a way to enable it.\n\nOpen the Schema settings, click Diagnostics, find Login and check it, then select All Allocation and Free Historey.\n\nRerun it and see if you get the desired result.",
+  "hash": "70884b6739566c367ed46bb88102ab74d6f039ab0e1ba1d27a4acdf44e4e96c0",
+  "timestamp": "2026-03-31T14:26:49.754Z"
+}
