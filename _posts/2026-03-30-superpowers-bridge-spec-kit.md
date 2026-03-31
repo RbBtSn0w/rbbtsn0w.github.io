@@ -44,9 +44,6 @@ flowchart TD
         S(["specify (澄清需求)"]):::workflow
         T(["tasks (拆解任务)"]):::workflow
         I(["implement (编写代码)"]):::workflow
-        
-        S --> T
-        T --> I
     end
 
     subgraph superpowers_bridge [Superpowers Bridge: Guardrails]
@@ -67,7 +64,8 @@ flowchart TD
     end
 
     B_S --> S
-    S --> A_T
+    S --> T
+    T --> A_T
     A_T --> B_I
     B_I --> I
     I --> A_I
