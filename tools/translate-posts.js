@@ -1,6 +1,7 @@
 /**
- * Build-time Translation Tool (Robust Version)
- * Purpose: Translate Markdown posts into JSON deltas using Google Apps Script with Batching & Rate Limiting.
+ * Build-time Translation Tool (Priority-Drip Version)
+ * Purpose: Always prioritize NEW/MODIFIED posts, then drip-feed history.
+ * Ensures fresh content is live while backfilling archive without hitting quotas.
  */
 
 const fs = require('fs');
@@ -12,13 +13,11 @@ const postsDir = path.join(__dirname, '..', '_posts');
 const outputDir = path.join(__dirname, '..', 'assets', 'translations');
 const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
 
-const CHUNK_SIZE = 10; // Max segments per GAS request
-const SLEEP_BETWEEN_CHUNKS = 1500; // 1.5s
-const SLEEP_BETWEEN_POSTS = 2000; // 2s
-const MAX_POSTS_PER_RUN = 15; // To prevent hitting daily quotas in one go
+const SLEEP_BETWEEN_POSTS = 3000;
+const HISTORY_DRIP_LIMIT = 5;    // Number of OLD posts to backfill per run
+const NEW_PRIORITY_LIMIT = 15;   // Max NEW/MODIFIED posts per run (guardrail)
 
 if (!GAS_URL) {
-  console.warn('Warning: GOOGLE_APPS_SCRIPT_URL not found. Skipping translation.');
   process.exit(0);
 }
 
@@ -32,49 +31,19 @@ function getHash(content) {
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-/**
- * Robust Translation Request (with Internal Chunking)
- */
-async function translateInChunks(textArray, target) {
-  const allResults = [];
-  
-  for (let i = 0; i < textArray.length; i += CHUNK_SIZE) {
-    const chunk = textArray.slice(i, i + CHUNK_SIZE);
-    console.log(`  - Sub-batch ${Math.floor(i/CHUNK_SIZE) + 1}/${Math.ceil(textArray.length/CHUNK_SIZE)}...`);
-    
-    let retries = 2;
-    let success = false;
-    
-    while (retries >= 0 && !success) {
-      try {
-        const response = await fetch(GAS_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ q: chunk, target: target })
-        });
-        
-        const data = await response.json();
-        if (data.error) throw new Error(data.error);
-        
-        allResults.push(...data.data.translations.map(t => t.translatedText));
-        success = true;
-      } catch (err) {
-        console.warn(`    ! Attempt failed: ${err.message}. Retries left: ${retries}`);
-        retries--;
-        if (retries >= 0) await sleep(3000); // Wait longer on error
-      }
-    }
-    
-    if (!success) {
-      throw new Error(`Critical failure translating chunk starting at index ${i}`);
-    }
-    
-    if (i + CHUNK_SIZE < textArray.length) {
-      await sleep(SLEEP_BETWEEN_CHUNKS);
-    }
+async function translateAtomic(textArray, target) {
+  try {
+    const response = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ q: textArray, target: target })
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    return data.data.translations.map(t => t.translatedText);
+  } catch (err) {
+    throw err;
   }
-  
-  return allResults;
 }
 
 function getTranslatableBlocks(markdown) {
@@ -103,20 +72,14 @@ async function processFile(filename) {
   const rawContent = fs.readFileSync(filePath, 'utf8');
   const currentHash = getHash(rawContent);
 
-  if (fs.existsSync(outPath)) {
-    const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
-    if (existing.hash === currentHash) return false; // Already done
-  }
-
-  console.log(`🌐 [Processing] ${filename}`);
+  console.log(`🌐 [Translating] ${filename}`);
   const parsed = parsePost(rawContent);
   const blocks = getTranslatableBlocks(parsed.body);
   const textBlocks = blocks.filter(b => b.type === 'text' && b.content.trim().length > 0);
-  
   const toTranslate = [parsed.title, parsed.desc, ...textBlocks.map(b => b.content)];
   
   try {
-    const translated = await translateInChunks(toTranslate, 'en');
+    const translated = await translateAtomic(toTranslate, 'en');
     let transIndex = 2;
     const resultBody = blocks.map(b => {
       if (b.type === 'text' && b.content.trim().length > 0) return translated[transIndex++];
@@ -130,9 +93,7 @@ async function processFile(filename) {
       hash: currentHash,
       timestamp: new Date().toISOString()
     };
-
     fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-    console.log(`✓ [Done] ${filename}`);
     return true;
   } catch (err) {
     console.error(`✗ [Fail] ${filename}: ${err.message}`);
@@ -142,24 +103,52 @@ async function processFile(filename) {
 
 async function main() {
   const files = fs.readdirSync(postsDir).filter(f => f.endsWith('.md'));
-  let processedCount = 0;
   
-  console.log(`Starting translation pipeline. Active files: ${files.length}, Max this run: ${MAX_POSTS_PER_RUN}`);
+  const modifiedQueue = [];
+  const untranslatedQueue = [];
 
   for (const file of files) {
-    if (processedCount >= MAX_POSTS_PER_RUN) {
-      console.log(`Reached limit of ${MAX_POSTS_PER_RUN} posts. Stopping for this run.`);
-      break;
+    const filePath = path.join(postsDir, file);
+    const slug = file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+    const outPath = path.join(outputDir, `${slug}.json`);
+    const rawContent = fs.readFileSync(filePath, 'utf8');
+    const currentHash = getHash(rawContent);
+
+    if (!fs.existsSync(outPath)) {
+      untranslatedQueue.push(file);
+    } else {
+      const existing = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+      if (existing.hash !== currentHash) {
+        modifiedQueue.push(file);
+      }
     }
-    
-    const wasProcessed = await processFile(file);
-    if (wasProcessed) {
-      processedCount++;
+  }
+
+  console.log(`Found: ${modifiedQueue.length} modified, ${untranslatedQueue.length} untranslated history.`);
+
+  let totalProcessed = 0;
+
+  // Level 1: Modified/New Posts (Limit 15 per run as safety)
+  for (const file of modifiedQueue.slice(0, NEW_PRIORITY_LIMIT)) {
+    if (await processFile(file)) {
+      totalProcessed++;
       await sleep(SLEEP_BETWEEN_POSTS);
     }
   }
-  
-  console.log(`Pipeline finished. Processed: ${processedCount} posts.`);
+
+  // Level 2: Random Drip History (Only if we have budget left)
+  if (totalProcessed < NEW_PRIORITY_LIMIT) {
+    const budgetLeft = Math.min(HISTORY_DRIP_LIMIT, NEW_PRIORITY_LIMIT - totalProcessed);
+    console.log(`Backfilling history (Budget: ${budgetLeft})...`);
+    for (const file of untranslatedQueue.slice(0, budgetLeft)) {
+      if (await processFile(file)) {
+        totalProcessed++;
+        await sleep(SLEEP_BETWEEN_POSTS);
+      }
+    }
+  }
+
+  console.log(`Total translated this run: ${totalProcessed}`);
 }
 
 main().catch(console.error);
