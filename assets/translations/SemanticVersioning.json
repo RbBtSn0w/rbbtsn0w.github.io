@@ -1,0 +1,7 @@
+{
+  "title": "Semantic Versioning",
+  "description": "",
+  "content": "I've been involved in projects for about 10 years, covering a considerable number of projects. However, there's no unified standard for version management. A while ago, a colleague recommended Semantic Versioning to me, which provides a standardized definition for software version numbers. In reality, each company has its own way of defining software version numbers, so they generally differ.\n\nHere's a brief explanation of this concept.\n\nVersion Format:`主版本号.次版本号.修订号`The version number increment rules are as follows:\n\n* Major version number: When you make incompatible API changes.\n\n* Minor version number: When you make backward-compatible feature additions.\n\n* Revision number: When you make backward-compatible bug fixes.\n\nPrevious version numbers and version build metadata can be added after \"major version number.minor version number.revision number\" as extensions.\n\n> For detailed explanations and instructions, please visit the official website [Semantic Versioning](https://semver.org)",
+  "hash": "735d1c5830d80180426c8dcfc59d779544253c4cb4ddeae84863f6981d0d6950",
+  "timestamp": "2026-03-31T15:37:48.518Z"
+}

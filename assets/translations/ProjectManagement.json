@@ -1,0 +1,7 @@
+{
+  "title": "Project Management",
+  "description": "",
+  "content": "## Store Point\n\nMy rough understanding is that it's a score given when evaluating a requirement, categorized by complexity, duration, and associated risks/uncertainties.\n\n> When using story points for estimation, we assign one point to each item. The raw data for the item's estimation is not important; we only focus on the final relative estimate. A user story with an estimate of 2 should be twice the size of a user story with an estimate of 1. It should also be two-thirds the size of another user story with an estimate of 3.\n\nWhat does a story point include?\n\nSince story points represent the total workload required to develop a user story, the team's estimation must consider all factors affecting workload. This might include:\n\nThe amount of work to be done\n\nThe complexity of the work\n\nAny risks or uncertainties in the work to be done\n\nWhen using story points for estimation, each of these factors must be considered. Let's see how each factor affects story points.\n\n[What exactly is a story point?] [https://www.cnblogs.com/sophia194910/p/8334906.html](https://www.cnblogs.com/sophia194910/p/8334906.html)",
+  "hash": "13964dba564a29c8295b00ab13fa2d462dfb126c40ef4912ed2d319b58a86dcb",
+  "timestamp": "2026-03-31T15:37:53.868Z"
+}
