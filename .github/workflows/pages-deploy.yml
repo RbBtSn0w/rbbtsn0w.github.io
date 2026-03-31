@@ -68,6 +68,7 @@ jobs:
           node tools/translate-posts.js
         env:
           GOOGLE_APPS_SCRIPT_URL: ${{ secrets.GOOGLE_APPS_SCRIPT_URL }}
+          GOOGLE_APPS_SCRIPT_TOKEN: ${{ secrets.GOOGLE_APPS_SCRIPT_TOKEN }}
 
       - name: Build site
         id: build

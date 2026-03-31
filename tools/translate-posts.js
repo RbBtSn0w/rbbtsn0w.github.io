@@ -12,6 +12,7 @@ const crypto = require('crypto');
 const postsDir = path.join(__dirname, '..', '_posts');
 const outputDir = path.join(__dirname, '..', 'assets', 'translations');
 const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL;
+const GAS_TOKEN = process.env.GOOGLE_APPS_SCRIPT_TOKEN;
 
 const SLEEP_BETWEEN_POSTS = 3000;
 const HISTORY_DRIP_LIMIT = 5;    // Number of OLD posts to backfill per run
@@ -36,7 +37,7 @@ async function translateAtomic(textArray, target) {
     const response = await fetch(GAS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ q: textArray, target: target })
+      body: JSON.stringify({ q: textArray, target: target, token: GAS_TOKEN })
     });
     const data = await response.json();
     if (data.error) throw new Error(data.error);
