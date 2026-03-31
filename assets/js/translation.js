@@ -8,7 +8,7 @@
   if (!CONFIG || !CONFIG.slug) return;
 
   const selectors = {
-    article: '.post-content',
+    article: '.content, .post-content, article',
     meta: '.post-meta',
     title: 'h1',
     desc: '.post-desc',
@@ -147,7 +147,10 @@
   }
 
   function injectToggle() {
-    const meta = document.querySelector(selectors.meta);
+    // Try multiple possible locations for injection (PR-20 Resiliency)
+    const meta = document.querySelector(selectors.meta) 
+                || document.querySelector(selectors.desc) 
+                || document.querySelector(selectors.title);
     if (!meta) return;
 
     const btnHtml = `
@@ -179,12 +182,18 @@
     return localStorage.getItem('user-language'); // PR-20 Fix (Key Name)
   }
 
-  // Init
-  document.addEventListener('DOMContentLoaded', () => {
+  function init() {
     if (document.querySelector(selectors.article)) {
       injectToggle();
       if (loadPreference() === 'en') applyTranslation();
     }
-  });
+  }
+
+  // Init
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
 })();
