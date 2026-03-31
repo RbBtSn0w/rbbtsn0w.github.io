@@ -78,13 +78,14 @@ jobs:
           GOOGLE_APPS_SCRIPT_TOKEN: ${{ secrets.GOOGLE_APPS_SCRIPT_TOKEN }}
 
       - name: Commit and Push Translations
+        if: github.event_name == 'push'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           if [ -d "assets/translations" ] && [ -n "$(git status --porcelain assets/translations)" ]; then
             git add assets/translations
             git commit -m "chore(translate): update translation deltas [skip ci]"
-            git push origin HEAD:master
+            git push origin HEAD:${{ github.ref_name }}
           else
             echo "No translation changes to commit."
           fi
