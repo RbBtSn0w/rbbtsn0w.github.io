@@ -62,6 +62,13 @@ jobs:
           bundle config set --local path vendor/bundle
           bundle install --jobs 4 --retry 3
 
+      - name: Article Translation
+        run: |
+          echo "🌐 Starting build-time translation (GAS Proxy)..."
+          node tools/translate-posts.js
+        env:
+          GOOGLE_APPS_SCRIPT_URL: ${{ secrets.GOOGLE_APPS_SCRIPT_URL }}
+
       - name: Build site
         id: build
         run: |
