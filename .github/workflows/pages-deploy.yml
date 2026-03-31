@@ -42,7 +42,7 @@ jobs:
       site-size: ${{ steps.site-size.outputs.size }}
     steps:
       - name: Generate Token
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         id: generate-token
         uses: actions/create-github-app-token@v1
         with:
@@ -79,7 +79,7 @@ jobs:
           GOOGLE_APPS_SCRIPT_TOKEN: ${{ secrets.GOOGLE_APPS_SCRIPT_TOKEN }}
 
       - name: Commit and Push Translations
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
