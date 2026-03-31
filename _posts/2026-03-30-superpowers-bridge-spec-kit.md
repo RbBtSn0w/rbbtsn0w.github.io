@@ -50,20 +50,20 @@ graph TD
     end
 
     subgraph superpowers_bridge ["Superpowers Bridge (Guardrails)"]
-        B_S{{"before_specify"}}:::hook
-        A_T{{"after_tasks"}}:::hook
-        B_I{{"before_implement (强制)"}}:::hook
-        A_I{{"after_implement (强制)"}}:::hook
+        B_S(["before_specify"]):::hook
+        A_T(["after_tasks"]):::hook
+        B_I(["before_implement (强制)"]):::hook
+        A_I(["after_implement (强制)"]):::hook
 
         C["clarify (首脑风暴与澄清)"]:::skill
         R["review (任务覆盖检查)"]:::skill
         TDD["tdd (测试驱动开发)"]:::skill
         V["verify (测试结果核查)"]:::skill
         
-        B_S -. "挂载技能" .-> C
-        A_T -. "挂载技能" .-> R
-        B_I -. "挂载技能" .-> TDD
-        A_I -. "挂载技能" .-> V
+        B_S -. 挂载技能 .-> C
+        A_T -. 挂载技能 .-> R
+        B_I -. 挂载技能 .-> TDD
+        A_I -. 挂载技能 .-> V
     end
 
     B_S --> S
