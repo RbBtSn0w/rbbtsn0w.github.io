@@ -5,3 +5,16 @@
 -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4727492990546281"
     crossorigin="anonymous"></script>
+
+<!-- Google Translate Integration -->
+<link rel="stylesheet" href="{{ '/assets/css/translation.css' | relative_url }}">
+<script src="{{ '/assets/js/translation.js' | relative_url }}" defer></script>
+<script>
+  if (window.location.pathname.startsWith('/posts/') || window.location.pathname.includes('/posts/')) {
+    window.translationConfig = {
+      slug: "{{ page.slug }}",
+      targetLang: "{{ site.google_translate.target_lang | default: 'en' }}",
+      sourceLang: "{{ site.google_translate.source_lang | default: 'zh-CN' }}"
+    };
+  }
+</script>
