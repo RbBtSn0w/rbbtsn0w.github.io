@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Go 指针",
+      "description": "",
+      "content": "<p>Go 提供了控制数据结构的指针的能力；但是不能进行指针运算。</p>\n\n<p>怎么解释呢？</p>\n\n<p>Go 语言允许你控制特定集合的数据结构、分配的数量以及内存访问模式，这些对构建运行良好的系统是非常重要的：<br>\n指针针对性能的影响是不言而喻的，而如果想做的是系统编程、操作系统或网络应用，指针更是不可或缺的一部分。</p>\n\n<p>程序在内存中存储它的值，每个内存块（或字）有一个地址，通常用十六进制数表示，如：0x3b7304 或 0xf847480387。</p>\n\n<p>Go 语言的取地址符号是&amp;（和C++，ObjC 一样），放到一个变量前使用就会返回相应变量的内存地址。</p>\n"
+    },
+    "en": {
+      "title": "Go pointers",
+      "description": "",
+      "content": "<p>Go provides the ability to control pointers to data structures; however, pointer arithmetic is not supported.</p>\n\n<p>How do you explain that?</p>\n\n<p>Go allows you to control the data structure, the amount of data allocated, and the memory access patterns of specific collections, which are crucial for building well-functioning systems.<br>The impact of pointers on performance is self-evident, and they are an indispensable part of system programming, operating systems, or network applications.</p>\n\n<p>The program stores its value in memory. Each memory block (or word) has an address, usually represented by a hexadecimal number, such as 0x3b7304 or 0xf847480387.</p>\n\n<p>In Go, the address-of operator is &amp; (the same as in C++ and ObjC). Placing it before a variable will return the memory address of that variable.</p>\n"
+    }
+  },
+  "hash": "fffd1df1b626f6ff7fa886cb0dcf9733d905e184298b9275b011853dad2964fe",
+  "timestamp": "2026-04-03T16:22:09Z"
+}

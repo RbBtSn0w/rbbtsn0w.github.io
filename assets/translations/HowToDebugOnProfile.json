@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "CocoaPods 下 podfile 如何 debug",
+      "description": "使用 Ruby 调试器在 Podfile 中插入断点，借助自省排查 CocoaPods 构建与配置问题。",
+      "content": "<h2 id=\"background\">\n<span class=\"me-2\">Background</span><a href=\"#background\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>查了 Xcodeproj 和 CocoaPods 的文档之后我都没有得到很好的解答，所以我就想用 xcodeproj 本身的接口去处理这件事情。</p>\n\n<h2 id=\"resolve\">\n<span class=\"me-2\">Resolve</span><a href=\"#resolve\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>由于 Podfile 本质上是 Ruby 脚本，所以这里我通常会使用 Ruby 的 debugger 去操作，通过 Ruby 强大的自省能力，在 debugger 里进行尝试然后找到我们需要的接口，开始之前我们需要安装一个 Ruby 的工具，步骤如下：</p>\n\n<p>首先是安装 debugger gem install pry<br>\n 接着在 Podfile 的开头导入 require ‘pry’<br>\n 然后在我们想要插入断点的地方插入 binding.pry 语句就可以了</p>\n"
+    },
+    "en": {
+      "title": "How to debug a podfile in CocoaPods?",
+      "description": "Use the Ruby debugger to insert breakpoints in the Podfile and use introspection to troubleshoot CocoaPods build and configuration issues.",
+      "content": "<h2 id=\"background\">\n<span class=\"me-2\">Background</span><a href=\"#background\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>After checking the documentation for Xcodeproj and CocoaPods, I didn't get a good answer, so I wanted to use the Xcodeproj API itself to handle this.</p>\n\n<h2 id=\"resolve\">\n<span class=\"me-2\">Resolve</span><a href=\"#resolve\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>Since a Podfile is essentially a Ruby script, I usually use Ruby's debugger to operate on it. Leveraging Ruby's powerful introspection capabilities, I can experiment in the debugger and find the interfaces we need. Before starting, we need to install a Ruby tool. The steps are as follows:</p>\n\n<p>First, install the debugger gem: `gem install pry`<br>Next, import `require` at the beginning of your Podfile.‘pry’<br>Then, simply insert the `binding.pry` statement where you want to insert the breakpoint.</p>\n"
+    }
+  },
+  "hash": "c596083243222427345e8456791d048ae8445afa1f2c1962bc078b4d3cba30b2",
+  "timestamp": "2026-04-03T16:22:36Z"
+}
