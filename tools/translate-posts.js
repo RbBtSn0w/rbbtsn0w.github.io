@@ -15,7 +15,7 @@ const GAS_URL = process.env.GOOGLE_APPS_SCRIPT_URL; // Hidden endpoint
 const GAS_TOKEN = process.env.GOOGLE_APPS_SCRIPT_TOKEN;
 
 const SLEEP_BETWEEN_POSTS = 3000;
-const HISTORY_DRIP_LIMIT = 13;    // Number of OLD posts to backfill per run
+const HISTORY_DRIP_LIMIT = 10;    // Number of OLD posts to backfill per run
 const NEW_PRIORITY_LIMIT = 15;   // Max NEW/MODIFIED posts per run (guardrail)
 
 if (!GAS_URL) {
