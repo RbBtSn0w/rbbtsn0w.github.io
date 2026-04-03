@@ -24,8 +24,41 @@
     global.setTimeout(callback, 50);
   }
 
+  function normalizeTranslatedMarkdown(markdown) {
+    const source = String(markdown || '');
+    const lines = source.split('\n');
+    const output = [];
+    let inFence = false;
+
+    lines.forEach(function(line) {
+      if (!inFence) {
+        output.push(line);
+        if (/^```/.test(line)) {
+          inFence = true;
+        }
+        return;
+      }
+
+      const gluedFenceMatch = line.match(/^```(\S.*)$/);
+      if (gluedFenceMatch) {
+        output.push('```');
+        output.push(gluedFenceMatch[1]);
+        inFence = false;
+        return;
+      }
+
+      output.push(line);
+      if (/^```$/.test(line)) {
+        inFence = false;
+      }
+    });
+
+    return output.join('\n');
+  }
+
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
+      normalizeTranslatedMarkdown: normalizeTranslatedMarkdown,
       sanitizeMermaidSource: sanitizeMermaidSource,
       scheduleMermaidRender: scheduleMermaidRender
     };
@@ -99,11 +132,12 @@
       
       // Render Markdown to HTML (PR-20 Fix, BugFix: mermaid re-render)
       if (contentEl) {
+        const normalizedMarkdown = normalizeTranslatedMarkdown(data.content);
         if (window.marked) {
-          contentEl.innerHTML = window.marked.parse(data.content);
+          contentEl.innerHTML = window.marked.parse(normalizedMarkdown);
         } else {
           // Fallback: basic Markdown-to-HTML for code blocks
-          contentEl.innerHTML = basicMarkdownToHtml(data.content);
+          contentEl.innerHTML = basicMarkdownToHtml(normalizedMarkdown);
         }
         // Re-initialize mermaid diagrams and code highlighting
         postRenderEnhance(contentEl);

@@ -5,6 +5,16 @@ const translation = require(path.join(__dirname, '..', 'assets', 'js', 'translat
 
 function run() {
   assert.equal(
+    translation.normalizeTranslatedMarkdown('```mermaid\ngraph TD\nA-->B\n```*Image: caption'),
+    '```mermaid\ngraph TD\nA-->B\n```\n*Image: caption'
+  );
+
+  assert.equal(
+    translation.normalizeTranslatedMarkdown('```bash\necho ok\n```\n\nnext'),
+    '```bash\necho ok\n```\n\nnext'
+  );
+
+  assert.equal(
     translation.sanitizeMermaidSource('mermaid\ngraph TD\nA-->B\n'),
     'graph TD\nA-->B'
   );
