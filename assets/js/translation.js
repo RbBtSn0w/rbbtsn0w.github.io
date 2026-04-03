@@ -70,15 +70,16 @@
       if (titleEl) titleEl.innerHTML = data.title;
       if (descEl) descEl.innerHTML = data.description;
       
-      // Render Markdown to HTML if marked is available (PR-20 Fix)
+      // Render Markdown to HTML (PR-20 Fix, BugFix: mermaid re-render)
       if (contentEl) {
         if (window.marked) {
-          // Use marked for high-quality rendering
           contentEl.innerHTML = window.marked.parse(data.content);
         } else {
-          // Fallback to raw injection
-          contentEl.innerHTML = data.content;
+          // Fallback: basic Markdown-to-HTML for code blocks
+          contentEl.innerHTML = basicMarkdownToHtml(data.content);
         }
+        // Re-initialize mermaid diagrams and code highlighting
+        postRenderEnhance(contentEl);
       }
 
       currentLang = CONFIG.targetLang || 'en';
@@ -189,6 +190,81 @@
       injectToggle();
       if (loadPreference() === 'en') applyTranslation();
     }
+  }
+
+  /**
+   * Post-render: re-initialize Mermaid diagrams and syntax highlighting
+   * after translated Markdown content is injected into the DOM.
+   */
+  function postRenderEnhance(container) {
+    if (!container) return;
+
+    // 1. Re-render Mermaid diagrams
+    //    marked.parse() turns ```mermaid into <pre><code class="language-mermaid">...</code></pre>
+    //    We need to convert these back into mermaid-renderable divs.
+    const mermaidBlocks = container.querySelectorAll('code.language-mermaid');
+    mermaidBlocks.forEach(function(codeEl) {
+      const pre = codeEl.parentElement;
+      const mermaidDiv = document.createElement('div');
+      mermaidDiv.className = 'mermaid';
+      mermaidDiv.textContent = codeEl.textContent;
+      pre.replaceWith(mermaidDiv);
+    });
+
+    if (mermaidBlocks.length > 0 && window.mermaid) {
+      try {
+        // mermaid.run() re-renders all .mermaid divs in the container
+        window.mermaid.run({ nodes: container.querySelectorAll('.mermaid') });
+      } catch (e) {
+        console.warn('Mermaid re-render failed:', e);
+      }
+    }
+
+    // 2. Re-apply syntax highlighting if available (Prism / highlight.js)
+    if (window.Prism) {
+      window.Prism.highlightAllUnder(container);
+    } else if (window.hljs) {
+      container.querySelectorAll('pre code').forEach(function(block) {
+        window.hljs.highlightElement(block);
+      });
+    }
+  }
+
+  /**
+   * Basic Markdown-to-HTML fallback when marked.js is not loaded.
+   * Handles fenced code blocks, headings, bold, italic, links, and lists.
+   */
+  function basicMarkdownToHtml(md) {
+    var html = md
+      // Fenced code blocks (```lang ... ```)
+      .replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+        var cls = lang ? ' class="language-' + lang + '"' : '';
+        return '<pre><code' + cls + '>' + escapeHtml(code) + '</code></pre>';
+      })
+      // Inline code
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      // Headings
+      .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      // Bold and italic
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Links
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+      // Unordered lists
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      // Paragraphs (double newline)
+      .replace(/\n\n/g, '</p><p>')
+      // Single newlines
+      .replace(/\n/g, '<br>');
+
+    return '<p>' + html + '</p>';
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
   // Init
