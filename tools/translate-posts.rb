@@ -20,6 +20,7 @@ GAS_TOKEN = ENV['GOOGLE_APPS_SCRIPT_TOKEN']
 SLEEP_BETWEEN_POSTS = 3
 HISTORY_DRIP_LIMIT = 10
 NEW_PRIORITY_LIMIT = 15
+MAX_REDIRECTS = 5
 
 TRANSLATABLE_TEXT_CONTAINERS = %i[
   p
@@ -53,23 +54,51 @@ def sleep_between_posts
 end
 
 def translate_atomic(text_array, target)
-  uri = URI(GAS_URL)
-  request = Net::HTTP::Post.new(uri)
-  request['Content-Type'] = 'application/json'
-  request.body = JSON.generate({
-    q: text_array,
-    target: target,
-    token: GAS_TOKEN
-  })
+  response = post_json_with_redirects(
+    GAS_URL,
+    {
+      q: text_array,
+      target: target,
+      token: GAS_TOKEN
+    }
+  )
 
-  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
-    http.request(request)
+  unless response.is_a?(Net::HTTPSuccess)
+    raise "translation proxy returned HTTP #{response.code}"
+  end
+
+  content_type = response['content-type'].to_s
+  unless content_type.include?('application/json')
+    preview = response.body.to_s.strip[0, 120]
+    raise "translation proxy returned non-JSON content-type=#{content_type.inspect} body=#{preview.inspect}"
   end
 
   data = JSON.parse(response.body)
   raise(data['error']) if data['error']
 
   data.fetch('data').fetch('translations').map { |item| item.fetch('translatedText') }
+end
+
+def post_json_with_redirects(url, payload, limit = MAX_REDIRECTS)
+  raise 'too many translation proxy redirects' if limit <= 0
+
+  uri = URI(url)
+  request = Net::HTTP::Post.new(uri)
+  request['Content-Type'] = 'application/json'
+  request['Accept'] = 'application/json'
+  request.body = JSON.generate(payload)
+
+  response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+    http.request(request)
+  end
+
+  return response unless response.is_a?(Net::HTTPRedirection)
+
+  location = response['location']
+  raise 'translation proxy redirect missing Location header' if location.to_s.empty?
+
+  redirected_url = URI.join(url, location).to_s
+  post_json_with_redirects(redirected_url, payload, limit - 1)
 end
 
 def parse_post(content)
