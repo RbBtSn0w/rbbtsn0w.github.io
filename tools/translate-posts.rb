@@ -5,15 +5,18 @@ require 'digest'
 require 'fileutils'
 require 'json'
 require 'net/http'
+require 'nokogiri'
 require 'pathname'
 require 'time'
 require 'uri'
+require 'yaml'
 
 require 'kramdown'
 require 'kramdown-parser-gfm'
 
 POSTS_DIR = File.expand_path('../_posts', __dir__)
 OUTPUT_DIR = File.expand_path('../assets/translations', __dir__)
+SITE_CONFIG_PATH = File.expand_path('../_config.yml', __dir__)
 GAS_URL = ENV['GOOGLE_APPS_SCRIPT_URL']
 GAS_TOKEN = ENV['GOOGLE_APPS_SCRIPT_TOKEN']
 
@@ -21,6 +24,7 @@ SLEEP_BETWEEN_POSTS = 3
 HISTORY_DRIP_LIMIT = 10
 NEW_PRIORITY_LIMIT = 15
 MAX_REDIRECTS = 5
+COPY_CODE_SUCCEED_TEXT = 'Copied!'.freeze
 
 TRANSLATABLE_TEXT_CONTAINERS = %i[
   p
@@ -41,7 +45,27 @@ SKIPPED_TYPES = %i[
   blank
 ].freeze
 
-exit(0) unless GAS_URL
+SITE_CONFIG = YAML.safe_load(File.read(SITE_CONFIG_PATH), aliases: true) || {}
+KRAMDOWN_OPTIONS = (SITE_CONFIG['kramdown'] || {}).merge('input' => 'GFM').freeze
+HEADING_SELECTOR = 'h2[id], h3[id], h4[id], h5[id]'.freeze
+TRANSLATION_FORMAT = 'bilingual_html'.freeze
+
+LANGUAGE_LABELS = {
+  'bash' => 'Shell',
+  'shell' => 'Shell',
+  'sh' => 'Shell',
+  'zsh' => 'Shell',
+  'console' => 'Console',
+  'plaintext' => 'Text',
+  'text' => 'Text',
+  'objc' => 'Objective-C',
+  'objective-c' => 'Objective-C',
+  'obj-c' => 'Objective-C',
+  'js' => 'JavaScript',
+  'ts' => 'TypeScript',
+  'yml' => 'YAML',
+  'md' => 'Markdown'
+}.freeze
 
 FileUtils.mkdir_p(OUTPUT_DIR)
 
@@ -116,16 +140,132 @@ def request_with_redirects(url, method:, payload: nil, limit: MAX_REDIRECTS)
 end
 
 def parse_post(content)
-  fm_match = content.match(/\A---([\s\S]*?)---/)
-  front_matter = fm_match ? fm_match[1] : ''
-  body = fm_match ? content[fm_match[0].length..] : content
-  title = front_matter[/^title:\s*(.*)$/, 1]&.gsub(/['"]/, '')&.strip || ''
-  desc = front_matter[/^description:\s*(.*)$/, 1]&.gsub(/['"]/, '')&.strip || ''
-  { title: title, desc: desc, body: body.to_s.strip }
+  front_matter = {}
+  body = content
+
+  if (match = content.match(/\A---\s*\n(.*?)\n---\s*\n/m))
+    front_matter = YAML.safe_load(match[1], aliases: true) || {}
+    body = content[match[0].length..]
+  end
+
+  {
+    title: front_matter.fetch('title', '').to_s.strip,
+    desc: front_matter.fetch('description', '').to_s.strip,
+    body: body.to_s.strip
+  }
 end
 
 def parse_markdown(markdown)
-  Kramdown::Document.new(markdown, input: 'GFM')
+  Kramdown::Document.new(markdown, KRAMDOWN_OPTIONS)
+end
+
+def render_document(document, lang:)
+  postprocess_content_html(document.to_html, lang: lang)
+end
+
+def postprocess_content_html(html, lang:)
+  normalized_html = html
+    .gsub('<div class="highlight"><pre class="highlight"><code', '<div class="highlight"><code')
+    .gsub('</code></pre></div>', '</code></div>')
+
+  fragment = Nokogiri::HTML::DocumentFragment.parse(normalized_html)
+  wrap_tables(fragment)
+  replace_task_list_checkboxes(fragment)
+  add_code_headers(fragment, lang: lang)
+  add_heading_anchors(fragment)
+  fragment.to_html
+end
+
+def wrap_tables(fragment)
+  fragment.css('table').each do |table|
+    next if table.ancestors('code').any?
+    next if table.parent&.name == 'div' && table.parent['class'].to_s.split.include?('table-wrapper')
+
+    wrapper = Nokogiri::XML::Node.new('div', fragment)
+    wrapper['class'] = 'table-wrapper'
+    table.replace(wrapper)
+    wrapper.add_child(table)
+  end
+end
+
+def replace_task_list_checkboxes(fragment)
+  fragment.css('input.task-list-item-checkbox[type="checkbox"]').each do |input|
+    icon = Nokogiri::XML::Node.new('i', fragment)
+    icon['class'] = input['checked'] ? 'fas fa-check-circle fa-fw checked' : 'far fa-circle fa-fw'
+    input.replace(icon)
+  end
+end
+
+def add_code_headers(fragment, lang:)
+  fragment.css('div.highlight > code').each do |code_node|
+    highlight = code_node.parent
+    next if highlight.previous_element&.[]('class').to_s.split.include?('code-header')
+
+    header = Nokogiri::XML::Node.new('div', fragment)
+    header['class'] = 'code-header'
+
+    label = Nokogiri::XML::Node.new('span', fragment)
+    label['data-label-text'] = code_label_for(highlight)
+
+    icon = Nokogiri::XML::Node.new('i', fragment)
+    icon['class'] = code_icon_class_for(highlight, lang: lang)
+    label.add_child(icon)
+
+    button = Nokogiri::XML::Node.new('button', fragment)
+    button['aria-label'] = 'copy'
+    button['data-title-succeed'] = COPY_CODE_SUCCEED_TEXT
+
+    button_icon = Nokogiri::XML::Node.new('i', fragment)
+    button_icon['class'] = 'far fa-clipboard'
+    button.add_child(button_icon)
+
+    header.add_child(label)
+    header.add_child(button)
+    highlight.add_previous_sibling(header)
+  end
+end
+
+def code_label_for(highlight)
+  wrapper = highlight.ancestors.find { |node| node['class'].to_s.include?('language-') }
+  file_name = wrapper&.[]('file').to_s.strip
+  return file_name unless file_name.empty?
+
+  language = wrapper&.[]('class').to_s[/language-([A-Za-z0-9_+\-.]+)/, 1].to_s.downcase
+  return 'Code' if language.empty?
+
+  LANGUAGE_LABELS.fetch(language, language.split(/[-_+]/).map(&:capitalize).join(' '))
+end
+
+def code_icon_class_for(highlight, lang: nil)
+  wrapper = highlight.ancestors.find { |node| node['class'].to_s.include?('language-') }
+  if wrapper&.[]('file').to_s.strip.empty?
+    'fas fa-code fa-fw small'
+  else
+    'far fa-file-code fa-fw'
+  end
+end
+
+def add_heading_anchors(fragment)
+  fragment.css(HEADING_SELECTOR).each do |heading|
+    next if heading.at_css('a.anchor')
+
+    wrapper = Nokogiri::XML::Node.new('span', fragment)
+    wrapper['class'] = 'me-2'
+    heading.children.to_a.each do |child|
+      wrapper.add_child(child.unlink)
+    end
+
+    anchor = Nokogiri::XML::Node.new('a', fragment)
+    anchor['href'] = "##{heading['id']}"
+    anchor['class'] = 'anchor text-muted'
+
+    icon = Nokogiri::XML::Node.new('i', fragment)
+    icon['class'] = 'fas fa-hashtag'
+    anchor.add_child(icon)
+
+    heading.add_child(wrapper)
+    heading.add_child(anchor)
+  end
 end
 
 def translatable_text_node?(element, parent_types)
@@ -162,8 +302,9 @@ def process_file(filename)
   puts "🌐 [Translating] #{filename}"
 
   parsed = parse_post(raw_content)
-  document = parse_markdown(parsed[:body])
-  text_nodes = collect_text_nodes(document.root)
+  source_document = parse_markdown(parsed[:body])
+  translated_document = parse_markdown(parsed[:body])
+  text_nodes = collect_text_nodes(translated_document.root)
   to_translate = [parsed[:title], parsed[:desc], *text_nodes.map(&:value)]
   translated = translate_atomic(to_translate, 'en')
 
@@ -172,10 +313,22 @@ def process_file(filename)
   end
 
   result = {
-    title: translated[0],
-    description: translated[1],
-    content: document.to_html,
-    format: 'html',
+    format: TRANSLATION_FORMAT,
+    schema_version: 2,
+    source_lang: 'zh-CN',
+    target_lang: 'en',
+    translations: {
+      'zh-CN' => {
+        title: parsed[:title],
+        description: parsed[:desc],
+        content: render_document(source_document, lang: 'zh-CN')
+      },
+      'en' => {
+        title: translated[0],
+        description: translated[1],
+        content: render_document(translated_document, lang: 'en')
+      }
+    },
     hash: current_hash,
     timestamp: Time.now.utc.iso8601
   }
@@ -211,6 +364,11 @@ def queues_for(files)
 end
 
 def main
+  unless GAS_URL
+    puts 'GOOGLE_APPS_SCRIPT_URL is not set, skipping translation generation.'
+    return
+  end
+
   files = Dir.children(POSTS_DIR).select { |name| name.end_with?('.md') }
   modified_queue, untranslated_queue = queues_for(files)
 
@@ -240,4 +398,4 @@ def main
   puts "Total translated this run: #{total_processed}"
 end
 
-main
+main if __FILE__ == $PROGRAM_NAME

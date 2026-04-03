@@ -1,7 +1,0 @@
-{
-  "title": "How to debug a podfile in CocoaPods?",
-  "description": "Use the Ruby debugger to insert breakpoints in the Podfile and use introspection to troubleshoot CocoaPods build and configuration issues.",
-  "content": "## Background\n\nAfter checking the documentation for Xcodeproj and CocoaPods, I didn't find a satisfactory solution, so I decided to use Xcodeproj's built-in API to handle this.\n\n## Resolve\n\nSince a Podfile is essentially a Ruby script, I'll typically use Ruby's debugger. Leveraging Ruby's powerful introspection capabilities, I can experiment within the debugger to find the API we need. Before starting, we need to install a Ruby tool. The steps are as follows:\n\nFirst, install the debugger: `gem install pry`\n\nNext, import `require 'pry'` at the beginning of your Podfile\n\nThen, insert the `binding.pry` statement where you want to insert breakpoints.",
-  "hash": "c596083243222427345e8456791d048ae8445afa1f2c1962bc078b4d3cba30b2",
-  "timestamp": "2026-03-31T15:36:00.943Z"
-}

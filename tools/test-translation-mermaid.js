@@ -4,6 +4,24 @@ const path = require('node:path');
 const translation = require(path.join(__dirname, '..', 'assets', 'js', 'translation.js'));
 
 function run() {
+  const bilingualPayload = {
+    format: 'bilingual_html',
+    translations: {
+      'zh-CN': { title: '中文标题', description: '中文描述', content: '<p>中文</p>' },
+      en: { title: 'English title', description: 'English description', content: '<p>English</p>' }
+    }
+  };
+
+  assert.deepEqual(
+    translation.getLanguagePayload(bilingualPayload, 'en', { targetLang: 'en' }),
+    bilingualPayload.translations.en
+  );
+
+  assert.deepEqual(
+    translation.getLanguagePayload(bilingualPayload, 'zh-CN', { targetLang: 'en' }),
+    bilingualPayload.translations['zh-CN']
+  );
+
   assert.equal(
     translation.normalizeTranslatedMarkdown('```mermaid\ngraph TD\nA-->B\n```*Image: caption'),
     '```mermaid\ngraph TD\nA-->B\n```\n*Image: caption'

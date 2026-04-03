@@ -9,11 +9,10 @@
 <!-- Google Translate Integration -->
 {% if page.url contains '/posts/' %}
 <link rel="stylesheet" href="{{ '/assets/css/translation.css' | relative_url }}">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="{{ '/assets/js/translation.js' | relative_url }}" defer></script>
 <script>
   window.translationConfig = {
-    slug: "{{ page.url | split: '/' | last }}",
+    slug: "{{ page.slug }}",
     baseurl: "{{ site.baseurl }}",
     targetLang: "{{ site.google_translate.target_lang | default: 'en' }}",
     sourceLang: "{{ site.google_translate.source_lang | default: 'zh-CN' }}"

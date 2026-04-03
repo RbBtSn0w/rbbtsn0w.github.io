@@ -1,7 +1,0 @@
-{
-  "title": "The Hard Tab vs. Soft Tab Debate",
-  "description": "",
-  "content": "I first saw this on [Atom](https://atom.io), and the last time I heard about this was from the third season of \"Silicon Valley\".\n\nIn [Atom](https://atom.io) settings, the Tab type option is explained as follows:\n\n> Determine character inserted when Tab key is pressed. Possible values: “auto”, “soft”, and “hard”. When set to “soft” or “hard”, soft tabs (spaces) or hard tabs (tab characters) are used. When set to “auto”, the editor auto-detects the tab type based on the contents of the buffer (it uses the first leading whitespace on a non-comment line), or uses the value of the Soft Tabs config setting if auto-detection fails.\n\nFrom this close reading, it's not hard to see that while we don't instinctively notice the difference between using the tab key and the spacebar, different placeholders are actually used in document editing.\n\nI recently encountered a problem where a classmate sent me code written in a Windows editor, but the formatting was always misaligned when viewed on macOS. At first, I thought it was an Atom issue.\n\nSimply put, it's these two keys. Physically speaking, the Hard Tab key's space allocation depends on the operating system, while the Space key is only a single space. Therefore, the best approach is to change the Hard Tab key's position.\n\nThat is, Soft Tab = 4 * Space length.",
-  "hash": "e6f6efaa8fbd7b4749437fa6a1197d6eeb0e82c45d2ff62daad2d5d7376a6388",
-  "timestamp": "2026-03-31T13:42:41.576Z"
-}

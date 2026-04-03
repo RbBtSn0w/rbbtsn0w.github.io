@@ -1,7 +1,0 @@
-{
-  "title": "Go pointers",
-  "description": "",
-  "content": "Go provides the ability to control pointers to data structures; however, it does not support pointer arithmetic.\n\nHow can this be explained?\n\nGo allows you to control the data structures of specific collections, the number of allocations, and memory access patterns. These are crucial for building well-functioning systems: The performance impact of pointers is self-evident, and they are indispensable for system programming, operating systems, or network applications.\n\nPrograms store their values ​​in memory, and each memory block (or word) has an address, usually represented in hexadecimal, such as 0x3b7304 or 0xf847480387.\n\nGo uses the address-of operator (&, the same as in C++ and Objective-C), and placing it before a variable returns the memory address of that variable.",
-  "hash": "fffd1df1b626f6ff7fa886cb0dcf9733d905e184298b9275b011853dad2964fe",
-  "timestamp": "2026-03-31T13:42:51.449Z"
-}
