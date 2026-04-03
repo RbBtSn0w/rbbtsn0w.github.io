@@ -132,12 +132,16 @@
       
       // Render Markdown to HTML (PR-20 Fix, BugFix: mermaid re-render)
       if (contentEl) {
-        const normalizedMarkdown = normalizeTranslatedMarkdown(data.content);
-        if (window.marked) {
-          contentEl.innerHTML = window.marked.parse(normalizedMarkdown);
+        if (data.format === 'html') {
+          contentEl.innerHTML = data.content;
         } else {
-          // Fallback: basic Markdown-to-HTML for code blocks
-          contentEl.innerHTML = basicMarkdownToHtml(normalizedMarkdown);
+          const normalizedMarkdown = normalizeTranslatedMarkdown(data.content);
+          if (window.marked) {
+            contentEl.innerHTML = window.marked.parse(normalizedMarkdown);
+          } else {
+            // Fallback: basic Markdown-to-HTML for code blocks
+            contentEl.innerHTML = basicMarkdownToHtml(normalizedMarkdown);
+          }
         }
         // Re-initialize mermaid diagrams and code highlighting
         postRenderEnhance(contentEl);

@@ -73,7 +73,7 @@ jobs:
       - name: Article Translation
         run: |
           echo "🌐 Starting build-time translation (GAS Proxy)..."
-          node tools/translate-posts.js
+          bundle exec ruby tools/translate-posts.rb
         env:
           GOOGLE_APPS_SCRIPT_URL: ${{ secrets.GOOGLE_APPS_SCRIPT_URL }}
           GOOGLE_APPS_SCRIPT_TOKEN: ${{ secrets.GOOGLE_APPS_SCRIPT_TOKEN }}
@@ -162,4 +162,3 @@ jobs:
             exit 1
           fi
           echo "✅ 'build' job succeeded; compatibility 'test' check passes."
-
