@@ -227,26 +227,43 @@
     if (!container) return;
 
     // 1. Re-render Mermaid diagrams
-    const mermaidBlocks = container.querySelectorAll('code.language-mermaid');
+    const mermaidBlocks = Array.from(container.querySelectorAll('code.language-mermaid'));
     mermaidBlocks.forEach(function(codeEl) {
       const pre = codeEl.parentElement;
-      const mermaidDiv = document.createElement('div');
-      mermaidDiv.className = 'mermaid';
-      
-      // Critical: Use textContent and trim() to get pure mermaid syntax (PR-20 Syntax Fix)
+      if (!pre) return;
+
       const rawText = sanitizeMermaidSource(codeEl.textContent);
-      mermaidDiv.textContent = rawText;
-      pre.replaceWith(mermaidDiv);
+      pre.classList.add('d-none');
+
+      const existingDiagram = pre.nextElementSibling;
+      if (existingDiagram && existingDiagram.classList.contains('mermaid')) {
+        existingDiagram.textContent = rawText;
+        existingDiagram.removeAttribute('data-processed');
+        existingDiagram.removeAttribute('aria-roledescription');
+        existingDiagram.removeAttribute('role');
+        existingDiagram.removeAttribute('id');
+        return;
+      }
+
+      const mermaidPre = document.createElement('pre');
+      mermaidPre.className = 'mermaid';
+      mermaidPre.textContent = rawText;
+      pre.insertAdjacentElement('afterend', mermaidPre);
     });
 
     if (mermaidBlocks.length > 0 && window.mermaid) {
       scheduleMermaidRender(function() {
         try {
-          // Re-initialize for new nodes
-          window.mermaid.run({ 
-            nodes: container.querySelectorAll('.mermaid'),
-            suppressErrors: true 
+          const mermaidTheme = document.documentElement.classList.contains('dark')
+            ? 'dark'
+            : 'default';
+          const selector = '.mermaid';
+
+          window.mermaid.initialize({
+            startOnLoad: false,
+            theme: mermaidTheme
           });
+          window.mermaid.init(undefined, container.querySelectorAll(selector));
         } catch (e) {
           console.warn('Mermaid re-render failed:', e);
         }
