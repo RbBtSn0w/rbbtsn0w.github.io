@@ -54,14 +54,12 @@ def sleep_between_posts
 end
 
 def translate_atomic(text_array, target)
-  response = post_json_with_redirects(
-    GAS_URL,
-    {
-      q: text_array,
-      target: target,
-      token: GAS_TOKEN
-    }
-  )
+  payload = {
+    q: text_array,
+    target: target,
+    token: GAS_TOKEN
+  }
+  response = request_with_redirects(GAS_URL, method: :post, payload: payload)
 
   unless response.is_a?(Net::HTTPSuccess)
     raise "translation proxy returned HTTP #{response.code}"
@@ -79,14 +77,21 @@ def translate_atomic(text_array, target)
   data.fetch('data').fetch('translations').map { |item| item.fetch('translatedText') }
 end
 
-def post_json_with_redirects(url, payload, limit = MAX_REDIRECTS)
+def request_with_redirects(url, method:, payload: nil, limit: MAX_REDIRECTS)
   raise 'too many translation proxy redirects' if limit <= 0
 
   uri = URI(url)
-  request = Net::HTTP::Post.new(uri)
-  request['Content-Type'] = 'application/json'
+  request = if method == :get
+              Net::HTTP::Get.new(uri)
+            else
+              Net::HTTP::Post.new(uri)
+            end
+
   request['Accept'] = 'application/json'
-  request.body = JSON.generate(payload)
+  if method == :post
+    request['Content-Type'] = 'application/json'
+    request.body = JSON.generate(payload)
+  end
 
   response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
     http.request(request)
@@ -98,7 +103,16 @@ def post_json_with_redirects(url, payload, limit = MAX_REDIRECTS)
   raise 'translation proxy redirect missing Location header' if location.to_s.empty?
 
   redirected_url = URI.join(url, location).to_s
-  post_json_with_redirects(redirected_url, payload, limit - 1)
+  next_method = if response.is_a?(Net::HTTPTemporaryRedirect) || response.is_a?(Net::HTTPPermanentRedirect)
+                  method
+                elsif method == :post
+                  :get
+                else
+                  method
+                end
+  next_payload = next_method == :post ? payload : nil
+
+  request_with_redirects(redirected_url, method: next_method, payload: next_payload, limit: limit - 1)
 end
 
 def parse_post(content)
