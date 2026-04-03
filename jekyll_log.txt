@@ -1,0 +1,44 @@
+Configuration file: /Users/snow/Documents/GitHub/rbbtsn0w.github.io/_config.yml
+            Source: /Users/snow/Documents/GitHub/rbbtsn0w.github.io
+       Destination: /Users/snow/Documents/GitHub/rbbtsn0w.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+                    done in 4.509 seconds.
+ Auto-regeneration: enabled for '/Users/snow/Documents/GitHub/rbbtsn0w.github.io'
+    Server address: http://127.0.0.1:4005/
+  Server running... press ctrl-c to stop.
+[31m                    ------------------------------------------------[0m
+[31m      Jekyll 4.4.1   Please append `--trace` to the `serve` command [0m
+[31m                     for any additional information or backtrace. [0m
+[31m                    ------------------------------------------------[0m
+/Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/commands/serve.rb:291:in `join': SIGHUP (SignalException)
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/commands/serve.rb:291:in `boot_or_detach'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/commands/serve.rb:221:in `start_up_webrick'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/commands/serve.rb:102:in `process'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/command.rb:91:in `block in process_with_graceful_fail'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/command.rb:91:in `each'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/command.rb:91:in `process_with_graceful_fail'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/lib/jekyll/commands/serve.rb:85:in `block (2 levels) in init_with_program'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `block in execute'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `each'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `execute'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/mercenary-0.4.0/lib/mercenary/program.rb:44:in `go'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/mercenary-0.4.0/lib/mercenary.rb:21:in `program'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/jekyll-4.4.1/exe/jekyll:15:in `<top (required)>'
+	from /Users/snow/.rbenv/versions/3.2.9/bin/jekyll:25:in `load'
+	from /Users/snow/.rbenv/versions/3.2.9/bin/jekyll:25:in `<top (required)>'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli/exec.rb:61:in `load'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli/exec.rb:61:in `kernel_load'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli/exec.rb:24:in `run'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli.rb:504:in `exec'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/vendor/thor/lib/thor/command.rb:28:in `run'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/vendor/thor/lib/thor/invocation.rb:127:in `invoke_command'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/vendor/thor/lib/thor.rb:538:in `dispatch'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli.rb:35:in `dispatch'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/vendor/thor/lib/thor/base.rb:584:in `start'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/cli.rb:29:in `start'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/exe/bundle:28:in `block in <top (required)>'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/lib/bundler/friendly_errors.rb:118:in `with_friendly_errors'
+	from /Users/snow/.rbenv/versions/3.2.9/lib/ruby/gems/3.2.0/gems/bundler-4.0.9/exe/bundle:20:in `<top (required)>'
+	from /Users/snow/.rbenv/versions/3.2.9/bin/bundle:25:in `load'
+	from /Users/snow/.rbenv/versions/3.2.9/bin/bundle:25:in `<main>'

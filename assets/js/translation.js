@@ -3,9 +3,36 @@
  * Fetches pre-translated JSON delta from /assets/translations/[slug].json
  */
 
-(function() {
-  const CONFIG = window.translationConfig;
-  if (!CONFIG || !CONFIG.slug) return;
+(function(global) {
+  function sanitizeMermaidSource(rawText) {
+    return String(rawText || '')
+      .replace(/^\uFEFF/, '')
+      .replace(/\r\n/g, '\n')
+      .trim()
+      .replace(/^mermaid\n+/i, '')
+      .trim();
+  }
+
+  function scheduleMermaidRender(callback) {
+    if (typeof global.requestAnimationFrame === 'function') {
+      global.requestAnimationFrame(function() {
+        global.requestAnimationFrame(callback);
+      });
+      return;
+    }
+
+    global.setTimeout(callback, 50);
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+      sanitizeMermaidSource: sanitizeMermaidSource,
+      scheduleMermaidRender: scheduleMermaidRender
+    };
+  }
+
+  const CONFIG = global.translationConfig;
+  if (!global.document || !CONFIG || !CONFIG.slug) return;
 
   const selectors = {
     article: '.content, .post-content', // Removed generic 'article' tag to prevent overwriting header
@@ -207,13 +234,13 @@
       mermaidDiv.className = 'mermaid';
       
       // Critical: Use textContent and trim() to get pure mermaid syntax (PR-20 Syntax Fix)
-      const rawText = codeEl.textContent.trim();
+      const rawText = sanitizeMermaidSource(codeEl.textContent);
       mermaidDiv.textContent = rawText;
       pre.replaceWith(mermaidDiv);
     });
 
     if (mermaidBlocks.length > 0 && window.mermaid) {
-      setTimeout(() => {
+      scheduleMermaidRender(function() {
         try {
           // Re-initialize for new nodes
           window.mermaid.run({ 
@@ -223,7 +250,7 @@
         } catch (e) {
           console.warn('Mermaid re-render failed:', e);
         }
-      }, 50); // Minimal delay for DOM stability
+      });
     }
 
     // 2. Re-apply syntax highlighting if available (Prism / highlight.js)
@@ -280,4 +307,4 @@
     init();
   }
 
-})();
+})(typeof globalThis !== 'undefined' ? globalThis : window);
