@@ -76,6 +76,63 @@ function getTranslatableBlocks(markdown) {
   return blocks;
 }
 
+function splitStructuralLines(block) {
+  if (block.type !== 'text') return [block];
+
+  const structuralPattern = /^(#{1,6}\s|[-*+]\s|\d+\.\s|>\s)/;
+  const lines = block.content.split('\n');
+  const expanded = [];
+  let buffer = [];
+
+  const flushBuffer = () => {
+    if (buffer.length > 0) {
+      expanded.push({ type: 'text', content: buffer.join('\n') });
+      buffer = [];
+    }
+  };
+
+  lines.forEach(line => {
+    if (structuralPattern.test(line) && line.trim() !== '') {
+      flushBuffer();
+      expanded.push({ type: 'structure', content: line + '\n' });
+    } else {
+      buffer.push(line);
+    }
+  });
+
+  flushBuffer();
+  return expanded;
+}
+
+function expandInlineMarkers(blocks) {
+  const inlinePattern = /(\*\*|__|\*|_|\(|\)|:)/g;
+  const expanded = [];
+
+  blocks.forEach(part => {
+    if (part.type !== 'text') {
+      expanded.push(part);
+      return;
+    }
+
+    const src = part.content;
+    let lastIndex = 0;
+    let match;
+    while ((match = inlinePattern.exec(src)) !== null) {
+      if (match.index > lastIndex) {
+        expanded.push({ type: 'text', content: src.slice(lastIndex, match.index) });
+      }
+      expanded.push({ type: 'literal', content: match[0] });
+      lastIndex = inlinePattern.lastIndex;
+    }
+
+    if (lastIndex < src.length) {
+      expanded.push({ type: 'text', content: src.slice(lastIndex) });
+    }
+  });
+
+  return expanded;
+}
+
 function parsePost(content) {
   const fmMatch = content.match(/^---([\s\S]*?)---/);
   const frontMatter = fmMatch ? fmMatch[1] : '';
@@ -95,14 +152,18 @@ async function processFile(filename) {
   console.log(`🌐 [Translating] ${filename}`);
   const parsed = parsePost(rawContent);
   const blocks = getTranslatableBlocks(parsed.body);
-  const textBlocks = blocks.filter(b => b.type === 'text' && b.content.trim().length > 0);
+  const expandedBlocks = blocks.flatMap(splitStructuralLines);
+  const partitionedBlocks = expandInlineMarkers(expandedBlocks);
+  const textBlocks = partitionedBlocks.filter(b => b.type === 'text' && b.content.trim().length > 0);
   const toTranslate = [parsed.title, parsed.desc, ...textBlocks.map(b => b.content)];
 
   try {
     const translated = await translateAtomic(toTranslate, 'en');
     let transIndex = 2;
-    const resultBody = blocks.map(b => {
-      if (b.type === 'text' && b.content.trim().length > 0) return translated[transIndex++];
+    const resultBody = partitionedBlocks.map(b => {
+      if (b.type === 'text' && b.content.trim().length > 0) {
+        return translated[transIndex++] || b.content;
+      }
       return b.content;
     }).join('');
 
