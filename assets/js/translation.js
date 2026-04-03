@@ -200,24 +200,30 @@
     if (!container) return;
 
     // 1. Re-render Mermaid diagrams
-    //    marked.parse() turns ```mermaid into <pre><code class="language-mermaid">...</code></pre>
-    //    We need to convert these back into mermaid-renderable divs.
     const mermaidBlocks = container.querySelectorAll('code.language-mermaid');
     mermaidBlocks.forEach(function(codeEl) {
       const pre = codeEl.parentElement;
       const mermaidDiv = document.createElement('div');
       mermaidDiv.className = 'mermaid';
-      mermaidDiv.textContent = codeEl.textContent;
+      
+      // Critical: Use textContent and trim() to get pure mermaid syntax (PR-20 Syntax Fix)
+      const rawText = codeEl.textContent.trim();
+      mermaidDiv.textContent = rawText;
       pre.replaceWith(mermaidDiv);
     });
 
     if (mermaidBlocks.length > 0 && window.mermaid) {
-      try {
-        // mermaid.run() re-renders all .mermaid divs in the container
-        window.mermaid.run({ nodes: container.querySelectorAll('.mermaid') });
-      } catch (e) {
-        console.warn('Mermaid re-render failed:', e);
-      }
+      setTimeout(() => {
+        try {
+          // Re-initialize for new nodes
+          window.mermaid.run({ 
+            nodes: container.querySelectorAll('.mermaid'),
+            suppressErrors: true 
+          });
+        } catch (e) {
+          console.warn('Mermaid re-render failed:', e);
+        }
+      }, 50); // Minimal delay for DOM stability
     }
 
     // 2. Re-apply syntax highlighting if available (Prism / highlight.js)
