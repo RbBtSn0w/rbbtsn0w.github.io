@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'digest'
+require 'date'
 require 'fileutils'
 require 'json'
 require 'net/http'
@@ -68,6 +69,14 @@ LANGUAGE_LABELS = {
 }.freeze
 
 FileUtils.mkdir_p(OUTPUT_DIR)
+
+def safe_yaml_load(yaml)
+  YAML.safe_load(
+    yaml,
+    permitted_classes: [Date, Time],
+    aliases: true
+  ) || {}
+end
 
 def hash_content(content)
   Digest::SHA256.hexdigest(content)
@@ -144,7 +153,7 @@ def parse_post(content)
   body = content
 
   if (match = content.match(/\A---\s*\n(.*?)\n---\s*\n/m))
-    front_matter = YAML.safe_load(match[1], aliases: true) || {}
+    front_matter = safe_yaml_load(match[1])
     body = content[match[0].length..]
   end
 
