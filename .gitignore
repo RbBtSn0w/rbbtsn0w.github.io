@@ -31,3 +31,4 @@ specs/**/draft_*.md
 
 # Node.js / TypeScript build output
 .wechat.yml
+wechat-publisher/*
