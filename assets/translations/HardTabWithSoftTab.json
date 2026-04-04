@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Hard tab 与 Soft Tab 之争",
+      "description": "",
+      "content": "<p>看到这个还是从<a href=\"https://atom.io\">Atom</a> 看到的，上次听说这事也是还是从《硅谷》第三季听到。</p>\n\n<p>在<a href=\"https://atom.io\">Atom</a> 设置下，Tab type 选项的说明</p>\n<blockquote>\n  <p>Determine character inserted when Tab key is pressed. Possible values: “auto”, “soft” and “hard”. When set to “soft” or “hard”, soft tabs (spaces) or hard tabs (tab characters) are used. When set to “auto”, the editor auto-detects the tab type based on the contents of the buffer (it uses the first leading whitespace on a non-comment line), or uses the value of the Soft Tabs config setting if auto-detection fails.</p>\n</blockquote>\n\n<p>从这细读不难发现，在使用tab 键和spaces 键，大家本能意识上没发现有区别的，其实在文档编辑中，使用了不通占位符的。<br>\n刚好最近碰到的就是，有同学通过windows 下的编辑器编写的文档代码，传给我在MacOS 下看总是有排版不对齐，一开始以为是Atom 的问题呢。</p>\n\n<p>简单看就是这两个键，在物理的角度看，Hard Tab 键占据位置依赖操作系统分配位置长度，而space 键其实就单个空格位置长度。所以最好的工作方式，就是改掉Hard Tab。</p>\n\n<p>即 Soft Tab = 4 * Space 的长度。</p>\n"
+    },
+    "en": {
+      "title": "The Hard Tab vs. Soft Tab Debate",
+      "description": "",
+      "content": "<p>Seeing this still comes from<a href=\"https://atom.io\">Atom</a>I saw it; the last time I heard about this was from the third season of Silicon Valley.</p>\n\n<p>exist<a href=\"https://atom.io\">Atom</a>Explanation of the Tab type option in the settings.</p>\n<blockquote>\n  <p>Determine character inserted when Tab key is pressed. Possible values: “auto”, “soft” and “hard”. When set to “soft” or “hard”, soft tabs (spaces) or hard tabs (tab characters) are used. When set to “auto”, the editor auto-detects the tab type based on the contents of the buffer (it uses the first leading whitespace on a non-comment line), or uses the value of the Soft Tabs config setting if auto-detection fails.</p>\n</blockquote>\n\n<p>A closer look reveals that while people may not instinctively notice a difference between the tab and space keys, different placeholders are actually used in document editing.<br>I recently encountered a situation where a classmate sent me a document code written in a Windows editor, but the formatting was always misaligned when I viewed it on macOS. At first, I thought it was an Atom issue.</p>\n\n<p>Simply put, it's just these two keys. From a physical perspective, the Hard Tab key's space depends on the operating system's allocation, while the space key is only the length of a single space. Therefore, the best way to work with it is to change the Hard Tab key.</p>\n\n<p>That is, the length of Soft Tab = 4 * Space.</p>\n"
+    }
+  },
+  "hash": "e6f6efaa8fbd7b4749437fa6a1197d6eeb0e82c45d2ff62daad2d5d7376a6388",
+  "timestamp": "2026-04-04T06:40:26Z"
+}

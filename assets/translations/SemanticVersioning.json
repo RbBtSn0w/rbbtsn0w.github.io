@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Semantic Versioning",
+      "description": "",
+      "content": "<p>参与项目有了10年左右的阶段, 前前后后也基础不少项目. 但是在版本上,大家的管理并没有一个统一的规范, 前段时间同事给我推荐了, Semantic Versioning, 中文: 语义化版本, 就是对软件的版本号设计了一套标准定义. 其实软件版本号的定义,各自公司都有自己情况,所以大概上有所不同.</p>\n\n<p>这里就简单解释下这个内容.</p>\n\n<p>版本格式：<code>主版本号.次版本号.修订号</code>，版本号递增规则如下：</p>\n\n<ul>\n  <li>主版本号：当你做了不兼容的 API 修改，</li>\n  <li>次版本号：当你做了向下兼容的功能性新增，</li>\n  <li>修订号：当你做了向下兼容的问题修正。</li>\n</ul>\n\n<p>先行版本号及版本编译元数据可以加到“主版本号.次版本号.修订号”的后面，作为延伸。</p>\n\n<blockquote>\n  <p>详细解释和说明,访问官方网站 <a href=\"https://semver.org\">Semantic Versioning</a></p>\n</blockquote>\n"
+    },
+    "en": {
+      "title": "Semantic Versioning",
+      "description": "",
+      "content": "<p>I've been involved in projects for about 10 years, covering quite a few projects. However, there's no unified standard for version management. A while ago, a colleague recommended Semantic Versioning to me, which provides a standardized definition for software version numbers. Actually, each company has its own way of defining software version numbers, so they generally differ.</p>\n\n<p>Here's a simple explanation of this content.</p>\n\n<p>Version format:<code>主版本号.次版本号.修订号</code>The version number increment rule is as follows:</p>\n\n<ul>\n  <li>Major version number: When you make incompatible API changes,</li>\n  <li>Minor version number: When you make a backward compatible feature addition.</li>\n  <li>Revision number: When you made a backward compatibility fix.</li>\n</ul>\n\n<p>The earlier version number and version compilation metadata can be added after \"major version number.minor version number.revision number\" as an extension.</p>\n\n<blockquote>\n  <p>For detailed explanations and instructions, please visit the official website.<a href=\"https://semver.org\">Semantic Versioning</a></p>\n</blockquote>\n"
+    }
+  },
+  "hash": "735d1c5830d80180426c8dcfc59d779544253c4cb4ddeae84863f6981d0d6950",
+  "timestamp": "2026-04-04T06:39:45Z"
+}
