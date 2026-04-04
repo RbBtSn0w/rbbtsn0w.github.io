@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "How use Final Cut Pro X",
+      "description": "",
+      "content": "<p>最近从西藏回来了，路上拍了一些视频，特此想制作视频，很早之前自己学习了Final Cut Pro， 但是现在有给忘记了😂，今天这里就感觉再次记录下重新拿起Final Cut 的一些过程和经历。</p>\n"
+    },
+    "en": {
+      "title": "How use Final Cut Pro X",
+      "description": "",
+      "content": "<p>I recently returned from Tibet and filmed some videos along the way. I wanted to make a video about it. I learned Final Cut Pro a long time ago, but I've forgotten most of it now 😂. Today, I'd like to record some of the process and experiences of picking up Final Cut again.</p>\n"
+    }
+  },
+  "hash": "40e0f8d616aade24be2af1820ed0de485f5b1fed5bd3b853c3860b62e01eea06",
+  "timestamp": "2026-04-04T03:05:13Z"
+}

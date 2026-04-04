@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Project Management",
+      "description": "",
+      "content": "<h2 id=\"store-point\">\n<span class=\"me-2\">Store Point</span><a href=\"#store-point\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>个人粗暴的理解, 就是评估这个需求单时候,给予一个评分, 分为, 复杂度, 工作时长, 存在的风险/不确定因素.</p>\n\n<blockquote>\n  <p>当采用故事点估算时，我们为每个待办项分配一个点数。待办项估算结果的原生数据并不重要，我们只关注最后得到的相对估算结果。一个估算值为2的用户故事应该是估算值为1的用户故事的2倍。而它也应该是另一个估算值为3的用户故事的三分之二.</p>\n</blockquote>\n\n<p>故事点包括什么内容</p>\n\n<p>由于故事点数代表了开发用户发故事所需的全部工作量，所以团队的估算必须考虑到影响工作量的所有因素。这可能包括：</p>\n\n<p>要开展的工作的数量<br>\n工作的复杂度<br>\n要开展的工作中存在的任何风险或不确定性<br>\n在用故事点估算时，必须要考虑以上每一个因素。让我们看看每个因素是如何影响故事点的。</p>\n\n<p><a href=\"https://www.cnblogs.com/sophia194910/p/8334906.html\">到底什么是故事点（Story Point）？</a></p>\n"
+    },
+    "en": {
+      "title": "Project Management",
+      "description": "",
+      "content": "<h2 id=\"store-point\">\n<span class=\"me-2\">Store Point</span><a href=\"#store-point\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>My rough understanding is that when evaluating this requirement, a score is given, which is divided into complexity, working time, and existing risks/uncertainties.</p>\n\n<blockquote>\n  <p>When using story point estimation, we assign one point to each to-do item. The raw data for the to-do item estimation results is not important; we only focus on the final relative estimation result. A user story with an estimated value of 2 should be twice the size of a user story with an estimated value of 1. It should also be two-thirds the size of another user story with an estimated value of 3.</p>\n</blockquote>\n\n<p>What does the story include?</p>\n\n<p>Since Story Points represent the total effort required to develop users and publish stories, the team's estimate must take into account all factors that affect workload. These may include:</p>\n\n<p>The amount of work to be carried out<br>Complexity of the work<br>Any risks or uncertainties that may exist in the work to be carried out.<br>When estimating story points, each of the above factors must be considered. Let's see how each factor affects story points.</p>\n\n<p><a href=\"https://www.cnblogs.com/sophia194910/p/8334906.html\">What exactly is a story point?</a></p>\n"
+    }
+  },
+  "hash": "13964dba564a29c8295b00ab13fa2d462dfb126c40ef4912ed2d319b58a86dcb",
+  "timestamp": "2026-04-04T03:04:59Z"
+}
