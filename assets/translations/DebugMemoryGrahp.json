@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Xcode Debug Memory Graph",
+      "description": "开启 Xcode Memory Graph 的日志与配置，辅助定位内存对象与泄漏。",
+      "content": "<p>这个功能大家都使用过了，可以大家在使用的时候，只能看到图的结构，但是并不能看到的代码符号上的堆栈。<br>\n现在告诉大家一个开启的办法。<br>\n打开Schema 的设置，点击 Diagnositcs，看到Loggin 并勾选，选择 All Allocation and Free Historey。<br>\n重新运行看看，是否有你想要的呢？</p>\n"
+    },
+    "en": {
+      "title": "Xcode Debug Memory Graph",
+      "description": "Enable logging and configuration for Xcode Memory Graph to help locate memory objects and leaks.",
+      "content": "<p>Everyone has used this feature before. When using it, you can only see the structure of the graph, but you cannot see the stack on the code symbols.<br>Now I'll tell you how to turn it on.<br>Open the Schema settings, click Diagnostics, find Login and check it, then select All Allocation and Free Historey.<br>Try running it again and see if it gives you what you want.</p>\n"
+    }
+  },
+  "hash": "70884b6739566c367ed46bb88102ab74d6f039ab0e1ba1d27a4acdf44e4e96c0",
+  "timestamp": "2026-04-04T03:13:58Z"
+}
