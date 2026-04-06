@@ -1,0 +1,20 @@
+{
+  "format": "bilingual_html",
+  "schema_version": 2,
+  "source_lang": "zh-CN",
+  "target_lang": "en",
+  "translations": {
+    "zh-CN": {
+      "title": "Xcode build error at -fobjc-weak flag",
+      "description": "修复 -fobjc-weak 在部署目标不支持时的构建错误，并说明 Xcode 配置项影响。",
+      "content": "<h2 id=\"background\">\n<span class=\"me-2\">Background</span><a href=\"#background\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>When click Xcode project and upgrade the project config for old Xcode version, like manage auto release.</p>\n\n<p>you will see this error on your message list.</p>\n\n<p>clang: error: -fobjc-weak is not supported on the current deployment target</p>\n\n<p>The reason is Xcode add new command line “CLANG_ENABLE_OBJC_WEAK = YES;”.</p>\n\n<h2 id=\"resolve\">\n<span class=\"me-2\">Resolve</span><a href=\"#resolve\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>Now remove it on Xcode config, and build it again.</p>\n\n<p>“CLANG_ENABLE_OBJC_WEAK = YES;”</p>\n"
+    },
+    "en": {
+      "title": "Xcode build error at -fobjc-weak flag",
+      "description": "Fixed a build bug with -fobjc-weak when the deployment target was not supported, and explained the impact of Xcode configuration options.",
+      "content": "<h2 id=\"background\">\n<span class=\"me-2\">Background</span><a href=\"#background\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>When click Xcode project and upgrade the project config for old Xcode version, like manage auto release.</p>\n\n<p>you will see this error on your message list.</p>\n\n<p>clang: error: -fobjc-weak is not supported on the current deployment target</p>\n\n<p>The reason is Xcode add new command line “CLANG_ENABLE_OBJC_WEAK = YES;”.</p>\n\n<h2 id=\"resolve\">\n<span class=\"me-2\">Resolve</span><a href=\"#resolve\" class=\"anchor text-muted\"><i class=\"fas fa-hashtag\"></i></a>\n</h2>\n\n<p>Now remove it on Xcode config, and build it again.</p>\n\n<p>“CLANG_ENABLE_OBJC_WEAK = YES;”</p>\n"
+    }
+  },
+  "hash": "9281d00081b7693980e1deef7cb2549d33c5adb0f8546985e5ead8f26787d018",
+  "timestamp": "2026-04-06T13:32:47Z"
+}
