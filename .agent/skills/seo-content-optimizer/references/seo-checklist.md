@@ -4,43 +4,56 @@ Use this checklist before publishing any public-facing blog post or documentatio
 
 ---
 
-## 1. Frontmatter Completeness
+## 1. Jekyll Publishability
+
+- [ ] **File path**: Blog post lives at `_posts/YYYY-MM-DD-<slug>.md`
+- [ ] **Filename date**: Prefix matches the intended publish date
+- [ ] **Slug**: Expected URL is `/posts/<slug>/`
+- [ ] **Generated output**: Local or CI build produces `_site/posts/<slug>/index.html`
+- [ ] **Rendered validation**: `python3 .agent/skills/seo-content-optimizer/scripts/prepublish_check.py <post>` passes after `jekyll build`
+
+---
+
+## 2. Frontmatter Completeness
 
 | Field | Requirement | Status |
 |-------|-------------|--------|
-| `title` | ≤ 60 chars, contains primary keyword, compelling for CTR | [ ] |
+| `title` | Concise, unique, accurate, and compelling for CTR | [ ] |
 | `date` | Valid ISO 8601 format | [ ] |
-| `description` | 120-160 chars, contains primary keyword, promises value | [ ] |
+| `description` | One or two concise sentences, accurate, contains the topic naturally | [ ] |
 | `categories` | 1-2 categories from site taxonomy | [ ] |
-| `tags` | 3-6 relevant tags, includes primary + secondary keywords | [ ] |
+| `tags` | 3-6 relevant tags, includes primary topic and related terms | [ ] |
 | `image` | Cover image path with descriptive alt text (recommended) | [ ] |
+| `mermaid` | `true` when the post body contains Mermaid diagrams | [ ] |
 
 > See [Frontmatter Specification](frontmatter-spec.md) for detailed field-by-field guidance.
 
 ---
 
-## 2. Content Structure
+## 3. Content Structure
 
 - [ ] **Single H1**: Only one H1 tag in the entire page (the post title)
 - [ ] **Heading hierarchy**: H1 → H2 → H3 (no skipped levels)
-- [ ] **Keyword in H2**: At least 1-2 H2 headings naturally contain target keywords
-- [ ] **First 100 words**: Primary keyword appears within the opening paragraph
-- [ ] **Featured Snippet ready**: A 40-60 word paragraph directly answers the article's core question
+- [ ] **No body H1**: Jekyll posts do not include Markdown `#` headings in the body
+- [ ] **Mermaid rendering**: Posts with ` ```mermaid` fences set `mermaid: true` in frontmatter
+- [ ] **Topic in H2**: At least 1-2 H2 headings naturally clarify the target topic
+- [ ] **Opening relevance**: The opening paragraph quickly confirms the topic and reader value
+- [ ] **Snippet-friendly**: A concise direct answer is present when it helps the reader
 - [ ] **Short paragraphs**: No paragraph exceeds 4 sentences (critical for mobile UX)
 - [ ] **Scannable format**: Key information in lists, tables, or bold text — not buried in prose
 
 ---
 
-## 3. Keyword Integration
+## 4. Query Vocabulary
 
-- [ ] **Primary keyword** identified and naturally used 3-5 times across the article
-- [ ] **Secondary keywords** (2-3) used in headings and body text
+- [ ] **Primary query/topic** identified and used naturally where it improves clarity
+- [ ] **Related queries** (2-3) reflected in headings, examples, or body text when relevant
 - [ ] **No keyword stuffing**: Keywords read naturally in context
-- [ ] **LSI terms**: Related vocabulary strengthens topical authority
+- [ ] **Domain vocabulary**: Official docs and audience language are reflected without parroting source material
 
 ---
 
-## 4. Links
+## 5. Links
 
 ### Internal Links
 - [ ] ≥ 2 links to related posts on the same site
@@ -58,10 +71,11 @@ Use this checklist before publishing any public-facing blog post or documentatio
 ### Link Health
 - [ ] No broken links (verify all URLs resolve)
 - [ ] No orphan pages (every post is linked from at least one other post)
+- [ ] Rendered HTML links are checked, not only Markdown source links
 
 ---
 
-## 5. Multimedia & Accessibility
+## 6. Multimedia & Accessibility
 
 - [ ] **Alt text**: Every image has a descriptive `alt` attribute (include keyword where natural)
 - [ ] **File naming**: Image files use descriptive, kebab-case names (e.g., `mcp-architecture-diagram.png`)
@@ -72,16 +86,19 @@ Use this checklist before publishing any public-facing blog post or documentatio
 
 ---
 
-## 6. Technical SEO
+## 7. Technical SEO
 
 - [ ] **Slug**: URL path is short, descriptive, and contains primary keyword
 - [ ] **Canonical URL**: Correct if cross-posting to other platforms
+- [ ] **Search index**: `_site/assets/js/data/search.json` includes the post URL
+- [ ] **Sitemap**: `_site/sitemap.xml` includes the canonical URL
+- [ ] **Open Graph**: Rendered HTML has title, description, URL, and image metadata
 - [ ] **Mobile-friendly**: Short paragraphs, responsive images, no horizontal scroll
 - [ ] **Page speed**: No unnecessary large assets embedded inline
 
 ---
 
-## 7. Engagement Signals
+## 8. Engagement Signals
 
 - [ ] **Compelling title**: Would you click this in search results?
 - [ ] **Meta description**: Does it promise a clear benefit?

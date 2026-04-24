@@ -69,7 +69,7 @@ Place at **both the top and bottom** of each series post:
 - Research papers or blog posts that inspired the content.
 
 ### How to Link Externally
-- Use `target="_blank"` and `rel="noopener"` for security and UX:
+- Use `target="_blank"` and `rel="noopener"` when the site's UX convention opens external references in a new tab. Treat this as security/UX hygiene, not an SEO ranking shortcut:
   ```markdown
   [MCP Apps 官方指南](https://modelcontextprotocol.io/docs/extensions/apps){:target="_blank" rel="noopener"}
   ```
@@ -110,3 +110,4 @@ Periodically (e.g., monthly or when publishing new content):
 - [ ] Check for **broken links**: URLs that return 404
 - [ ] Check for **outdated external links**: docs that have moved or been deprecated
 - [ ] Update topic cluster map when new posts are added
+- [ ] Re-run rendered-site validation so internal links, sitemap, search index, and canonical URLs are checked against built HTML rather than Markdown assumptions

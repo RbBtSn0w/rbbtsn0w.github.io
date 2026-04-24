@@ -1,8 +1,19 @@
 # Technical Writing Templates
 
 ## Technical Blog Posts
+
+For Jekyll/Chirpy posts, the `title` in frontmatter renders the page H1. Do not add a body-level `#` heading.
+
 ```markdown
-# [Compelling Title That Promises Value]
+---
+layout: post
+title: "[Compelling Title That Promises Value]"
+date: YYYY-MM-DD HH:MM:SS +0800
+categories: [Tools]
+tags: [primary-keyword, secondary-keyword]
+description: "[One or two sentences that accurately summarize the value of the post.]"
+# mermaid: true # Required only when the post body contains ```mermaid fences.
+---
 
 > **TL;DR**: [One-paragraph summary of the key insight and what the reader will gain. 2-3 sentences max.]
 
@@ -23,7 +34,7 @@
 [Decision points and tradeoffs]
 
 ## Results and Metrics
-[Quantified improvements]
+[Quantified improvements, measured behavior, or clearly labeled qualitative outcome]
 [Unexpected discoveries]
 
 ## Lessons Learned
@@ -42,7 +53,15 @@
 Use this structure for articles that are part of a series (e.g., multi-part tutorials or deep dives).
 
 ```markdown
-# [Series Name] — Part N: [This Part's Title]
+---
+layout: post
+title: "[Series Name] — Part N: [This Part's Title]"
+date: YYYY-MM-DD HH:MM:SS +0800
+categories: [Tools]
+tags: [series-keyword, topic-keyword]
+description: "[One or two sentences that summarize this installment.]"
+# mermaid: true # Required only when the post body contains ```mermaid fences.
+---
 
 > **TL;DR**: [Summary of this installment.]
 

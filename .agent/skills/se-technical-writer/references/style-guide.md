@@ -25,6 +25,8 @@
 - Ensure version numbers and dependencies are current.
 - Cross-reference official documentation.
 - Include performance implications where relevant.
+- Maintain a claim ledger for volatile facts: claim, source, verification command or URL, and verification date.
+- Do not imply a fact is current when it was inferred from memory or an older draft.
 
 ---
 
@@ -41,6 +43,8 @@
 - **Command examples**: Show both command and expected output.
 - **File paths**: Use consistent relative or absolute paths.
 - **Versions**: Include version numbers for all tools/libraries.
+- **Jekyll posts**: Do not put a body-level `#` heading in posts; frontmatter/title rendering owns the page H1.
+- **Mermaid diagrams**: If a Jekyll post contains a `mermaid` code fence, set `mermaid: true` in frontmatter.
 
 ### Formatting Conventions
 - **Headers**: Title Case for Levels 1-2, Sentence case for Levels 3+.
@@ -91,18 +95,18 @@ Choosing the right visual format is as important as the text itself.
 
 ### AI-generated images (Gemini / generate_image)
 
-When original images, illustrations, or cover art are **not available**, use AI image generation tools (e.g., Gemini's `generate_image`) to create them. This ensures every post has complete visual assets rather than empty placeholders.
+When original images, illustrations, or cover art are **not available**, use AI image generation tools (e.g., Gemini's `generate_image`) only when a visual asset helps the reader or the distribution surface. Do not add decorative visuals just to fill space.
 
 **When to generate**:
 - Cover/hero images for blog posts that lack one
 - Conceptual illustrations for abstract topics (e.g., architecture overviews, workflow diagrams)
 - Before/after comparison visuals when screenshots aren't available
-- Decorative section headers for long-form content
 
 **When NOT to generate**:
 - Screenshots of real UIs — use actual screenshots instead
 - Code output — use real terminal captures
 - Logos or brand assets — always use official versions
+- Diagrams that can be more accurately represented with Mermaid, tables, or actual architecture artifacts
 
 **Generation rules**:
 - Write a detailed, descriptive prompt that matches the article's technical context.

@@ -12,9 +12,10 @@ This document defines the SEO-optimized Frontmatter conventions for the blog at 
 
 ### `title`
 - **SEO Rules**:
-  - **Length**: ≤ 60 characters (Google truncates at ~60 chars in SERPs)
-  - **Primary keyword**: Must appear in the title, ideally near the beginning
+  - **Length**: Aim for concise titles that remain useful when truncated in search results
+  - **Primary query/topic**: Should appear in the title when natural, ideally near the beginning
   - **Compelling**: Use power words or value promises to increase CTR
+  - **Accuracy**: Must describe the actual page content without overpromising
 - **Examples**:
   - ✅ `"MCP Apps 实战：三步为工具添加交互式 UI"` (keyword upfront, value promise)
   - ❌ `"我最近试了一些新东西关于 MCP"` (vague, keyword buried)
@@ -42,8 +43,8 @@ This document defines the SEO-optimized Frontmatter conventions for the blog at 
 
 ### `description`
 - **SEO Rules**:
-  - **Length**: 120-160 characters (Google truncates meta descriptions at ~160 chars)
-  - **Primary keyword**: Must appear naturally in the description
+  - **Length**: Aim for one or two concise sentences; 120-160 characters is a useful working range, not a hard ranking rule
+  - **Primary query/topic**: Must appear naturally in the description when it helps clarify the page
   - **Value promise**: Tell the reader exactly what they'll learn or gain
   - **Action-oriented**: Use verbs like "learn", "discover", "build", "solve"
 - **Examples**:
@@ -71,6 +72,7 @@ This document defines the SEO-optimized Frontmatter conventions for the blog at 
 ### `math` / `mermaid`
 - **Value**: `true` to enable MathJax or Mermaid rendering
 - **Note**: Only set when the post actually uses these features
+- **Mermaid gate**: If the Markdown body contains a `mermaid` code fence, frontmatter MUST include `mermaid: true`. Without it, Chirpy will not load Mermaid rendering for the post.
 
 ---
 
@@ -87,6 +89,16 @@ The site uses the permalink pattern: `/posts/:title/` (configured in `_config.ym
 - **Examples**:
   - ✅ `2026-01-27-mcp-apps-guide.md` → `/posts/mcp-apps-guide/`
   - ❌ `2026-01-27-my-article-about-how-to-create-mcp-apps-in-2026.md`
+
+### Publishability Gate
+
+For blog posts, the filesystem path is part of the publishing contract:
+
+- **Required path**: `_posts/YYYY-MM-DD-<slug>.md`
+- **Expected URL**: `/posts/<slug>/`
+- **Date consistency**: The filename date and frontmatter `date` should represent the intended publish date.
+- **Failure mode**: A Markdown file inside `_posts/` without the `YYYY-MM-DD-` prefix is not collected as a Jekyll post. GitHub Pages can still build and deploy successfully, but the article URL will be missing.
+- **Rendered verification**: After `jekyll build`, confirm `_site/posts/<slug>/index.html`, `_site/assets/js/data/search.json`, and `_site/sitemap.xml` include the expected URL.
 
 ---
 
@@ -114,6 +126,8 @@ image:
 |---------|-----------------|-----|
 | Title > 60 chars | Gets truncated in search results, lower CTR | Shorten and front-load keyword |
 | No `description` | Google auto-generates one (often poorly) | Always write a manual description |
+| Body starts with `# Title` | Can create duplicate H1 on rendered Jekyll posts | Put the title in frontmatter and start body with TL;DR or H2 |
+| Mermaid diagram without `mermaid: true` | Diagram source may render as raw code instead of an interactive diagram | Add `mermaid: true` to frontmatter when using ` ```mermaid` |
 | Generic tags like `tech`, `blog` | Too broad, no search value | Use specific, searchable terms |
 | Same categories on every post | Dilutes category archive value | Use categories that genuinely group content |
 | No `image` | Poor social sharing appearance | Add cover image for public posts |
