@@ -8,6 +8,7 @@ description: "Swift 6.3 引入了 experimentalCGen 特性，允许 Swift Package
 image:
   path: /assets/img/post/swift-6.3-experimental-cgen/cover.png
   alt: "Illustration of Swift and C code files flowing through a build tool plugin into a unified module"
+mermaid: true
 ---
 
 > **TL;DR**: Swift 6.3 引入了 `experimentalCGen` 特性，允许 Swift Package Manager 的 Build Tool Plugin 生成 C-family 源码并直接参与 C 模块的编译。这消除了混合语言项目中对外部脚本的依赖，使完整的构建图谱得以在 SwiftPM 内闭环。
