@@ -116,14 +116,49 @@ jobs:
 ## 🚦 场景分叉：新包 vs 老包迁移
 
 ### 场景 A：发布一个全新的 npm 包
-1.  **手动冷启动**：本地执行 `npm publish --access public` 完成首次发布。
-2.  **配置可信发布者**：登录 npmjs.com，进入包的 **Settings** -> **Trusted Publishers** -> **Add Publisher**。
-3.  **绑定内容**：仅填工作流文件名（如 `release.yml`）。
 
-### 场景 B：旧包迁移 (删除 NPM_TOKEN)
-1.  **绑定 Publisher**：在 npm 侧完成 GitHub 绑定。
-2.  **配置清理**：从 CI 工作流中彻底移除 `NPM_TOKEN` 环境变量。
-3.  **秘钥销毁**：撤销 npm 官网上的长效 Token 以确保安全。
+> [!NOTE]
+> 由于未发布的包在 npm 上还不存在，你无法提前配置 Trusted Publisher。因此，新包必须先进行一次本地手动发布（冷启动）。
+
+1. **本地手动冷启动**
+   * **Step 1: 登录并确认身份**
+     ```bash
+     npm login          # 浏览器完成 2FA 登录
+     npm whoami         # 必须输出你的 npm 账号 (例如 rbbtsn0w)
+     ```
+   * **Step 2: 发布前 Dry-run 自检**  
+     在不真正上传的前提下，预检打包内容与编译流程：
+     ```bash
+     npm publish --dry-run --access public --tag alpha
+     ```
+     > [!TIP]
+     > `prepare` 生命周期钩子会在此阶段触发 `npm run typecheck`，作为发布前的编译与类型检查门禁。
+   * **Step 3: 正式手动发布**
+     ```bash
+     npm publish --access public --tag alpha
+     ```
+     * `--access public`：Scoped 包默认是私有的（Private），必须显式指定为公开（Public）。
+     * `--tag alpha`：关键步骤，避免将首个处于测试或开发阶段的版本设为 `latest`。
+   * **Step 4: 补齐 Git Tag**  
+     手动标记版本并推送，为后续 `semantic-release` 的自动化接管打下基础：
+     ```bash
+     git tag v0.1.0-alpha.1
+     git push origin v0.1.0-alpha.1
+     ```
+
+2. **配置可信发布者 (Trusted Publisher)**  
+   首次手动发布成功后，登录 npmjs.com，进入该包的 **Settings** -> **Trusted Publishers** -> **Add Publisher**。
+
+3. **绑定 GitHub 仓库**  
+   仅需填写你的 GitHub 组织/用户、仓库名，以及触发发布的工作流文件名（例如 `release.yml`）。
+
+### 场景 B：旧包迁移 (彻底移除 NPM_TOKEN)
+
+若该包在 npm 上已存在，可以直接通过以下顺序平滑迁移至免密钥发布，确保 CI/CD 流程不中断：
+
+1. **绑定 Trusted Publisher**：在 npm 侧对应包的后台完成 GitHub 仓库绑定。
+2. **清理 CI 配置**：从 GitHub Actions 的 `.yml` 文件或项目 Secrets 中，彻底移除 `NPM_TOKEN` 环境变量。
+3. **销毁历史密钥**：确认 CI 自动发布成功后，登录 npm 官网，撤销之前生成的所有长效发布 Token，实现安全闭环。
 
 ---
 
