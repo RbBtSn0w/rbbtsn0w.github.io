@@ -25,7 +25,7 @@ Spec Kit 是一套围绕 specification、plan 和 task artifact 展开的 Spec-D
 
 在两套模型都建立之后，再比较它们的差异，并讨论如果要融合，会遇到什么问题。
 
-本文基于本地安装的 Spec Kit `0.11.9-dev0` 与 Superpowers `6.1.0` skill 定义。相关行为于 2026-07-03 核验；两套项目仍在演进，文末链接应结合具体版本阅读。
+本文的 Spec Kit 部分已按官方 `v0.12.4` command templates 核验，Superpowers 部分基于本地安装的 `6.1.0` skill 定义。相关行为于 2026-07-03 核验；两套项目仍在演进，文末链接应结合具体版本阅读。
 
 ## 第一部分：Spec Kit 如何理解 Parallel
 

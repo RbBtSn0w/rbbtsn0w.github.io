@@ -25,7 +25,7 @@ image:
 
 在 AI 辅助编程的长对话中，这几乎是所有开发者都会遇到的痛点。当项目规范、架构原则和基础设施命令越来越多时，LLM 在处理超长上下文时极易产生注意力衰减，或者在不断“压缩/总结”记忆的过程中丢失关键细节。
 
-今天，我们就来深入探讨在 SDD 规范下，专门为 [Spec Kit](/posts/superpowers-bridge-spec-kit/) 打造的 [`memorylint` 扩展](https://github.com/RbBtSn0w/spec-kit-extensions/tree/main/memorylint)，是如何从系统工程层面优雅解决这一痛点的。
+今天，我们就来深入探讨在 SDD 规范下，专门为 [GitHub Spec Kit 工作流](/posts/sdd-series-part-2-spec-kit/) 打造的 [`memorylint` 扩展](https://github.com/RbBtSn0w/spec-kit-extensions/tree/main/memorylint)，是如何从系统工程层面解决这一痛点的。
 
 ## 记忆崩塌的根源：职责不清与文件膨胀
 
@@ -65,7 +65,7 @@ image:
 - Rule: Extract domain logic from UI components.
 ```
 
-随后，执行 `/speckit constitution` 命令时，系统会直接读取这段“热腾腾”的短期上下文，并由 LLM 自然地将其与旧的 Constitution 进行语义融合。这种**基于对话流的上下文接力**，完美避免了硬合并导致的记忆截断。
+随后，执行 `/speckit.constitution` 命令时，系统会读取当前会话中的这段短期上下文，并由 LLM 将其与旧的 Constitution 进行语义融合。这种**基于对话流的上下文接力**避免了脚本直接覆盖 Constitution 的风险，但仍需要通过 diff 与 review 验证合并结果。
 
 ### 3. 强制即时唤醒：打破历史遗忘曲线 (Mandatory Active Loading)
 

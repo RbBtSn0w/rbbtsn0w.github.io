@@ -29,7 +29,7 @@ mermaid: true
 
 要真正驯服 AI，我们需要将“规范”与“能力”结合。这就是 Superpowers Bridge 诞生的背景，它主要由两个基石生态组成：
 
-- **Spec Kit**：定义了极其严格的开发流程工作流，将生命周期科学地切分为 `specify` (澄清需求) -> `tasks` (拆解任务) -> `implement` (编写代码)。它强迫我们在写下第一行代码前想清楚要做什么。
+- **Spec Kit**：以 artifacts 为中心组织 SDD 生命周期。最短主线是 `constitution -> specify -> plan -> tasks -> implement`；当前版本还提供 `converge`，用于在实现后识别剩余工作并追加回 `tasks.md`。
 - **Superpowers**：这是一套由专家凝练的 Agent 技能合集（[obra/superpowers](https://github.com/obra/superpowers)），它赋予 AI 诸如“测试驱动开发”、“结构化 Debug”以及“专业级 Code Review”等超越普通对话模型的能力单元。
 
 通过将经过实战检验的 Superpowers 无缝嵌入到 Spec Kit 严格的工作流之中，Superpowers Bridge 相当于给它打了基因强化剂。原本需要主动唤起的超级能力，统统变成了工作流中不可逾越的**强制护栏（Guardrails）**。
@@ -42,6 +42,7 @@ flowchart TD
 
     subgraph spec_workflow [Spec Kit: Standard SDD Workflow]
         S(["specify (澄清需求)"]):::workflow
+        P(["plan (技术规划)"]):::workflow
         T(["tasks (拆解任务)"]):::workflow
         I(["implement (编写代码)"]):::workflow
     end
@@ -64,7 +65,8 @@ flowchart TD
     end
 
     B_S --> S
-    S --> T
+    S --> P
+    P --> T
     T --> A_T
     A_T --> B_I
     B_I --> I
