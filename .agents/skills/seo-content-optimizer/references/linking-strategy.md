@@ -16,6 +16,7 @@ This document defines the internal and external linking practices for blog posts
 ## Internal Linking Rules
 
 ### Minimum Requirements
+
 - Every blog post MUST contain **at least 2 internal links** to other posts on the site.
 - Internal links should point to **topically related** content (not random posts).
 
@@ -28,12 +29,14 @@ This document defines the internal and external linking practices for blog posts
 | `[CocoaPods 源码分析](/posts/CocoaPodsSourceCode/)` | `[这篇文章](/posts/CocoaPodsSourceCode/)` |
 
 **Rules**:
+
 - Anchor text MUST be descriptive — it should tell both the reader and search engines what the target page is about.
 - Include a relevant keyword in the anchor text when natural.
 - Never use generic phrases: "click here", "read more", "this article", "see here".
 - Vary anchor text — don't use the exact same text for every link to the same page.
 
 ### Placement Strategy
+
 - **High-value positions**: Links in the first 2-3 paragraphs carry more SEO weight.
 - **Contextual relevance**: Place links where they naturally extend the reader's curiosity.
 - **Avoid cluster bombing**: Don't cram all internal links into a single paragraph or footer section.
@@ -45,6 +48,7 @@ This document defines the internal and external linking practices for blog posts
 For multi-part article series (e.g., the "Agentic Coding in Xcode" trilogy):
 
 ### Navigation Block (Required)
+
 Place at **both the top and bottom** of each series post:
 
 ```markdown
@@ -55,6 +59,7 @@ Place at **both the top and bottom** of each series post:
 ```
 
 ### Cross-referencing Rules
+
 - Each part MUST link to all other parts in the series.
 - Reference previous parts inline where concepts build on each other.
 - The final part should link back to Part 1 for readers who discover the series mid-way.
@@ -64,19 +69,24 @@ Place at **both the top and bottom** of each series post:
 ## External Linking Rules
 
 ### When to Link Externally
+
 - Official documentation of tools, libraries, or protocols mentioned.
 - GitHub repositories, issues, or PRs that provide context.
 - Research papers or blog posts that inspired the content.
 
 ### How to Link Externally
+
 - Use `target="_blank"` and `rel="noopener"` when the site's UX convention opens external references in a new tab. Treat this as security/UX hygiene, not an SEO ranking shortcut:
+
   ```markdown
   [MCP Apps 官方指南](https://modelcontextprotocol.io/docs/extensions/apps){:target="_blank" rel="noopener"}
   ```
+
 - Link to the **most specific page** (not just the homepage).
 - Prefer linking to **stable URLs** (versioned docs, permalinks) over pages that may change.
 
 ### External Link Limits
+
 - 3-8 external links per post is typical.
 - Too many external links dilute your page's authority — be selective.
 
@@ -97,6 +107,7 @@ Organize site content into **topic clusters** to build topical authority. Each c
 | **CI/CD & DevOps** | `ci-cd-best-practices` | `SemanticVersioning`, `CocoaPodsForPostInstall`, `CocoaPodsSourceCode`, `GithubFreeTLS` |
 
 ### How to Use This Map
+
 - When writing a new post, check which cluster it belongs to and add internal links to other posts in the same cluster.
 - Pillar pages should link to ALL cluster pages.
 - Cluster pages should link back to the pillar page and to 1-2 sibling pages.
@@ -106,6 +117,7 @@ Organize site content into **topic clusters** to build topical authority. Each c
 ## Link Audit Reminders
 
 Periodically (e.g., monthly or when publishing new content):
+
 - [ ] Check for **orphan pages**: posts with zero incoming internal links
 - [ ] Check for **broken links**: URLs that return 404
 - [ ] Check for **outdated external links**: docs that have moved or been deprecated

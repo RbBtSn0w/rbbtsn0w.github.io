@@ -14,7 +14,7 @@ order: 4
     <span style="font-size: 0.75rem; background: #6366f1; color: #ffffff; padding: 0.25rem 0.6rem; border-radius: 20px; font-weight: 600; letter-spacing: 0.5px;">macOS App</span>
   </div>
   <p style="margin: 0 0 1.2rem 0; font-size: 0.95rem; line-height: 1.6; color: var(--text-color);">
-    专为 macOS 打造的智能剪贴板管理工具。不仅提供优雅的历史记录与全局搜索，更支持 Markdown 与富文本双向智能转换、RTL 文本方向修正与目标应用场景适配，让您的剪贴板真正理解内容与输出。
+    专为 macOS 打造的原生智能剪贴板工具。基于 Swift 6 纯原生开发，支持高密度历史扫视与检索、文本过滤器、连续流转的“顺序粘贴”队列以及全方位的密码管理器隐私保护。
   </p>
   <a href="https://copyshelf.rbbtsn0w.me" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; background: #6366f1; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2); transition: background 0.2s;" onmouseover="this.style.background='#4f46e5';" onmouseout="this.style.background='#6366f1';">
     访问官方网站 <i class="fas fa-arrow-right"></i>
