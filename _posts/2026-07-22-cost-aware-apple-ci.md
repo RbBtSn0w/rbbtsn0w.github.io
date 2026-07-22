@@ -1,187 +1,46 @@
 ---
 layout: post
-title: "把 macOS Runner 当作稀缺资源：一套成本感知的 Apple CI 设计"
+title: "榨干 GitHub Actions 的最后一点价值"
 date: 2026-07-22 01:15:00 +0800
 categories: [Project]
 tags: [github-actions, apple-ci, macos-runner, xcode, testing, devops]
-description: "探讨不牺牲正确性的 Apple CI 优化与 macOS Runner 降本方案。从路径风险分类、Linux 前置验证、稳定汇总门禁到缓存边界，系统整理一套 GitHub Actions 降本指南。"
+description: "从一次 Apple CI 假红出发，逐层消除 flaky test、错误 runner、过时任务、权限捆绑与危险缓存，让每一分钟 GitHub Actions 都产生有效验证。"
 image:
   path: /assets/img/post/cost-aware-apple-ci/cover.png
-  alt: "A minimalist flat 2D vector illustration of an optimized Apple CI runner setup"
+  alt: "服务器机架通过自动化工作流连接 Apple CI，并展示构建、测试、性能与效率优化"
 mermaid: true
 ---
 
-> **TL;DR**：Apple CI 的优化目标不是“让所有任务跑得更快”，而是让每类变更只消耗足以证明其正确性的资源。先在 Linux 上分类并执行可移植检查，再把真正依赖 Xcode 的 build、unit test 与 UI test compilation 路由到 macOS；用一个稳定的 required gate 汇总条件任务；对未知路径 fail closed；不要在没有等价性、并发安全和收益数据前缓存 DerivedData。
+> **TL;DR**：所谓“榨干 GitHub Actions”，不是少跑测试，也不是钻免费额度的空子，而是让每一分钟执行都产生有效证据：先消灭制造重跑的 flaky test，再让 Linux 承担可移植检查，只把真正依赖 Xcode 的验证交给 macOS；取消已经过时的任务，拆开 PR、`main` 与 release 的权限，并在证明安全和收益前拒绝共享整个 DerivedData。
 
-> [!TIP]
-> **如何通过 Apple CI 优化实现 macOS Runner 的大幅降本？**  
-> 核心策略包括：① 在便宜的 Linux 容器上执行可移植的前置代码检查与风险路由分类；② 将真正依赖 Xcode 的编译与单元测试限制在仅必要路径，并汇总为稳定的所需门禁；③ 采用 fail-closed 路径策略；④ 隔离并审慎配置 DerivedData 并发缓存。
+## “榨干”不是多跑，而是不让 CI 空转
 
-## 问题不在于 macOS 慢，而在于我们让它做了太多事
+这一天，我们几乎把 GitHub Actions 能提供的验证手段轮了一遍。真正有价值的收获却不是“又多跑了多少次 CI”，而是终于看清：很多 runner 时间并没有用于证明代码正确，只是在重复等待、执行错误层级的检查，或者为已经过时的 commit 善后。
 
-Apple 平台项目天然依赖 Xcode、Simulator、签名工具链和 macOS runner。最直接的 CI 写法通常只有一个 job：每次 Pull Request 都生成工程、构建 App、运行全部单元测试，甚至顺手编译或执行 UI tests。
+事情起于一次很普通的合并。
 
-它很容易理解，也很容易浪费。
+Pull Request 上的 macOS CI 已经通过，代码合入 `main` 后，相同的单元测试却突然出现两个失败。构建、依赖解析和前置脚本都正常，失败只发生在两条与定时轮询有关的测试上。
 
-修改一篇文档、一个定价表或一段网站 JavaScript，并不需要启动 Xcode。反过来，修改 String Catalog、Tuist manifest 或 Swift 源码，仅靠 Linux lint 也无法证明资源处理和 Apple 编译链仍然成立。
+第一反应很自然：是不是 merge commit 改变了代码？
 
-真正的问题因此不是“怎样跳过测试”，而是：
+我们先比较了 PR head 与 `main` merge commit 的 Git `tree`，而不只是比较两个 commit SHA。结果显示二者的 tree 完全相同，也就是参与构建的文件内容没有差异。
 
-> 怎样为每一种变更选择最便宜、但仍足够证明正确性的验证层级？
+这一步很重要。它把排查方向从“合并引入回归”收缩为“相同代码为什么在两次运行中表现不同”。接下来，我们依次确认：
 
-这是一道风险路由题，而不是简单的路径过滤题。
+1. 失败发生在 test 阶段，而不是 build、coverage 或 packaging。
+2. 两条测试单独重复运行可以通过。
+3. 整个测试类重复运行也可以通过。
+4. 两条测试都使用固定 `sleep` 等待主 RunLoop 上的 `Timer` 推进状态。
 
-## 先建立证据阶梯
+问题最终落在第四点：`sleep` 只能保证一段时间过去，不能保证另一个调度队列上的工作已经执行。runner 负载较低时，Timer 及时触发，测试通过；调度稍慢时，断言就会先于状态转换发生。
 
-CI 配置能通过 YAML 解析，不代表它能在真实仓库中工作。我们需要区分五种证据：
+PR 和 `main` 的结果不同，并不是因为代码不同，而是测试把“通常会在这段时间内发生”误写成了“必然已经发生”。
 
-1. **Candidate**：只有架构推理或官方文档支持。
-2. **Locally proven**：分类器、脚本或 contract tests 已在本地通过。
-3. **Portable smoke proven**：runner、workflow mechanics 和精确 action pin 已在一次性公开 smoke repository 中通过。
-4. **Remote PR proven**：真实仓库 PR 已证明 secrets、私有依赖、条件 job、branch protection 和 required checks 可以协同工作。
-5. **Release proven**：archive、签名、上传或安装产物已经沿授权发布路径验证。
+## 第一笔浪费：假红制造的重复运行
 
-这些证据不能互相替代。公开 smoke 可以证明 `ubuntu-latest` 上存在所需工具，却不能证明私有依赖认证；本地测试可以证明分类逻辑，却不能证明 GitHub 的 skipped-job 汇总；PR 全绿也不能证明签名和发布产物。
+最容易想到的修补方法，是把 `50 ms` 增加到 `200 ms`。这样或许能让下一次 CI 通过，但它没有消除竞态，只是扩大了幸运窗口。
 
-因此，“设计合理”“本地通过”和“已经采用”应当是三个不同的结论。
-
-## 成本感知架构：基于 GitHub Actions 的 Apple CI 优化方案
-
-```mermaid
-flowchart LR
-  A[Changed paths] --> B[Classify on Linux]
-  B --> C{Portable checks?}
-  B --> D{Apple mode?}
-  C -->|yes| E[Linux validation]
-  C -->|no| F[Skipped]
-  D -->|build| G[macOS development build]
-  D -->|test| H[macOS unit tests]
-  D -->|ui-build| I[macOS build-for-testing]
-  D -->|none| J[Skipped]
-  E --> K[Stable required gate]
-  F --> K
-  G --> K
-  H --> K
-  I --> K
-  J --> K
-```
-
-整条流水线分为三层。
-
-### 1. Linux 分类器
-
-分类器读取真实的 Git diff，而不是只看最后一次 commit：
-
-- Pull Request 使用 base SHA 到 head SHA。
-- 已存在分支的 push 使用事件 payload 中的 `before` 到 `after`。
-- 新分支、删除 ref、全零 SHA、浅克隆缺历史等情况必须显式处理。
-
-分类结果应是机器可读输出，例如：
-
-```json
-{
-  "linux_checks": ["metadata", "automation-contracts"],
-  "apple_mode": "test",
-  "coverage_required": false,
-  "changed_file_count": 7,
-  "fallback_count": 1
-}
-```
-
-`fallback_count` 很重要。它让分类规则的盲区可见，同时不以漏跑验证为代价。
-
-### 2. 条件验证任务
-
-一个实用的默认路由可以是：
-
-| 变更风险 | Linux | macOS |
-|---|---|---|
-| 文档、非可执行规范 | none | none |
-| metadata、schema、脚本、Web 资源 | selected checks | none |
-| resources、String Catalog、manifest、build settings | optional checks | development build |
-| Product Swift 或 unit-test Swift | optional checks | development tests |
-| UI-test source | none | `build-for-testing` |
-| Unknown Swift | known checks | tests |
-| 其他未知 executable/config | known checks | build |
-
-这里有两个关键点。
-
-第一，分类依据是风险而不是文件数量。一行 Tuist manifest 可能改变整个 build graph；一百行文档通常不需要产品测试。
-
-第二，未知路径必须 **fail closed**。未知 Swift 默认进入测试，其他未知可执行或配置路径默认进入 build。分类器可以不完美，但不能因为不认识新目录就静默放行。
-
-### 3. 稳定的 required gate
-
-条件 job 会产生一个 branch protection 难题：今天只有 Linux job，明天只有 macOS job，required check 的名字不能跟着路径变化。
-
-解决方法是提供一个名称稳定、始终执行的汇总 gate。它依赖分类器和所有可选 job，并使用 unconditional final evaluation：
-
-{% raw %}
-```yaml
-required-gate:
-  if: ${{ always() }}
-  needs:
-    - classify
-    - linux-validation
-    - macos-validation
-  runs-on: ubuntu-latest
-  steps:
-    - name: Verify selected jobs
-      shell: bash
-      env:
-        CLASSIFY_RESULT: ${{ needs.classify.result }}
-        LINUX_RESULT: ${{ needs.linux-validation.result }}
-        MACOS_RESULT: ${{ needs.macos-validation.result }}
-      run: |
-        [[ "$CLASSIFY_RESULT" == "success" ]]
-        [[ "$LINUX_RESULT" == "success" || "$LINUX_RESULT" == "skipped" ]]
-        [[ "$MACOS_RESULT" == "success" || "$MACOS_RESULT" == "skipped" ]]
-```
-{% endraw %}
-
-它只接受：
-
-- 分类器为 `success`；
-- 条件 job 为 `success` 或 `skipped`。
-
-`failure`、`cancelled` 和缺失结果都必须失败。真正采用前，至少要验证“可选 job 跳过时 gate 通过”和“选中 job 故意失败时 gate 确实阻断”两个方向。
-
-> [!WARNING]
-> **实践避坑指南：**
-> 1. **同文件依赖局限性**：GitHub Actions 的 `needs` 声明**无法跨 YAML 文件引用**。因此，以上示例中的 `classify`、`linux-validation`、`macos-validation` 与 `required-gate` 必须被定义在**同一个工作流（YAML）文件内**，否则会导致 Workflow 语法校验失败而无法启动。
-> 2. **分类器不能带条件跳过**：`classify` 必须作为 Workflow 的最前置、无条件执行的 Job。如果为分类器本身配置了特殊的 `if` 条件导致它被 `skipped`，那么 `CLASSIFY_RESULT` 将解析为 `"skipped"`，从而直接导致门禁逻辑中的 `[[ "$CLASSIFY_RESULT" == "success" ]]` 判定失败并阻断。
-
-GitHub 将 `ubuntu-latest` 定位为双 CPU（当前标准配置）、多工具集、短时限的轻量 runner，适合 checkout、分类、小型 summary 和 gate，不适合依赖密集型构建、Docker 或 Apple 编译。具体规格和限制应以 [GitHub-hosted runners reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) 为准。
-
-## PR、`main` 与 `release` 是三个不同边界
-
-一个常见误区是：PR 做窄验证，代码一进 `main` 就自动执行最昂贵的完整 build、UI suite、archive 和上传。
-
-`main` 不是天然的发布授权边界。它可以继续使用 change-scoped development routing，也可以根据仓库政策追加完整 integration，但 archive、distribution signing、notarization、TestFlight 与 App Store 操作应留在独立 release workflow 中。
-
-推荐的分工是：
-
-- **PR**：可移植检查 + 最窄的 Apple build/test。
-- **`main`**：独立决定开发验证范围，不隐式发布。
-- **nightly/manual**：完整 UI suite、性能基线、昂贵诊断矩阵。
-- **`release`**：archive、签名、上传与产物检查，需要明确授权。
-
-这种拆分既节省 minutes，也减少普通代码合并意外触发生产副作用的风险。
-
-## 一次很有价值的假红：相同代码树，PR 通过而 `main` 失败
-
-实践中遇到过一个典型现象：PR 的 macOS CI 通过，合并后的 `main` CI 却有两个单元测试失败。第一反应很容易是“merge commit 改坏了代码”。
-
-更可靠的排查顺序是：
-
-1. 比较 PR head 与 merge commit 的 Git `tree`，而不只是 commit `SHA`。
-2. 确认失败发生在 build、test、coverage 还是 packaging。
-3. 对失败测试做 `focused repetition`，再做 `test-class repetition`。
-4. 检查测试是否依赖 `wall-clock sleep`、`RunLoop` 调度或共享状态。
-
-当两个 commit 的 `tree` 完全一致时，“合并引入代码差异”就可以被排除。最后发现，测试用固定 `sleep` 等待 `Timer` 推进内部状态：机器负载较低时通过，调度稍慢时就失败。
-
-正确修复不是把 `50 ms` 改成 `200 ms`，而是给状态机提供生产代码也使用的确定性边界：
+更可靠的做法，是把“什么时候调度”和“执行一次状态推进”拆开。生产 Timer 与单元测试共享同一个确定性入口：
 
 ```swift
 @MainActor
@@ -201,31 +60,130 @@ final class PollingService {
 }
 ```
 
-单元测试直接调用 `pollNow()` 验证状态转换；只有少量真正测试 `Timer` 生命周期的 `integration test` 才等待异步事件。这样消除的是竞态本身，而不是降低它出现的概率。
+状态机测试直接调用 `pollNow()`，同步验证输入、状态转换和输出。只有真正关心 Timer 生命周期的少量 integration test，才需要等待异步事件。
 
-这也提醒我们：压缩 macOS minutes 之前，先消灭 `flaky tests`。否则路由做得越精细，偶发失败带来的 `rerun` 和诊断成本越高。
+这次修复带来的第一个价值判断是：
 
-## DerivedData 缓存：最诱人也最危险的 Apple CI 优化捷径
+> 在压缩 macOS 执行时间之前，先消灭会制造 rerun 的 flaky test。
 
-Apple CI 一慢，很多人会立刻缓存整个 DerivedData。问题是 DerivedData 不只是“下载好的依赖”，还包含会被 build graph、copy phase、framework embedding、签名和并发写入修改的产物。
+路径路由做得再精细，如果测试仍依赖调度运气，省下的 minutes 很快会被重跑和排障消耗掉。
 
-更稳妥的默认策略是：
+## 第二笔浪费：让 macOS 做 Linux 能完成的工作
 
-- production build、development tests、UI-test compilation 使用独立 DerivedData root；
-- 不跨 scheme 或 job 共享可写 build products；
-- 缓存不可变依赖前，先定义 Xcode、Swift、lockfile 和 build settings 的失效键；
-- 对比 cold build 与 restored build 的结果等价性；
-- 测量 restore time、hit rate、压缩体积、传输时间、存储 churn 与实际净收益。
+排查假红的同时，我们也重新看了一遍整条流水线。传统 Apple CI 往往把所有事情塞进同一个 macOS job：
 
-缓存还存在信任边界。GitHub 明确提醒：cache 内容不带签名，能读 cache 的 workflow 会原样恢复内容；cache 路径不能包含 token、凭据或其他敏感信息，低信任触发还需要考虑 cache poisoning。详见 [Dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)。
+- 校验文档、metadata 和 JSON；
+- 运行 Python、Shell 或 Web 相关检查；
+- 生成 Xcode 工程；
+- 构建 App；
+- 运行全部单元测试；
+- 编译甚至执行 UI tests。
 
-如果没有上述证明，“缓存 DerivedData”应保持 Candidate，而不是默认优化项。
+这套流程容易理解，但它默认每一种变更都需要完整 Apple 工具链。修改一篇文档、一段网站 JavaScript 或一个可移植脚本，并不需要启动 Xcode。反过来，String Catalog、Tuist manifest 和 Swift 源码也不能只靠 Linux lint 放行。
 
-## 先取消过时工作：压缩 macOS Runner 计费分钟数
+所以优化目标不是“尽可能跳过测试”，而是：
 
-最便宜的 macOS minute 是根本没有执行的 minute。
+> 每一种变更，只运行足以覆盖其风险的最窄验证。
 
-对于同一个 PR 的连续 push，可以按 workflow 与 ref 建立 concurrency group，并启用 `cancel-in-progress`，让新提交取消旧提交仍在执行的 CI：
+## 让每个 runner 只回答它擅长的问题
+
+调整后的思路由三部分组成：Linux 先判断变更风险，可移植检查留在 Linux，真正依赖 Apple 工具链的部分再进入 macOS，最后由一个名称稳定的 required gate 汇总结果。
+
+```mermaid
+flowchart LR
+  A[Changed paths] --> B[Classify on Linux]
+  B --> C{Portable checks?}
+  B --> D{Apple validation?}
+  C -->|yes| E[Linux validation]
+  C -->|no| F[Skipped]
+  D -->|build| G[macOS development build]
+  D -->|test| H[macOS unit tests]
+  D -->|ui-build| I[macOS build-for-testing]
+  D -->|none| J[Skipped]
+  E --> K[Stable required gate]
+  F --> K
+  G --> K
+  H --> K
+  I --> K
+  J --> K
+```
+
+### 按风险分类，而不是按文件数量分类
+
+一行 manifest 可能改变整个 build graph，一百行文档通常不会影响产品行为。分类器关心的是路径代表的风险：
+
+| 变更类型 | Linux | macOS |
+|---|---|---|
+| 文档与非可执行规范 | none | none |
+| metadata、schema、脚本、Web 资源 | selected checks | none |
+| resources、String Catalog、manifest、build settings | optional checks | development build |
+| Product Swift 或 unit-test Swift | optional checks | development tests |
+| UI-test source | none | `build-for-testing` |
+| 未识别的 Swift | known checks | tests |
+| 其他未识别的 executable/config | known checks | build |
+
+未知路径不能被当作“没有影响”。未知 Swift 默认升级到 tests，其他未知可执行或配置路径默认升级到 build。分类规则可以暂时不完整，但遗漏不能静默降低验证层级。
+
+PR 应使用 base SHA 到 head SHA 的完整 diff；已有分支的 push 则使用事件中的 `before` 到 `after`。如果只检查最后一次 commit，多 commit push 很容易漏掉前面的变更。新分支、删除 ref、全零 SHA 和浅克隆缺历史也应显式处理，而不是返回一个看似安全的空集合。
+
+### 用稳定门禁汇总条件任务
+
+条件 job 会给 branch protection 带来一个问题：文档变更可能不需要 macOS，Swift 变更又可能不需要某些 Linux 检查，但 required check 的名称不能跟着路径变化。
+
+解决方法是增加一个始终执行的汇总 gate。它只接受分类器成功，以及所有可选 job 为 `success` 或 `skipped`：
+
+{% raw %}
+```yaml
+jobs:
+  required-gate:
+    name: Required Gate
+    if: ${{ always() }}
+    needs:
+      - classify
+      - linux-validation
+      - macos-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify selected jobs
+        shell: bash
+        env:
+          CLASSIFY_RESULT: ${{ needs.classify.result }}
+          LINUX_RESULT: ${{ needs.linux-validation.result }}
+          MACOS_RESULT: ${{ needs.macos-validation.result }}
+        run: |
+          [[ "$CLASSIFY_RESULT" == "success" ]]
+          [[ "$LINUX_RESULT" == "success" || "$LINUX_RESULT" == "skipped" ]]
+          [[ "$MACOS_RESULT" == "success" || "$MACOS_RESULT" == "skipped" ]]
+```
+{% endraw %}
+
+这里有两个容易忽略的细节：
+
+- `needs` 只能引用同一个 workflow 中的 job；如果拆成多个独立 YAML，需要改用 reusable workflow 或其他跨 workflow 汇总机制。
+- 在这套写法中，分类器必须无条件执行。分类器本身被跳过时，总门禁应当失败，而不是把缺失输出解释成“无需验证”。
+
+上线这类门禁前，至少应构造两个相反场景：可选 job 合理跳过时 gate 通过；被选中的 job 故意失败时 gate 必须阻断。这样验证的是门禁语义，而不是 YAML 是否能被解析。
+
+`ubuntu-latest` 是标准 GitHub-hosted Linux runner，适合承载一般 Linux 验证。对于仅包含 checkout、小型分类脚本和汇总逻辑的短任务，也可以评估 `ubuntu-slim`；它是单 CPU、精简工具集且有更短 job 时限的容器 runner，采用前应确认所需工具和 action 都能运行。runner 的规格与限制会变化，应以 [GitHub-hosted runners reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) 为准。
+
+## 第三笔浪费：把验证、集成和发布绑在一起
+
+另一个常见浪费是：PR 做窄验证，代码一进 `main` 就自动执行完整 UI suite、archive、签名和上传。
+
+分支名称不是发布授权。`main` 可以继续使用 change-scoped development validation，也可以按项目需要增加 integration test，但不应该仅因为代码进入默认分支，就隐式获得 archive、notarization、TestFlight 或 App Store 权限。
+
+更清晰的分工是：
+
+- **PR**：可移植检查，以及最窄的 Apple build/test。
+- **`main`**：验证合并后的开发状态，不隐式发布。
+- **nightly/manual**：完整 UI suite、性能基线和昂贵诊断矩阵。
+- **release**：archive、签名、上传和产物检查，使用独立权限与明确授权。
+
+普通 CI 保持 `contents: read` 等最小权限，发布 secrets 只进入发布路径。第三方 actions 则固定到经过审查的精确 commit SHA，避免一个浮动 tag 在未审查的情况下改变执行内容。
+
+## 最后的价值：取消过时任务，克制使用缓存
+
+同一个 PR 连续 push 时，旧 commit 的完整测试即使最终通过，也已经失去合并价值。可以按 workflow 与 PR/ref 建立 concurrency group，让新提交取消仍在运行的旧验证：
 
 {% raw %}
 ```yaml
@@ -235,71 +193,37 @@ concurrency:
 ```
 {% endraw %}
 
-group key 应包含 workflow 名称，避免不同 workflow 意外互相取消。GitHub 对 concurrency 的最新行为说明见 [Control workflow concurrency](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency)。
+group key 应包含 workflow 名称，避免不同流水线意外互相取消。发布 workflow 是否允许取消，需要根据其副作用单独决定，不能照搬 PR CI 的策略。具体语义可参考 [GitHub Actions concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency)。
 
-推荐按以下顺序优化：
+相比之下，缓存整个 DerivedData 是一个更诱人、也更危险的捷径。
 
-1. 删除重复 workflow 和重复验证。
-2. 将可移植检查迁到 Linux。
-3. 增加 fail-closed 路径分类。
-4. 把 Apple 工作缩到必要的 build、test 或 `build-for-testing`。
-5. 把 UI、archive 和发布移到明确 gate。
-6. 最后才评估缓存、替代 runner 或其他 provider。
+DerivedData 不只是下载好的依赖，还包含会被 build graph、framework embedding、copy phase、签名和并发写入修改的产物。简单地跨 scheme 或 job 共享，可能把权限污染、残留产品和并发写入一起带入下一次构建。
 
-这个顺序的好处是，每一步都能独立解释正确性收益和成本收益，不需要先引入复杂的缓存与基础设施。
+我们的默认边界是：
 
-## 隐私与供应链安全清单
+- production build、development tests 和 UI-test compilation 使用独立 DerivedData root；
+- 不跨 job 共享可写 build products；
+- 只有不可变依赖输入才进入缓存评估；
+- 启用前比较 clean build 与 restored build 的结果等价性；
+- 同时测量 restore time、hit rate、压缩体积、传输时间和真实净收益。
 
-技术博客和 CI 日志都可能在不经意间暴露私有信息。公开案例时建议统一替换：
+缓存还有安全边界。GitHub 明确提醒，cache 内容不带签名，恢复后的文件应视为不受信任输入；cache 中不能包含 token、凭据或其他敏感信息，低信任触发还要考虑 cache poisoning。详见 [Dependency caching reference](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching)。
 
-- repository owner、私有仓库名和内部产品代号；
-- workflow run、job、artifact、App Store 或构建标识；
-- bundle identifier、Team ID、签名身份和私有依赖地址；
-- 本机绝对路径、用户名、缓存目录和 worktree 名；
-- secret/variable 的业务命名，即使没有公开具体值；
-- 内部服务域名、账号邮箱、组织结构和未发布价格。
+在这些条件得到验证之前，我们选择隔离 DerivedData，而不是缓存或跨任务共享整个目录。
 
-Workflow 本身还应遵循最小权限，并将第三方 actions 固定到审查过的精确 commit SHA。示例代码使用通用名称，不代表可以把真实认证步骤直接复制到公开文章。
+## 榨干之后，留下的是更可信的 CI
 
-## 一份可执行的落地检查表
+回头看，这次经历的重点不是某一条 YAML，也不是把所有 macOS job 换成更便宜的 runner，而是重新建立了验证与风险之间的关系：
 
-### 本地证明
+1. 用确定性测试消除无意义的 rerun。
+2. 删除重复验证，把可移植检查留给 Linux。
+3. 按变更风险选择 build、test 或 `build-for-testing`。
+4. 用 fail-closed fallback 处理分类器尚未认识的路径。
+5. 用稳定 gate 承接 branch protection，而不是要求每个条件 job 永远存在。
+6. 取消已经过时的 PR 运行。
+7. 把 archive、签名和分发留在独立 release 边界。
+8. 在数据证明收益之前，不用共享 DerivedData 换取表面上的速度。
 
-- 分类器覆盖 `docs`、`metadata`、`resources`、`Swift`、`UI-test` 和 `mixed paths`。
-- `unknown` Swift 与 `unknown` config 均 `fail closed`。
-- 输出稳定的 JSON/GitHub outputs，并暴露 `fallback_count`。
-- Apple orchestration contract 证明 `build`、`test`、`UI-build` 使用正确 `scheme` 和独立 `DerivedData`。
-- Linux orchestrator 拒绝未知 `check` 名称。
+我们没有一个足够可靠的前后基线，因此不打算用某个百分比宣称“CI 成本下降了多少”。但可以确定的是：文档和脚本不再天然占用 Xcode，旧提交不再继续消耗完整验证，偶发调度也不再决定测试成败。
 
-### Portable smoke
-
-- 精确 `runner label`、工具版本和 action `SHA` 能执行。
-- 条件 job `skipped` 时 `required gate` 通过。
-- 选中 job 故意失败时 `required gate` 失败。
-- `failure artifact` 不包含敏感数据，并设置短 `retention`。
-
-### 真实仓库
-
-- PR `base/head` 范围正确，私有依赖与 `read-only permissions` 正常。
-- `branch protection` 只依赖稳定 `gate`。
-- `main` 使用 `before..after` 覆盖 `multi-commit push`。
-- 记录 `runner image`、`Xcode path/version`、工具版本和实际 `job duration`。
-- 分别统计“正确性证据”和“消耗分钟”，不要用一次偶然快跑宣称已降本。
-
-### 发布路径
-
-- `archive`、签名、上传与普通 PR/`main` CI 隔离。
-- 只有授权 `workflow` 可以读取发布 `secrets`。
-- 最终以安装产物或分发平台状态作为 `release evidence`。
-
-## 结语
-
-成本感知 CI 的核心不是吝啬，而是让证据与风险匹配。
-
-文档变更不必启动 Xcode，Swift 变更不能只过 lint，UI-test 源码通常先证明可编译，未知路径必须保守升级，发布权限不能由 `main` 分支名隐式授予。Linux 与 macOS 不是竞争关系：Linux 负责便宜、可移植、确定的验证，macOS 负责只有 Apple 工具链才能给出的证据。
-
-最终我们追求的不是“每次都跑最多”，而是：
-
-> 每一次昂贵执行，都能回答一个更便宜的 runner 无法回答的问题。
-
-关于 GitHub Actions 的配额、计费和 runner 可用性，它们会随平台变化；实施前应重新核对 [Billing and usage](https://docs.github.com/en/actions/concepts/billing-and-usage) 与 runner 官方文档，而不是把某个时间点的数字写死在 CI 架构中。
+GitHub Actions 的最后一点价值，并不藏在某个神奇的 cache key 或更激进的跳过规则里。它来自一条更朴素的约束：让每一次昂贵执行都回答一个更便宜的 runner 无法回答的问题，并让每一次失败都提供足以推动修复的信息。
