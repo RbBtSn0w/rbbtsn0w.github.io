@@ -4,18 +4,36 @@ title: "榨干 GitHub Actions 的最后一点价值"
 date: 2026-07-22 01:15:00 +0800
 categories: [Project]
 tags: [github-actions, apple-ci, macos-runner, xcode, testing, devops]
-description: "从一次 Apple CI 假红出发，逐层消除 flaky test、错误 runner、过时任务、权限捆绑与危险缓存，让每一分钟 GitHub Actions 都产生有效验证。"
+description: "面向按月计量的私有仓库，从一次 Apple CI 假红出发，逐层消除 flaky test、错误 runner、过时任务与危险缓存，让每一分钟 GitHub Actions 都产生有效验证。"
 image:
   path: /assets/img/post/cost-aware-apple-ci/cover.png
   alt: "服务器机架通过自动化工作流连接 Apple CI，并展示构建、测试、性能与效率优化"
 mermaid: true
 ---
 
-> **TL;DR**：所谓“榨干 GitHub Actions”，不是少跑测试，也不是钻免费额度的空子，而是让每一分钟执行都产生有效证据：先消灭制造重跑的 flaky test，再让 Linux 承担可移植检查，只把真正依赖 Xcode 的验证交给 macOS；取消已经过时的任务，拆开 PR、`main` 与 release 的权限，并在证明安全和收益前拒绝共享整个 DerivedData。
+> **TL;DR**：这篇文章讨论的是私有仓库。标准 GitHub-hosted runner 在公开仓库中可以免费使用；私有仓库则先消耗账户每月包含的 minutes，超出后按 runner 类型计费。所谓“榨干 GitHub Actions”，就是让有限额度和每一笔付费执行都产生有效证据：消灭 flaky test，把可移植检查迁到 Linux，只把真正依赖 Xcode 的验证交给 macOS，并及时取消已经过时的任务。
+
+## 先把账算清楚：公开仓库免费，私有仓库按月计量
+
+如果项目是公开仓库，使用 standard GitHub-hosted runners 通常不需要为 minutes 付费。此时优化 workflow 仍能缩短反馈时间、减少排队和假红，但“榨干最后一点价值”确实不是一个强烈的成本命题。
+
+私有仓库不同。GitHub 会根据账户计划提供一份每月重置的 minutes、artifact storage 和 cache storage 配额；工作流由谁触发并不重要，消耗和超额费用最终都记在仓库所有者名下。额度用完后，如果账户配置了有效付款方式且预算允许，后续 hosted-runner 时间会按实际 runner 类型计费；没有有效付款方式时，超额使用会被阻止。完整规则见 [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions)。
+
+截至本文发布时，GitHub 官方列出的 standard runner 基准价格是：
+
+| Runner | Price per minute |
+|---|---:|
+| Linux 1-core (`ubuntu-slim`) | $0.002 |
+| Linux 2-core (`ubuntu-latest`) | $0.006 |
+| macOS 3-core/4-core | $0.062 |
+
+也就是说，同样运行一分钟，standard macOS 的基准价格约为 Linux 2-core 的十倍、`ubuntu-slim` 的三十一倍。GitHub 还会把每个 job 的不足一分钟部分向上取整。因此，把一个几秒钟的分类任务放到 macOS、让旧 commit 继续运行、或者因为 flaky test 重跑完整测试，都不再只是“慢一点”，而是在直接消耗私有仓库的月度额度或产生账单。当前价格与取整规则见 [Actions runner pricing](https://docs.github.com/en/billing/reference/actions-runner-pricing)。
+
+larger runners 是另一个边界：它们不使用计划内包含的 minutes，即使公开仓库也会按使用时间收费。本文后续讨论的重点，是私有仓库使用 standard GitHub-hosted runners 时，怎样把有限的月度额度优先留给只有 Apple 工具链才能完成的验证。
 
 ## “榨干”不是多跑，而是不让 CI 空转
 
-这一天，我们几乎把 GitHub Actions 能提供的验证手段轮了一遍。真正有价值的收获却不是“又多跑了多少次 CI”，而是终于看清：很多 runner 时间并没有用于证明代码正确，只是在重复等待、执行错误层级的检查，或者为已经过时的 commit 善后。
+这一天，我们几乎把 GitHub Actions 能提供的验证手段轮了一遍。真正有价值的收获却不是“又多跑了多少次 CI”，而是终于看清：不少私有仓库 minutes 并没有用于证明代码正确，只是在重复等待、执行错误层级的检查，或者为已经过时的 commit 善后。
 
 事情起于一次很普通的合并。
 
@@ -179,7 +197,7 @@ jobs:
 - **nightly/manual**：完整 UI suite、性能基线和昂贵诊断矩阵。
 - **release**：archive、签名、上传和产物检查，使用独立权限与明确授权。
 
-普通 CI 保持 `contents: read` 等最小权限，发布 secrets 只进入发布路径。第三方 actions 则固定到经过审查的精确 commit SHA，避免一个浮动 tag 在未审查的情况下改变执行内容。
+普通 CI 保持 `contents: read` 等最小权限，发布 secrets 只进入发布路径。如果在配置独立发版空间或本地 Archive 阶段遇到证书链、私钥或描述文件不匹配的问题，可参阅 [Xcode 代码签名与自助修复指南](/posts/XcodewithCodeSigning/) 进行排查；关于跨技术栈如何利用自动化工具建设“提交即发布”的规范发版闭环，也可参考我们沉淀的 [打造 GitHub Actions + Semantic Release 的极致 CI/CD 工作流](/posts/ci-cd-best-practices/) 实践。第三方 actions 则固定到经过审查的精确 commit SHA，避免一个浮动 tag 在未审查的情况下改变执行内容。
 
 ## 最后的价值：取消过时任务，克制使用缓存
 
