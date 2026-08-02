@@ -20,11 +20,14 @@ mermaid: true
 在一个规模较大的功能分支上，最常见的拆分方式是：
 
 ```mermaid
-graph TD
-    Main[main 目标主干] <-- base --- PR_A["PR A: 基础数据模型<br/><i>Layer Agent A 负责</i>"]
-    PR_A <-- base --- PR_B["PR B: 服务层与 API<br/><i>Layer Agent B 负责</i>"]
-    PR_B <-- base --- PR_C["PR C: UI 与集成测试<br/><i>Layer Agent C 负责</i>"]
+flowchart TD
+    Main["main target"] -->|base| PR_A["PR A: data model - Layer Agent A"]
+    PR_A -->|base| PR_B["PR B: service and API - Layer Agent B"]
+    PR_B -->|base| PR_C["PR C: UI and integration - Layer Agent C"]
 ```
+
+> **💡 核心定义：Stacked PR 在 Agentic Workflow 中的角色**
+> Stacked PR（层叠 Pull Request）将大型功能拆分为有序的链式依赖 PR（如 `PR A ← PR B ← PR C`）。在多 Agent 协同场景下，每个 Agent 被赋予独占的分层归属（Owning Layer），使得并发调查、代码修复与审计证据（Validation Evidence）严格限定在各自的 Git head 与 OID 上。
 
 在普通 PR 中，reviewer 通常只需要关心一个分支和一个 head commit。但在 stacked PR 中，每个 PR 的 diff 依赖它下面的层。`PR C` 的 diff 可能包含 `PR A` 和 `PR B` 的变更，`PR B` 的 base 又不是 `main`。这会带来三个容易被低估的问题：
 
@@ -39,14 +42,14 @@ graph TD
 在探讨 [Agent 系统的方差隔离与边界设计](/posts/agent-design-variance-isolation/){:target="_blank" rel="noopener"} 时，我们强调确定性契约对 Agent 行为约束的关键作用。在 Stack 拓扑中，这种隔离表现为“每层一个执行 Agent，一个协调 Agent 汇聚结果”：
 
 ```mermaid
-graph TD
-    Coord["Coordinator Agent<br/><i>整栈协调与验证</i>"]
-    Coord -->|路由 Work Item| AgentA["Layer Agent A<br/><i>review / fix PR A</i>"]
-    Coord -->|路由 Work Item| AgentB["Layer Agent B<br/><i>review / fix PR B</i>"]
-    Coord -->|路由 Work Item| AgentC["Layer Agent C<br/><i>review / fix PR C</i>"]
-    AgentA -->|提交 Revision-Bound Evidence| Gate["bottom-up final-gate --stack"]
-    AgentB -->|提交 Revision-Bound Evidence| Gate
-    AgentC -->|提交 Revision-Bound Evidence| Gate
+flowchart TD
+    Coord["Coordinator Agent"]
+    Coord -->|route work item| AgentA["Layer Agent A: review and fix PR A"]
+    Coord -->|route work item| AgentB["Layer Agent B: review and fix PR B"]
+    Coord -->|route work item| AgentC["Layer Agent C: review and fix PR C"]
+    AgentA -->|submit revision bound evidence| Gate["bottom-up final-gate --stack"]
+    AgentB -->|submit revision bound evidence| Gate
+    AgentC -->|submit revision bound evidence| Gate
 ```
 
 这不是要求团队必须启动三个进程，而是定义三个不可混淆的上下文：每个 Agent 只拥有一个 PR layer 的 session、lease、finding 和 validation evidence。只要这些上下文可以独立读取和验证，就可以并行处理；涉及底层变更传播、共享文件或 stack topology 的操作，则必须回到协调 Agent 的串行 handoff。
@@ -134,14 +137,14 @@ sequenceDiagram
     participant Coord as Coordinator Agent
     participant Runtime as gh-address-cr
     participant Fixer as Layer Agent A
-    participant GitHub as GitHub / Stack Tooling
+    participant GitHub as GitHub stack tooling
 
-    Coord->>Runtime: 1. ActionRequest 分发 (Owning PR A)
-    Fixer->>Runtime: 2. Acquire Lease (获取任务租约)
-    Fixer->>GitHub: 3. 在 PR A 分支修复代码 & 级联传播
-    Fixer->>Runtime: 4. Submit Revision-Bound Evidence (提交证据)
-    Fixer->>Runtime: 5. Single-Layer final-gate (单层门禁)
-    Coord->>Runtime: 6. Aggregate final-gate --stack (整栈自底向上校验)
+    Coord->>Runtime: dispatch ActionRequest for PR A
+    Fixer->>Runtime: acquire lease
+    Fixer->>GitHub: fix PR A and propagate the change
+    Fixer->>Runtime: submit revision bound evidence
+    Fixer->>Runtime: run single layer final gate
+    Coord->>Runtime: run aggregate final gate for the stack
 ```
 
 这样可以把“实现完成”“回复已发布”和“整栈通过”区分开来，也能在 Agent 中断后安全地恢复或重新领取任务。
@@ -160,11 +163,11 @@ PR A <- PR B <- PR C
 
 ```mermaid
 flowchart TD
-    Start["PR C 收到针对 PR A 的 Review Finding"] --> Step1["Step 1: 确认 finding 的 owning PR (为 A)"]
-    Step1 --> Step2["Step 2: 为 A 请求匹配 owner 的 fixer Agent"]
-    Step2 --> Step3["Step 3: 授权独立 stack-management handoff 切换分支并传播变更"]
-    Step3 --> Step4["Step 4: A Agent 在当前 revision 重新运行 review loop 并提交证据"]
-    Step4 --> Step5["Step 5: 协调 Agent 从底向上重新验证受影响的 B、C 并执行 final-gate --stack"]
+    Start["PR C receives a review finding for PR A"] --> Step1["Confirm owning PR A"]
+    Step1 --> Step2["Request a fixer Agent for layer A"]
+    Step2 --> Step3["Authorize stack management handoff"]
+    Step3 --> Step4["A Agent reruns the review loop"]
+    Step4 --> Step5["Coordinator reruns the layer and stack gates"]
 ```
 
 ### 第一步：确认 finding 的 owning PR
@@ -231,7 +234,7 @@ address C -> fix/validate/publish C -> final-gate C
                                       -> final-gate C --stack
 ```
 
-一旦底层阻塞，整栈 gate 会选择第一个 blocked member，并返回针对该层的 recovery command。协调 Agent 不应跳过底层 blocker，也不应让上层 Agent 自己“猜测依赖已经没问题”后宣布 C ready。
+一旦底层阻塞，整栈 gate 会选择第一个 blocked member，并返回针对该层的 recovery command。协调 Agent 不应跳过底层 blocker，也不应让上层 Agent 自己“猜测依赖已经没问题”后宣布 C ready。在设计分层验证策略时，可以结合 [构建现代化 CI/CD 流水线的最佳实践](/posts/ci-cd-best-practices/){:target="_blank" rel="noopener"} 中的分阶段反馈机制，确保底层 blocker 优先在最窄 CI 范围中暴露。
 
 ### 可以并行什么，必须串行什么
 
@@ -318,3 +321,12 @@ gh-address-cr         负责 review、证据、回复、resolve 和完成证明
 * 🔧 项目主页：[gh-address-cr](https://github.com/RbBtSn0w/gh-address-cr){:target="_blank" rel="noopener"}
 * 🧪 实现与验证：[Stacked PR 支持 PR #220](https://github.com/RbBtSn0w/gh-address-cr/pull/220){:target="_blank" rel="noopener"}
 * 📚 GitHub 官方文档：[Reviewing stacked pull requests](https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-stacked-pull-requests){:target="_blank" rel="noopener"}
+
+---
+
+### 📚 主题延伸与相关推荐
+
+* 🤖 [Agent 设计中的方差隔离与确定性约束](/posts/agent-design-variance-isolation/){:target="_blank" rel="noopener"}：理解如何在多 Agent 系统中建立确定性契约与边界隔离。
+* ⚡ [榨干 GitHub Actions 的最后一点价值](/posts/cost-aware-apple-ci/){:target="_blank" rel="noopener"}：在私有仓库中构建按需验证与高效率 CI/CD 门禁策略。
+* 🔄 [构建现代化 CI/CD 流水线的最佳实践](/posts/ci-cd-best-practices/){:target="_blank" rel="noopener"}：探索分阶段测试反馈机制与自动化发布流。
+* 🛠️ [引入 ADG (Agentic Development Guide)](/posts/introducing-adg-cn/){:target="_blank" rel="noopener"}：将 Agent 协作规范与命令行 Runtime 沉淀为标准开发工程化实践。
