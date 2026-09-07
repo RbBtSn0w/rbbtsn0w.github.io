@@ -96,7 +96,7 @@ jobs:
         id: build
         run: |
           echo "🏗️ Building Jekyll site..."
-          bundle exec jekyll build -d "_site" --trace
+          bundle exec jekyll build -d "_site" --future --trace
         env:
           JEKYLL_ENV: "production"
 

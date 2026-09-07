@@ -67,6 +67,7 @@ flowchart TD
 
 ### 生产级 GitHub Actions 工作流配置
 
+{% raw %}
 ```yaml
 name: Cost-Aware Apple CI Pipeline
 
@@ -126,6 +127,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             | xcbeautify
 ```
+{% endraw %}
 
 ---
 
