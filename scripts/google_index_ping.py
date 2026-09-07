@@ -3,9 +3,17 @@
 google_index_ping.py
 
 Utility to submit blog URLs to the Google Indexing API for rapid crawling and indexing.
+
+NOTE ON GOOGLE INDEXING API COMPLIANCE:
+Google officially reserves the Web Search Indexing API for pages containing JobPosting
+or BroadcastEvent structured data (https://developers.google.com/search/apis/indexing-api/v3/quickstart).
+Submitting standard blog posts or documentation URLs via this endpoint is widely used as a
+best-effort crawling signal, but requests may be rejected or rate-limited by Google depending on
+account quotas. This script handles non-200 responses gracefully without failing the deployment.
+
 Supports:
 1. Extracting URLs from local `_site/sitemap.xml` or online `https://rbbtsn0w.me/sitemap.xml`.
-2. Detecting changed posts via git diff (`--changed-only`) for automated CI/CD runs.
+2. Detecting changed posts via git diff (`--changed-only`) with `--diff-filter=ACMR`.
 3. Reading credentials from local file path or in-memory JSON (`GCP_SA_KEY` environment variable).
 """
 
@@ -60,14 +68,14 @@ def get_sitemap_urls(sitemap_path=None, posts_only=True):
 def get_changed_posts_urls(git_diff_range="HEAD~1..HEAD"):
     """Detects modified or newly added markdown files under _posts/ and returns their canonical URLs."""
     try:
-        # Check if git repository is present
-        diff_cmd = ["git", "diff", "--name-only", git_diff_range]
+        # Filter to Added, Copied, Modified, Renamed (exclude Deleted)
+        diff_cmd = ["git", "diff", "--name-only", "--diff-filter=ACMR", git_diff_range]
         res = subprocess.run(diff_cmd, capture_output=True, text=True, check=True)
         files = res.stdout.strip().splitlines()
     except Exception as e:
         print(f"Warning: git diff failed ({e}), falling back to diff against HEAD~1", file=sys.stderr)
         try:
-            res = subprocess.run(["git", "diff", "--name-only", "HEAD~1"], capture_output=True, text=True, check=True)
+            res = subprocess.run(["git", "diff", "--name-only", "--diff-filter=ACMR", "HEAD~1"], capture_output=True, text=True, check=True)
             files = res.stdout.strip().splitlines()
         except Exception as e2:
             print(f"Error running git diff: {e2}", file=sys.stderr)
@@ -75,6 +83,8 @@ def get_changed_posts_urls(git_diff_range="HEAD~1..HEAD"):
 
     urls = []
     for f in files:
+        if not os.path.exists(f):
+            continue
         m = re.match(r"_posts/\d{4}-\d{2}-\d{2}-(.*?)\.md", f)
         if m:
             slug = m.group(1)
@@ -130,7 +140,9 @@ def load_credentials(custom_path=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Submit URLs to Google Indexing API")
+    parser = argparse.ArgumentParser(
+        description="Submit URLs to Google Indexing API (Best-effort signal; Google officially documents this for JobPosting/BroadcastEvent)"
+    )
     parser.add_argument("--sitemap", help="Path to local sitemap.xml")
     parser.add_argument("--url", help="Single URL to submit")
     parser.add_argument("--changed-only", action="store_true", help="Detect changed/added posts from git diff")
@@ -174,9 +186,9 @@ def main():
 
     # 3. Submit
     success_count = 0
-    fail_count = 0
+    notice_count = 0
 
-    print(f"Submitting {len(target_urls)} URL(s) to Google Indexing API...")
+    print(f"Submitting {len(target_urls)} URL(s) to Google Indexing API (best-effort)...")
     for idx, u in enumerate(target_urls, 1):
         try:
             status_code, resp_data = submit_url(u, creds=creds)
@@ -185,13 +197,13 @@ def main():
                 success_count += 1
             else:
                 error_msg = resp_data.get("error", {}).get("message", str(resp_data))
-                print(f"[{idx}/{len(target_urls)}] FAILED ({status_code}): {u} -> {error_msg}")
-                fail_count += 1
+                print(f"[{idx}/{len(target_urls)}] NOTICE ({status_code}): {u} -> {error_msg}")
+                notice_count += 1
         except Exception as e:
-            print(f"[{idx}/{len(target_urls)}] ERROR: {u} -> {e}")
-            fail_count += 1
+            print(f"[{idx}/{len(target_urls)}] WARNING: {u} -> {e}")
+            notice_count += 1
 
-    print(f"\nCompleted: {success_count} succeeded, {fail_count} failed.")
+    print(f"\nCompleted: {success_count} accepted, {notice_count} notices.")
 
 
 if __name__ == "__main__":
