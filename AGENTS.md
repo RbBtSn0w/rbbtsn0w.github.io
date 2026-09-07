@@ -48,7 +48,7 @@ Explicit human confirmation is mandatory before:
 - **No Body-Level `#` H1**: Chirpy's layout automatically generates the page H1 from frontmatter `title`. Never include `# H1` in the post body.
 - **Mermaid Flag**: If a post contains a Mermaid code block (```` ```mermaid ````), frontmatter MUST include `mermaid: true`.
 - **Zero Unresolved Placeholders**: No `[TODO]`, placeholder text, or dummy data may remain in publish-ready content.
-- **Explicit Language Fences**: Every code block must declare an accurate language identifier (e.g. `swift`, `typescript`, `python`, `ruby`, `bash`, `yaml`, `json`).
+- **Explicit Language Fences**: Every code block must declare an accurate language identifier (e.g. `swift`, `typescript`, `python`, `ruby`, `bash`, `yaml`, `json`). Code blocks containing Liquid-conflicting syntax (such as GitHub Actions `${{ ... }}`) MUST be wrapped in `{% raw %}...{% endraw %}` tags to prevent Jekyll parser errors.
 - **Progressive Disclosure**: Structure complex topics logically: Problem Statement → Core Architectural Concept → Implementation Details → Deep Diagnostic / Gotchas → Verification.
 
 ### B. SEO Content Optimizer (`seo-content-optimizer`)
@@ -85,7 +85,7 @@ Explicit human confirmation is mandatory before:
 - **Ruby Runtime**: Ruby 3.2.x managed via `rbenv` as specified in [`.ruby-version`](file:///.ruby-version).
 - **Site Build Command**:
   ```bash
-  bundle exec jekyll build
+  bundle exec jekyll build --future
   ```
 - **Local Preview Command**:
   ```bash

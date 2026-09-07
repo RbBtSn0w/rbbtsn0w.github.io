@@ -78,7 +78,7 @@ Follow this four-phase process when optimizing content:
 - **Image alt text**: Every image must have descriptive alt text that explains the image in context. Include keywords only when natural.
 - **Rendered HTML**: Run the pre-publish validator after building the site:
   ```bash
-  python3 .agent/skills/seo-content-optimizer/scripts/prepublish_check.py _posts/YYYY-MM-DD-slug.md
+  python3 .agents/skills/seo-content-optimizer/scripts/prepublish_check.py _posts/YYYY-MM-DD-slug.md
   ```
 
 ### Phase 4: Linking & Distribution
