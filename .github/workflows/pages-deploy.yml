@@ -96,20 +96,20 @@ jobs:
         id: build
         run: |
           echo "🏗️ Building Jekyll site..."
-          bundle exec jekyll build -d "_site" --trace
+          bundle exec jekyll build -d "_site" --future --trace
         env:
           JEKYLL_ENV: "production"
 
       - name: Record build time
         id: build-time
         run: |
-          echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
 
       - name: Check site size
         id: site-size
         run: |
           SITE_SIZE=$(du -sh _site | cut -f1)
-          echo "size=$SITE_SIZE" >> $GITHUB_OUTPUT
+          echo "size=$SITE_SIZE" >> "$GITHUB_OUTPUT"
           echo "📊 Site size: $SITE_SIZE"
 
       - name: Test site
@@ -148,6 +148,26 @@ jobs:
           echo "📅 Build Time: ${{ needs.build.outputs.build-time }}"
           echo "📊 Site Size: ${{ needs.build.outputs.site-size }}"
           echo "🌐 Live URL: ${{ steps.deployment.outputs.page_url }}"
+
+      - name: Checkout repository for indexing notification
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Notify Google Indexing API
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          if [ -z "$GCP_SA_KEY" ]; then
+            echo "::notice ::GCP_SA_KEY secret is not configured, skipping Google Indexing API notification."
+            exit 0
+          fi
+          python3 -m pip install --quiet requests google-auth
+          ARGS=("--changed-only")
+          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            ARGS+=("--git-range" "${{ github.event.before }}..${{ github.sha }}")
+          fi
+          python3 scripts/google_index_ping.py "${ARGS[@]}"
 
   # Compatibility check for branch protection rules expecting `test`
   # This avoids duplicate builds while keeping required check names stable.
