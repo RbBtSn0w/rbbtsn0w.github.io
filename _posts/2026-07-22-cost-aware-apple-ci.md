@@ -150,6 +150,7 @@ PR 应使用 base SHA 到 head SHA 的完整 diff；已有分支的 push 则使�
 
 解决方法是增加一个始终执行的汇总 gate。它只接受分类器成功，以及所有可选 job 为 `success` 或 `skipped`：
 
+{% raw %}
 ```yaml
 jobs:
   required-gate:
@@ -172,6 +173,7 @@ jobs:
           [[ "$LINUX_RESULT" == "success" || "$LINUX_RESULT" == "skipped" ]]
           [[ "$MACOS_RESULT" == "success" || "$MACOS_RESULT" == "skipped" ]]
 ```
+{% endraw %}
 
 
 这里有两个容易忽略的细节：
@@ -203,11 +205,13 @@ jobs:
 同一个 PR 连续 push 时，旧 commit 的完整测试即使最终通过，也已经失去合并价值。可以按 workflow 与 PR/ref 建立 concurrency group，让新提交取消仍在运行的旧验证：
 
 
+{% raw %}
 ```yaml
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 ```
+{% endraw %}
 
 
 group key 应包含 workflow 名称，避免不同流水线意外互相取消。发布 workflow 是否允许取消，需要根据其副作用单独决定，不能照搬 PR CI 的策略。具体语义可参考 [GitHub Actions concurrency documentation](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency)。
