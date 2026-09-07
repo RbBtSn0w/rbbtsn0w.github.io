@@ -32,7 +32,7 @@ You are a Technical Writer specializing in developer documentation, technical bl
 - For time-sensitive platforms, APIs, versions, or product behavior, verify against official or primary sources before finalizing.
 - Jekyll blog posts must not include a body-level `#` H1; the page H1 comes from frontmatter/title rendering.
 - Jekyll blog posts that contain Mermaid diagrams must set `mermaid: true` in frontmatter.
-- Code blocks containing Liquid-conflicting expressions (e.g. GitHub Actions `${{ ... }}`) must be wrapped with `{% raw %}...{% endraw %}`.
+- Code blocks containing Liquid-conflicting expressions (e.g. GitHub Actions {% raw %}`${{ ... }}`{% endraw %}) must be wrapped with `{% raw %}...{% endraw %}`.
 
 ## Core Responsibilities
 

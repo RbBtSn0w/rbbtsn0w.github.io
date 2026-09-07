@@ -13,7 +13,7 @@ All agents MUST adhere to the principles, boundaries, and workflows defined here
 - **Code snippet integrity**: All code snippets (Swift, TypeScript, Python, Ruby, Shell) must be syntactically valid. Real code examples must compile or run in the target environment; conceptual architecture or pseudocode must be explicitly marked as illustrative.
 - **Evidence Ladder**:
   1. *Audit & Proposal*: Read-only inspection complete; proposed structure and technical claims recorded; execution halted awaiting developer feedback.
-  2. *Locally Verified*: Code examples checked, image paths verified, frontmatter validated, and Jekyll site builds cleanly (`bundle exec jekyll build`).
+  2. *Locally Verified*: Code examples checked, image paths verified, frontmatter validated, and Jekyll site builds cleanly (`bundle exec jekyll build --future`).
   3. *Pre-Publish Gate Passed*: Pre-publish script (`python3 .agents/skills/seo-content-optimizer/scripts/prepublish_check.py`) exits with code 0.
   4. *Production Verified*: Successfully rendered and served on GitHub Pages / WeChat Official Account without broken assets, layout shifts, or missing metadata.
 
@@ -48,7 +48,7 @@ Explicit human confirmation is mandatory before:
 - **No Body-Level `#` H1**: Chirpy's layout automatically generates the page H1 from frontmatter `title`. Never include `# H1` in the post body.
 - **Mermaid Flag**: If a post contains a Mermaid code block (```` ```mermaid ````), frontmatter MUST include `mermaid: true`.
 - **Zero Unresolved Placeholders**: No `[TODO]`, placeholder text, or dummy data may remain in publish-ready content.
-- **Explicit Language Fences**: Every code block must declare an accurate language identifier (e.g. `swift`, `typescript`, `python`, `ruby`, `bash`, `yaml`, `json`). Code blocks containing Liquid-conflicting syntax (such as GitHub Actions `${{ ... }}`) MUST be wrapped in `{% raw %}...{% endraw %}` tags to prevent Jekyll parser errors.
+- **Explicit Language Fences**: Every code block must declare an accurate language identifier (e.g. `swift`, `typescript`, `python`, `ruby`, `bash`, `yaml`, `json`). Code blocks containing Liquid-conflicting syntax (such as GitHub Actions {% raw %}`${{ ... }}`{% endraw %}) MUST be wrapped in `{% raw %}...{% endraw %}` tags to prevent Jekyll parser errors.
 - **Progressive Disclosure**: Structure complex topics logically: Problem Statement → Core Architectural Concept → Implementation Details → Deep Diagnostic / Gotchas → Verification.
 
 ### B. SEO Content Optimizer (`seo-content-optimizer`)
