@@ -11,7 +11,14 @@ Sync Impact Report:
   - .specify/templates/tasks-template.md ⚠
 - Follow-up TODOs: Update Plan and Tasks templates for Jekyll paths.
 -->
-# RbBtSn0w's Technical Blog Constitution
+# RbBtSn0w's Technical Blog Constitution (DEPRECATED)
+
+> [!CAUTION]
+> ### 🪦 TOMBSTONE: RETIRED SPECIFICATION & CONSTITUTION
+> - **Status**: Deprecated & Superseded (2026-09).
+> - **Canonical Source of Truth**: **[`AGENTS.md`](../../AGENTS.md)**.
+> - **Retirement Reason**: The legacy Spec-Kit workflow (`.specify/`, `specs/`, `/speckit.*`) has been decommissioned. Multi-agent operations in this repository are governed strictly by the Agent Constitution at `AGENTS.md` and role skills under `.agents/skills/`.
+> - **Action**: Do not edit or reference this file. See `AGENTS.md`.
 
 ## Core Principles
 
