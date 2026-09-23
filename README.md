@@ -3,68 +3,51 @@
 > 技术博客 - 记录 iOS/macOS 开发、编程学习和 MTB 骑行生活
 
 [![Jekyll](https://img.shields.io/badge/Jekyll-4.x+-blue.svg)](https://jekyllrb.com/)
-[![Chirpy](https://img.shields.io/badge/Chirpy-6.2+-green.svg)](https://github.com/cotes2020/chirpy-starter)
+[![Chirpy](https://img.shields.io/badge/Chirpy-7.6+-green.svg)](https://github.com/cotes2020/chirpy-starter)
 [![Ruby](https://img.shields.io/badge/Ruby-3.2.2-red.svg)](https://www.ruby-lang.org/)
 
-## 🤖 AI Agent Workflow (Spec-Kit)
+## 🤖 AI Agent Workflow
 
-本项目采用 [Spec-Kit](https://github.com/github/spec-kit) 规范管理所有功能开发与高质量内容创作。通过“需求-计划-任务-执行-验证”的闭环流程，确保每一处改动都符合项目宪法 (Constitution)。
+本项目遵循 [AGENTS.md](AGENTS.md) 确立的 **Agent Constitution**，采用专职角色化的多 Agent 协作工作流。通过“深度撰写 → SEO 优化 → 公众号适配 → 平台构建”的分层管线，确保每一处改动都具备真实工程证据与高质量规范。
 
-### 🔄 闭环工作流 (Standard Operating Procedure)
+### 🔄 协作流水线 (Multi-Role Pipeline)
 
 ```mermaid
 graph LR
-  A[构思/需求] --> B[Specify]
-  B --> C[Plan]
-  C --> D[Tasks]
-  D --> E[Implement]
-  E --> F[Validation]
-  F -->|通过| G[Commit & Deploy]
-  F -->|失败| E
+  A[选题与构思] --> B["SE Technical Writer<br/>深度撰写与代码验证"]
+  B --> C["SEO Content Optimizer<br/>元数据/H1与发布预检"]
+  C --> D["WeChat Media Producer<br/>公众号封面与排版适配"]
+  D --> E["Site Infrastructure<br/>Jekyll构建与CI/CD部署"]
+  E --> F["Google Indexing API<br/>自动化收录通知"]
 ```
 
-#### 步骤详解：
+#### 专职角色分工 (Separation of Concerns)：
 
-1.  **初始化需求 (`/speckit.specify`)**：
-    *   **动作**：定义你要做的事。是写一篇文章？还是改一个 CSS 样式？
-    *   **产物**：在 `specs/###-feature-name/spec.md` 生成需求文档。
-2.  **制定技术计划 (`/speckit.plan`)**：
-    *   **动作**：Agent 分析 Jekyll 结构、Ruby 依赖和 Chirpy 主题兼容性。
-    *   **产物**：生成 `plan.md`。它会告诉你：这篇文章该放哪个目录，图片路径怎么写，是否需要开启 Mermaid。
-3.  **拆解原子任务 (`/speckit.tasks`)**：
-    *   **动作**：将计划拆解为 15 分钟内可完成的任务（如：编写 Frontmatter、插入代码块、优化 SEO 摘要）。
-    *   **产物**：生成 `tasks.md`。
-4.  **自动化执行 (`/speckit.implement`)**：
-    *   **动作**：Agent 根据任务列表逐一修改文件。
-    *   **产物**：实际的代码或 `.md` 文章文件。
-5.  **验证与构建 (`bundle exec jekyll build`)**：
-    *   **动作**：本地运行 Jekyll 验证渲染效果。
+1. **SE Technical Writer** (`.agents/skills/se-technical-writer`)：
+   - **核心职责**：深挖技术实现、系统架构与排障原理，保证代码示例可在目标环境编译运行。
+   - **交付工件**：完成的技术草稿（遵循渐进式揭示原则，正文严禁出现一级标题 `# H1`，Mermaid 图表声明 `mermaid: true`）。
 
----
+2. **SEO Content Optimizer** (`.agents/skills/seo-content-optimizer`)：
+   - **核心职责**：优化 Jekyll/Chirpy Frontmatter 元数据、单 H1 语义层级、站内深层双向链接网络与摘要。
+   - **发布门禁**：执行自动化预发布检查：
+     ```bash
+     bundle exec jekyll build --future
+     python3 .agents/skills/seo-content-optimizer/scripts/prepublish_check.py _posts/YYYY-MM-DD-<slug>.md
+     ```
 
-### 🌟 最佳实践案例 (Best Practices)
+3. **WeChat Media Producer** (`wechat-publisher`)：
+   - **核心职责**：微信公众号下游衍生适配，包括 2.35:1 磨砂玻璃风格封面、外链转脚注卡片与 Kroki 高清图表栅格化。
 
-#### 案例一：撰写一篇专业的 iOS 技术文章
-**Prompt 示例**：
-> `/speckit.specify "新建文章：探讨 iOS 17 的 SwiftData 迁移。要求：包含实战代码、Mermaid 类图、SEO 摘要，并确保符合 iOS 分类规范。"`
-*   **最佳实践**：在 Specify 阶段明确要求包含 `Mermaid`，Plan 阶段会自动提醒你在 Frontmatter 开启 `mermaid: true`。
-
-#### 案例二：修改站点样式 (例如：调整侧边栏宽度)
-**Prompt 示例**：
-> `/speckit.specify "将侧边栏宽度从 260px 调整到 280px，并确保在移动端响应式布局下自动隐藏。"`
-*   **最佳实践**：使用 `/speckit.plan` 检查 `assets/css/style.scss`，避免直接修改主题内核文件（Chirpy 推荐使用覆盖模式）。
-
-#### 案例三：历史文章的大规模优化 (SEO & Tags)
-**Prompt 示例**：
-> `/speckit.specify "批量检查 _posts 目录下 2023 年的所有文章，补全缺失的 description 字段，并将过时的 Tags 统一为当前规范。"`
-*   **最佳实践**：利用 `/speckit.tasks` 生成一个检查清单，确保每一篇文章都被处理到，而不会漏掉。
+4. **Site Infrastructure Maintainer**：
+   - **核心职责**：维护 Jekyll 主题配置、Git LFS 多媒体托管、GitHub Actions (`pages-deploy.yml`) 以及部署后的 Google Indexing API 自动通知。
 
 ---
 
 ### ⚠️ 核心准则 (Guiding Principles)
-- **宪法为先**：执行前确保 `.specify/memory/constitution.md` 是最新的。
-- **任务原子化**：如果 `tasks.md` 里的任务太模糊，请要求 Agent 重新拆解。
-- **本地验证**：在 Commit 前，必须执行 `bundle exec jekyll serve`。
+- **宪法单一事实源**：以 [AGENTS.md](AGENTS.md) 为唯一最高准绳，绝不凭借虚假证据或未经验证的命令做推断。
+- **Git LFS 资产不变量**：`assets/img/post/**` 与 `assets/translations/**` 均通过 Git LFS 托管，禁止绕过 LFS 提交大体积裸二进制。
+- **远端同步卫生**：开始本地开发前，执行 `git status` 检查未暂存文件，并使用 `git pull --ff-only` 同步 CI 自动提交的多语言翻译增量 (`chore(translate)`)。
+- **严格发布门禁**：文章发布前必须通过本地 `bundle exec jekyll build --future` 及 `prepublish_check.py` 退出码 0 校验。
 
 ---
 
@@ -72,7 +55,7 @@ graph LR
 
 
 - **静态站点生成器**: Jekyll 4.x
-- **主题**: Chirpy 6.2+ (现代化响应式主题)
+- **主题**: Chirpy 7.6+ (现代化响应式主题)
 - **测试**: HTMLProofer (链接验证)
 - **部署**: GitHub Pages + GitHub Actions
 - **内容**: Markdown + Mermaid 图表
