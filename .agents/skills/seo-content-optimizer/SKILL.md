@@ -76,9 +76,10 @@ Follow this four-phase process when optimizing content:
 - **Paragraph structure**: Keep paragraphs to 3-4 sentences max for mobile readability.
 - **Lists and tables**: Convert dense paragraphs into bulleted lists or comparison tables where appropriate — these are highly favored by search engines.
 - **Image alt text**: Every image must have descriptive alt text that explains the image in context. Include keywords only when natural.
-- **Rendered HTML**: Run the pre-publish validator after building the site:
+- **Rendered HTML**: Run the pre-publish validator after building the site with `--future` (required for scheduled or future-dated drafts):
   ```bash
-  python3 .agents/skills/seo-content-optimizer/scripts/prepublish_check.py _posts/YYYY-MM-DD-slug.md
+  bundle exec jekyll build --future
+  python3 .agents/skills/seo-content-optimizer/scripts/prepublish_check.py _posts/YYYY-MM-DD-<slug>.md
   ```
 
 ### Phase 4: Linking & Distribution
@@ -88,7 +89,7 @@ Follow this four-phase process when optimizing content:
   - For series articles, ensure navigation blocks link to all parts.
   - External reference links should point to authoritative sources.
 - **Canonical URL**: Ensure the post's canonical URL is correct, especially if cross-posting to other platforms.
-- **Post-publish feedback**: After the page is indexed, review Search Console or analytics data for queries, impressions, CTR, and pages that should link to or from the new article.
+- **Post-publish feedback & Indexing**: Automated Google Indexing API submission is triggered by CI post-deployment (`scripts/google_index_ping.py`). Subsequently review Search Console or analytics data for queries, impressions, CTR, and pages that should link to or from the new article.
 
 ## Quality Checklist (SEO)
 

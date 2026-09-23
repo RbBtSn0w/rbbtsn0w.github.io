@@ -22,16 +22,16 @@ Agents operate under distinct domain roles. Downstream agents must never corrupt
 - **`SE Technical Writer`**: Owns technical depth, system architecture, accuracy, code examples, diagrams, and reader flow. Hands off finished technical drafts to the SEO Optimizer.
 - **`SEO Content Optimizer`**: Owns Jekyll/Chirpy metadata, single H1 hierarchy, query vocabulary, internal linking, snippet readiness, and pre-publish audit. Must never dilute technical rigor, alter code blocks, or introduce keyword stuffing.
 - **`WeChat Media Producer`**: Owns downstream adaptation for WeChat Official Account publishing, including 2.35:1 frosted-glass covers, WeChat draft directory structures (`wechat-drafts/`), link adaptation (footnotes/cards), and sync via `wechat-publisher`. Must never alter canonical blog post semantics.
-- **`Site Infrastructure Maintainer`**: Owns Jekyll theme configuration (`_config.yml`), Ruby dependencies (`Gemfile`), GitHub Actions (`.github/workflows/`), and platform stability.
+- **`Site Infrastructure Maintainer`**: Owns Jekyll theme configuration (`_config.yml`), Ruby dependencies (`Gemfile`), GitHub Actions (`.github/workflows/`), deployment indexing automation (`scripts/google_index_ping.py`), and platform stability.
 
 ### Law 3: Canonical Blog as Single Source of Truth
 - **Single Source of Truth**: The Markdown file at `_posts/YYYY-MM-DD-<slug>.md` is the canonical reference artifact.
 - **Downstream Derivations**: WeChat drafts (`wechat-drafts/`), RSS feeds, social cards, and mobile previews are strictly downstream projections. Downstream platform constraints (such as WeChat's lack of arbitrary external `<a>` hyperlinks) must never compromise the canonical blog source.
 
-### Law 4: Git Safety & Human-in-the-Loop Gate
+### Law 4: Git Safety & Remote Sync Hygiene
 - **Zero Destructive Git Operations**: Agents MUST NEVER execute `git push --force`, `git reset --hard`, `git rebase`, or delete published commits.
 - **Zero Autonomous Merging**: Autonomous merging to `master` is strictly prohibited. Final merge and publication decisions belong exclusively to the human maintainer (`rbbtsn0w`).
-- **Clean Working Tree**: Always inspect `git status` before starting work to identify and preserve uncommitted changes made by the developer.
+- **Clean Working Tree & Remote Sync**: Always inspect `git status` before starting work to preserve developer changes. Before branching or committing, synchronize remote translation delta commits (`chore(translate) [skip ci]`) using `git pull --ff-only` to prevent push rejection.
 
 ### Law 5: High-Risk Boundary & Escalation
 Explicit human confirmation is mandatory before:
@@ -39,6 +39,7 @@ Explicit human confirmation is mandatory before:
 - Changing package or gem dependencies (`Gemfile`, `Gemfile.lock`, `package.json`).
 - Modifying deployment workflows (`.github/workflows/pages-deploy.yml`).
 - Renaming, re-dating, or deleting existing published posts under `_posts/`.
+- Bypassing Git LFS filters when adding or modifying media in `assets/img/post/**` or translations in `assets/translations/**`.
 
 ---
 
@@ -83,6 +84,7 @@ Explicit human confirmation is mandatory before:
 
 ### D. Site Infrastructure Maintainer
 - **Ruby Runtime**: Ruby 3.2.x managed via `rbenv` as specified in [`.ruby-version`](file:///.ruby-version).
+- **Git LFS Invariant**: Post media (`assets/img/post/**`) and translations (`assets/translations/**`) are tracked via Git LFS. Ensure `git-lfs` is active and clean.
 - **Site Build Command**:
   ```bash
   bundle exec jekyll build --future
