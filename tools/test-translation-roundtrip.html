@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Translation round-trip regression</title>
+<h1>Current source title &amp; symbols</h1>
+<p class="post-desc">Current source description</p>
+<div class="post-meta"></div>
+<article class="content">
+  <h2 id="source">Current source</h2>
+  <p>中文正文：修复后的 [RUN_ID]。</p>
+  <pre><code>&lt;ID&gt; &amp; "quoted" : value</code></pre>
+</article>
+<pre id="result">RUNNING</pre>
+<script>
+  // Serve the repository root locally and open /tools/test-translation-roundtrip.html.
+  const preference = localStorage.getItem('user-language');
+  localStorage.removeItem('user-language');
+  window.translationConfig = { slug: 'roundtrip-fixture', sourceLang: 'zh-CN', targetLang: 'en' };
+  window.fetch = async () => ({
+    ok: true,
+    json: async () => ({
+      format: 'bilingual_html',
+      translations: {
+        'zh-CN': { title: 'Stale title', description: 'Stale description', content: '<p>Stale &lt;ID&gt;</p>' },
+        en: { title: 'English title', description: 'English description', content: '<p>English body</p>' }
+      }
+    })
+  });
+  const original = {
+    title: document.querySelector('h1').innerHTML,
+    description: document.querySelector('.post-desc').innerHTML
+  };
+</script>
+<script src="../assets/js/translation.js"></script>
+<script>
+  window.addEventListener('load', async () => {
+    const result = document.querySelector('#result');
+    const button = document.querySelector('#article-translate-btn');
+    const assert = (condition, message) => { if (!condition) throw new Error(message); };
+    try {
+      for (let cycle = 0; cycle < 2; cycle++) {
+        button.click();
+        // Translation fetch resolves asynchronously; wait for the public loading state.
+        for (let poll = 0; button.disabled && poll < 100; poll++) {
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        assert(!button.disabled, 'Translation did not finish');
+        assert(document.querySelector('.content').textContent === 'English body', 'English did not render');
+        button.click();
+        assert(document.querySelector('h1').innerHTML === original.title, 'Source title was replaced by stale cache');
+        assert(document.querySelector('.post-desc').innerHTML === original.description, 'Source description was replaced');
+        assert(document.querySelector('.content pre code').textContent === '<ID> & "quoted" : value', 'Code symbols changed');
+        assert(document.querySelector('.content').textContent.includes('[RUN_ID]'), 'Current source fix was lost');
+      }
+      result.textContent = 'PASS: two round trips preserve the current source and literal code symbols';
+    } catch (error) {
+      result.textContent = 'FAIL: ' + error.message;
+    } finally {
+      if (preference === null) localStorage.removeItem('user-language');
+      else localStorage.setItem('user-language', preference);
+    }
+  });
+</script>
+</html>

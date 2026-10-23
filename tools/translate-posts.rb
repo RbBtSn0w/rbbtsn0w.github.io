@@ -9,6 +9,7 @@ require 'net/http'
 require 'nokogiri'
 require 'pathname'
 require 'time'
+require 'tempfile'
 require 'uri'
 require 'yaml'
 
@@ -26,16 +27,6 @@ HISTORY_DRIP_LIMIT = 10
 NEW_PRIORITY_LIMIT = 15
 MAX_REDIRECTS = 5
 COPY_CODE_SUCCEED_TEXT = 'Copied!'.freeze
-
-TRANSLATABLE_TEXT_CONTAINERS = %i[
-  p
-  header
-  li
-  blockquote
-  em
-  strong
-  a
-].freeze
 
 SKIPPED_TYPES = %i[
   codeblock
@@ -277,28 +268,161 @@ def add_heading_anchors(fragment)
   end
 end
 
-def translatable_text_node?(element, parent_types)
-  return false unless element.type == :text
-  return false if element.value.to_s.strip.empty?
-  return false if parent_types.any? { |type| SKIPPED_TYPES.include?(type) }
-
-  (parent_types & TRANSLATABLE_TEXT_CONTAINERS).any?
+def validate_translations!(translations, count, sources: nil)
+  unless translations.is_a?(Array) && translations.length == count &&
+         translations.all? { |text| text.is_a?(String) && !text.strip.empty? }
+    raise ArgumentError, 'translation response count or text is invalid'
+  end
+  missing_value = /\[\s*value\s+missing\s*\]/i
+  if translations.each_with_index.any? { |text, index| text.match?(missing_value) && !sources&.fetch(index)&.match?(missing_value) }
+    raise ArgumentError, 'translation contains a missing-value placeholder'
+  end
 end
 
-def collect_text_nodes(element, parent_types = [], result = [])
-  current_parent_types = parent_types + [element.type]
+# Translate a complete inline context, not disconnected text nodes. Markers
+# describe the existing AST; returned markup/attributes are never trusted.
+class TranslationUnit
+  TOKEN = /\[\[\[(\/?)(\d+)\]\]\]/
+  INLINE_CONTAINERS = %i[strong em a].freeze
+  attr_reader :element, :source
 
-  if translatable_text_node?(element, parent_types)
-    result << element
+  def initialize(element)
+    @element = element
+    @nodes = []
+    @source = element.children.map { |child| serialize(child) }.join
+    @tokens = @source.scan(TOKEN)
   end
 
+  def serialize(node)
+    if node.type == :text
+      raise ArgumentError, 'reserved translation marker in source' if node.value.include?('[[[')
+
+      return node.value
+    end
+    id = @nodes.length
+    @nodes << node
+    text = if INLINE_CONTAINERS.include?(node.type)
+             node.children.map { |child| serialize(child) }.join
+           else
+             literal(node)
+           end
+    "[[[#{id}]]]#{text}[[[/#{id}]]]"
+  end
+
+  def literal(node)
+    return node.value if node.type == :codespan
+
+    root = Kramdown::Element.new(:root, nil, nil, encoding: Encoding::UTF_8)
+    root.children << node
+    html, = Kramdown::Converter::Html.convert(root, KRAMDOWN_OPTIONS)
+    Nokogiri::HTML.fragment(html).text
+  end
+
+  def apply(text)
+    validate_translations!([text], 1, sources: [@source])
+    raise ArgumentError, 'translation changed inline markers' unless text.scan(TOKEN) == @tokens
+
+    validate_spacing!(text)
+    root = Kramdown::Element.new(:root)
+    stack = [root]
+    offset = 0
+    text.to_enum(:scan, TOKEN).each do
+      match = Regexp.last_match
+      append_text(stack.last, text[offset...match.begin(0)])
+      node = @nodes.fetch(match[2].to_i)
+      if match[1].empty?
+        copy = Kramdown::Element.new(node.type, node.value, node.attr.dup, node.options.dup)
+        stack.last.children << copy
+        stack << copy
+      else
+        copy = stack.pop
+        unless INLINE_CONTAINERS.include?(node.type)
+          actual = copy.children.map(&:value).join
+          raise ArgumentError, 'translation changed a protected literal' unless actual == literal(node)
+
+          # Restore the entire original node, including raw HTML/math options.
+          stack.last.children[-1] = node
+        end
+      end
+      offset = match.end(0)
+    end
+    append_text(root, text[offset..])
+    @element.children = root.children
+  end
+
+  def append_text(parent, text)
+    raise ArgumentError, 'unknown translation marker' if text.include?('[[[')
+    parent.children << Kramdown::Element.new(:text, text) unless text.empty?
+  end
+
+  def boundary_pairs(text)
+    text.enum_for(:scan, TOKEN).map do
+      match = Regexp.last_match
+      [text[0...match.begin(0)].gsub(TOKEN, '')[-1], text[match.end(0)..].gsub(TOKEN, '')[0]]
+    end
+  end
+
+  def joined_words?(pair)
+    pair[0]&.match?(/[A-Za-z0-9)%\]]/) && pair[1]&.match?(/[A-Za-z0-9]/)
+  end
+
+  def validate_spacing!(text)
+    boundary_pairs(@source).zip(boundary_pairs(text)).each do |original, translated|
+      # Preserve intentional intra-word formatting already present in English.
+      if joined_words?(translated) && !joined_words?(original)
+        raise ArgumentError, 'translation joined words across an inline boundary'
+      end
+    end
+  end
+end
+
+def translation_units(element, result = [])
   return result if SKIPPED_TYPES.include?(element.type)
 
-  element.children.each do |child|
-    collect_text_nodes(child, current_parent_types, result)
+  if %i[p header td th].include?(element.type)
+    result << TranslationUnit.new(element) unless element.children.empty?
+  else
+    element.children.each { |child| translation_units(child, result) }
   end
-
   result
+end
+
+def build_translation(raw_content, translator: method(:translate_atomic))
+  parsed = parse_post(raw_content)
+  source_document = parse_markdown(parsed[:body])
+  translated_document = parse_markdown(parsed[:body])
+  units = translation_units(translated_document.root)
+  queries = [parsed[:title], parsed[:desc], *units.map(&:source)]
+  indices = queries.each_index.reject { |index| queries[index].strip.empty? }
+  inputs = indices.map { |index| queries[index] }
+  responses = inputs.empty? ? [] : translator.call(inputs, 'en')
+  validate_translations!(responses, inputs.length, sources: inputs)
+  translated = Array.new(queries.length, '')
+  indices.zip(responses).each { |index, text| translated[index] = text }
+  units.zip(translated.drop(2)).each { |unit, text| unit.apply(text) }
+
+  {
+    format: TRANSLATION_FORMAT,
+    schema_version: 2,
+    source_lang: 'zh-CN',
+    target_lang: 'en',
+    translations: {
+      'zh-CN' => { title: parsed[:title], description: parsed[:desc], content: render_document(source_document, lang: 'zh-CN') },
+      'en' => { title: translated[0], description: translated[1], content: render_document(translated_document, lang: 'en') }
+    },
+    hash: hash_content(raw_content),
+    timestamp: Time.now.utc.iso8601
+  }
+end
+
+def write_translation(out_path, raw_content, translator: method(:translate_atomic))
+  result = build_translation(raw_content, translator: translator)
+  Tempfile.create(['.translation-', '.json'], File.dirname(out_path)) do |file|
+    file.write(JSON.pretty_generate(result))
+    file.chmod(File.exist?(out_path) ? File.stat(out_path).mode & 0o777 : 0o644)
+    file.close
+    File.rename(file.path, out_path)
+  end
 end
 
 def process_file(filename)
@@ -306,43 +430,8 @@ def process_file(filename)
   slug = filename.sub(/^\d{4}-\d{2}-\d{2}-/, '').sub(/\.md$/, '')
   out_path = File.join(OUTPUT_DIR, "#{slug}.json")
   raw_content = File.read(file_path)
-  current_hash = hash_content(raw_content)
-
   puts "🌐 [Translating] #{filename}"
-
-  parsed = parse_post(raw_content)
-  source_document = parse_markdown(parsed[:body])
-  translated_document = parse_markdown(parsed[:body])
-  text_nodes = collect_text_nodes(translated_document.root)
-  to_translate = [parsed[:title], parsed[:desc], *text_nodes.map(&:value)]
-  translated = translate_atomic(to_translate, 'en')
-
-  text_nodes.each_with_index do |node, index|
-    node.value = translated[index + 2] || node.value
-  end
-
-  result = {
-    format: TRANSLATION_FORMAT,
-    schema_version: 2,
-    source_lang: 'zh-CN',
-    target_lang: 'en',
-    translations: {
-      'zh-CN' => {
-        title: parsed[:title],
-        description: parsed[:desc],
-        content: render_document(source_document, lang: 'zh-CN')
-      },
-      'en' => {
-        title: translated[0],
-        description: translated[1],
-        content: render_document(translated_document, lang: 'en')
-      }
-    },
-    hash: current_hash,
-    timestamp: Time.now.utc.iso8601
-  }
-
-  File.write(out_path, JSON.pretty_generate(result))
+  write_translation(out_path, raw_content)
   true
 rescue StandardError => e
   warn "✗ [Fail] #{filename}: #{e.message}"

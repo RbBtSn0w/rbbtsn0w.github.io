@@ -40,6 +40,16 @@
     global.setTimeout(callback, 50);
   }
 
+  function getMermaidTheme() {
+    const root = global.document && global.document.documentElement;
+    const theme = (global.Theme && global.Theme.resolvedTheme)
+      || (root && (root.dataset.bsTheme || root.dataset.mode));
+    if (theme) return theme === 'dark' ? 'dark' : 'default';
+
+    return typeof global.matchMedia === 'function'
+      && global.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+  }
+
   function normalizeTranslatedMarkdown(markdown) {
     const source = String(markdown || '');
     const lines = source.split('\n');
@@ -104,6 +114,7 @@
       getLanguagePayload: getLanguagePayload,
       normalizeTranslatedMarkdown: normalizeTranslatedMarkdown,
       sanitizeMermaidSource: sanitizeMermaidSource,
+      getMermaidTheme: getMermaidTheme,
       scheduleMermaidRender: scheduleMermaidRender
     };
   }
@@ -271,6 +282,7 @@
       if (titleEl) titleEl.innerHTML = fallback.title;
       if (descEl) descEl.innerHTML = fallback.desc;
       if (contentEl) contentEl.innerHTML = fallback.content;
+      postRenderEnhance(contentEl);
       return;
     }
 
@@ -329,8 +341,8 @@
   function revertToOriginal() {
     if (!originalContent.title) return;
 
-    const sourcePayload = getLanguagePayload(translatedData, CONFIG.sourceLang || 'zh-CN', CONFIG);
-    renderPayload(sourcePayload, originalContent);
+    // The rendered post is canonical; translation caches may predate source fixes.
+    renderPayload(null, originalContent);
 
     currentLang = CONFIG.sourceLang || 'zh-CN';
     updateUI();
@@ -452,7 +464,7 @@
     if (mermaidBlocks.length > 0 && global.mermaid) {
       scheduleMermaidRender(function() {
         try {
-          const mermaidTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'default';
+          const mermaidTheme = getMermaidTheme();
           global.mermaid.initialize({
             startOnLoad: false,
             theme: mermaidTheme
