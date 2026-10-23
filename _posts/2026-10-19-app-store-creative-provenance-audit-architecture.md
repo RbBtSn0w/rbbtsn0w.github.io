@@ -155,7 +155,7 @@ sequenceDiagram
     participant Validator as CreativeValidator
     participant Store as ASC API
 
-    Dev->>Validator: asc creative validate --run-id <ID>
+    Dev->>Validator: asc creative validate --run-id [RUN_ID]
     Note over Validator: 检查分辨率、透明通道、DPI、哈希完整性
     alt 校验存在残缺或指纹不符
         Validator-->>Dev: Exit Code 1 (Report Gaps & Reject)

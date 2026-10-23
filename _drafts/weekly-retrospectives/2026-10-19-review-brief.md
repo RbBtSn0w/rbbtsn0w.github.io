@@ -79,12 +79,12 @@
       participant BGM as BackgroundMusicPlayer
       participant Output as CoreAudio Output
 
-      Voice->>Mixer: notifyVoiceWillStart(duration, attackMs: 150)
-      Mixer->>BGM: rampVolume(from: 1.0, to: 0.15, curve: .logarithmic)
+      Voice->>Mixer: notifyVoiceWillStart(duration, 150ms attack)
+      Mixer->>BGM: rampVolume(1.0 -> 0.15, logarithmic)
       Note over BGM: 150ms 平滑衰减
       Voice->>Output: playVoiceAudio()
-      Voice->>Mixer: notifyVoiceDidEnd(releaseMs: 300)
-      Mixer->>BGM: rampVolume(from: 0.15, to: 1.0, curve: .easeOut)
+      Voice->>Mixer: notifyVoiceDidEnd(300ms release)
+      Mixer->>BGM: rampVolume(0.15 -> 1.0, easeOut)
       Note over BGM: 300ms 恢复原音量
   ```
 - **预期读者收获**：掌握生产级可复用的平滑混音管线设计，杜绝音频爆音与状态竞争。
