@@ -60,17 +60,17 @@ sequenceDiagram
 
     Voice->>Monitor: didStart(utterance A)
     Monitor->>Coordinator: setDucked(true)
-    Coordinator->>HW: setVolume(0.12, fadeDuration: 0.15)
-    Note over Coordinator,HW: 150ms 迅速衰减至听觉底限
+    Coordinator->>HW: setVolume(0.12, 150ms fade)
+    Note over Coordinator, HW: 150ms 迅速衰减至听觉底限
     Voice->>Monitor: didFinish(utterance A)
-    Note over Monitor: 启动防抖静音窗口 (quietDelay: 350ms)
+    Note over Monitor: 启动防抖静音窗口 (350ms quietDelay)
     Voice->>Monitor: didStart(utterance B)
     Note over Monitor: 世代递增，取消前序恢复计划
     Voice->>Monitor: didFinish(utterance B)
     Note over Monitor: 350ms 内无新发音，确认整句结束
     Monitor->>Coordinator: setDucked(false)
-    Coordinator->>HW: setVolume(0.45, fadeDuration: 0.8)
-    Note over Coordinator,HW: 800ms 平滑舒缓回弹
+    Coordinator->>HW: setVolume(0.45, 800ms fade)
+    Note over Coordinator, HW: 800ms 平滑舒缓回弹
 ```
 
 ---
